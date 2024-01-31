@@ -1,14 +1,13 @@
 
-def detect_best_frontal_face(img_path):
+def detect_best_frontal_face(image_path):
    import math
    from retinaface import RetinaFace
 
-   resp = RetinaFace.detect_faces(img_path)
+   resp = RetinaFace.detect_faces(image_path)
    landmarks = resp['face_1']['landmarks']
    nose_point = landmarks['nose']
    left_eye_point = landmarks['left_eye']
    right_eye_point = landmarks['right_eye']
-   print("nose_point:", nose_point)
 
    distance_nose_left_eye = math.sqrt((left_eye_point[0] - nose_point[0])**2 + (left_eye_point[1] - nose_point[1])**2)
    distance_nose_right_eye = math.sqrt((right_eye_point[0] - nose_point[0])**2 + (right_eye_point[1] - nose_point[1])**2)

@@ -4,8 +4,12 @@ import cv2
 import shutil
 import matplotlib.pyplot as plt
 
+
+#IMPORT HERE ALI.detect_distances_of_sides.py
+import detect_distences_of_sides 
+
 #Change these
-dbName = 'AFW' #IBUG, LFPW, HELEN, AFW, IBUG, YoutubeFace
+dbName = 'LFPW' #IBUG, LFPW, HELEN, AFW, IBUG, YoutubeFace
 logFolderPath = './UMUT/LOG/'+ dbName
 dbName = './UMUT/'+dbName
 youtubeInfoTxtPath = './UMUT/output2.txt' #only for YoutubeFaceDB
@@ -14,7 +18,6 @@ isThereTrainTest = False #True for LFPW Dataset, False for anothers
 
 #It doesnt work properly right now!!!
 inputOrAutoMod = False #True for auto, False for input, auto mod is only for IBUG Dataset. If you want to use auto mod, you should change the function autoDetermineAccordingToFeatureCount
-
 
 
 #Global Variables for decideWhichElementsWhichFeatures
@@ -156,9 +159,13 @@ def extractFeaturesFromFileName(fileName): # this should change according to the
     return output_dict
 
 
-def yunetDetectionDNN(img):
+def yunetDetectionDNN(img,img_path):
     height, width, _ = img.shape
     detector = cv2.FaceDetectorYN.create("./UMUT/face_detection_yunet.onnx",  "", (0, 0))
+
+    #result = detect_distences_of_sides.detect_best_frontal_face(img_path)
+    #print("Result: " + str(result))
+
     detector.setInputSize((width, height))
     return detector.detect(img)
 
@@ -366,7 +373,7 @@ for file in files:
             input_file_path = './' + dbName + '/' + file_name
         
         image_cv2_yunet = cv2.imread(input_file_path)
-        _, faces = yunetDetectionDNN(image_cv2_yunet)
+        _, faces = yunetDetectionDNN(image_cv2_yunet,input_file_path)
         DNNFrontalHandle(faces, image_cv2_yunet)
 
 
