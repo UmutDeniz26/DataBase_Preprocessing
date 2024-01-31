@@ -1,7 +1,7 @@
 import os
 
 # Veri setinin bulunduğu dizin
-dataset_path = 'aligned_images_DB2'
+dataset_path = 'DATABASE_PREPROCESSING/Elif/aligned_images_DB2'
 
 # Çıktı dosyasının adı
 output_file = 'output2.txt'
