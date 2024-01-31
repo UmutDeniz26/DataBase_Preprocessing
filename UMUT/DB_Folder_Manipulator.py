@@ -5,10 +5,15 @@ import shutil
 import matplotlib.pyplot as plt
 
 #Change these
-dbName = 'YoutubeFace' #IBUG, LFPW, HELEN, AFW, IBUG, YoutubeFace
-showFrontalFaceExamples = True #True for show, False for not show
+dbName = 'AFW' #IBUG, LFPW, HELEN, AFW, IBUG, YoutubeFace
+logFolderPath = './UMUT/LOG/'+ dbName
+dbName = './UMUT/'+dbName
+youtubeInfoTxtPath = './UMUT/output2.txt' #only for YoutubeFaceDB
+showFrontalFaceExamples = False #True for show, False for not show
 isThereTrainTest = False #True for LFPW Dataset, False for anothers
-inputOrAutoMod = False #True for auto, False for input
+
+#It doesnt work properly right now!!!
+inputOrAutoMod = False #True for auto, False for input, auto mod is only for IBUG Dataset. If you want to use auto mod, you should change the function autoDetermineAccordingToFeatureCount
 
 
 
@@ -18,7 +23,7 @@ file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_in
 #This variable will be automatically changed according to the number of features
 copyFlag = False
 
-if dbName == 'YoutubeFace':
+if dbName == './UMUT/YoutubeFace':
     YoutubeFaceDB = True
 else:
     YoutubeFaceDB = False
@@ -147,41 +152,45 @@ def extractFeaturesFromFileName(fileName): # this should change according to the
         }
     
     #Uncomment this for see the features
-    #printFeatures(output_dict)
+    printFeatures(output_dict)
     return output_dict
 
 
 def yunetDetectionDNN(img):
     height, width, _ = img.shape
-    detector = cv2.FaceDetectorYN.create("face_detection_yunet.onnx",  "", (0, 0))
+    detector = cv2.FaceDetectorYN.create("./UMUT/face_detection_yunet.onnx",  "", (0, 0))
     detector.setInputSize((width, height))
     return detector.detect(img)
 
 def DNNFrontalHandle(faces, image_cv2_yunet):
     if faces is not None: 
         for face in faces:
-            
             # confidence
             confidence = face[-1]
             confidenceArray.append({'confidence': confidence, 'img': image_cv2_yunet})
     else:
         logString = "No face detected: " + file_name
-        writeLog('./LOG/'+dbName+'/logNoFace.txt', logString)
+        writeLog( logFolderPath +'/logNoFace.txt', logString)
         
 def writeLog(log_file_path, log):
+    print(log_file_path + " - " + log)
     with open(log_file_path, 'a') as log_file:
         log_file.write(log + '\n')
 
 def clearLogs():
-    log_file_path = './LOG/'+dbName
-    if os.path.exists(log_file_path):
-        shutil.rmtree(log_file_path)
-        os.makedirs(log_file_path, exist_ok=True)
+    
+    if os.path.exists(logFolderPath):
+        shutil.rmtree(logFolderPath)
+        os.makedirs(logFolderPath, exist_ok=True)
         
 def findMaxFrontalFace(confidenceArr): 
     #find max confidence and write it to the folder
     maxConf = 0
     confidence = 0
+    if len(confidenceArr) == 0:
+        writeLog( logFolderPath +'/logNoFrontalFace.txt', file_name)
+        return False, False
+        
     for conf in confidenceArr:
         if conf['confidence'] > maxConf:
             maxConf = float(conf['confidence'])
@@ -215,7 +224,7 @@ def writeFrontalFaceToFolder(image, confidence, frontalCount, destination):
     logString = "Added Frontal Image Count: " + str(frontalCount) + " - " + str(file_id)+ " - " + str(confidence) + " - " + file_name
     if confidence < 0.9:
         logString = logString + " Low Confidence! "
-    writeLog('./LOG/'+dbName+'/logFrontalFaceAdded.txt', logString)
+    writeLog( logFolderPath+'/logFrontalFaceAdded.txt', logString)
 
 def youtubeDBFilesConcat(inFiles):
     outFilesPaths = []
@@ -252,13 +261,12 @@ files = os.scandir('./'+dbName)
 confidenceArray = []
 firstFlag = True;makeDeceisonFlag = True
 imageCounter = 0 # only for youtubeFaceDB
-holdID = 0;holdFeaturesLen = 0;i=0;frontalCount = 0
+holdID = 0;holdFeaturesLen = 0;frontalCount = 0
 
-os.makedirs('./LOG', exist_ok=True)
-os.makedirs('./LOG/'+dbName, exist_ok=True)
+os.makedirs(logFolderPath, exist_ok=True)
 
 if YoutubeFaceDB ==True:
-    imageInformationsTxt = open('./output2.txt', 'r') # change this
+    imageInformationsTxt = open(youtubeInfoTxtPath, 'r') # change this
     imageInformations = imageInformationsTxt.readlines()
     imageInformations = replaceEntersAndTabs(imageInformations)
     files = youtubeDBFilesConcat(files)
@@ -332,24 +340,24 @@ for file in files:
         #copy input filepath to output filepath
         shutil.copy(input_file_path, output_file_path)
 
-
         logString = "Added Image: " + file_name
-        writeLog('./LOG/'+dbName+'/logAddedImage.txt', logString)
+        writeLog(logFolderPath+'/logAddedImage.txt', logString)
     
     
     #DNN frontal detection
     if extension == 'jpg':
         if holdID != file_id and firstFlag == False:
             image_cv2_yunet, confidence = findMaxFrontalFace(confidenceArray)
+            
             confidenceArray.clear()
             frontalCount += 1
-            i+=1
-            
-            showFrontalFaces(image_cv2_yunet, confidence, frontalCount)
-            #Our frontal image is ready
-            #create a folder that named frontal, and copy this into
-            writeFrontalFaceToFolder(image_cv2_yunet, confidence, frontalCount, output_folder)
-            
+
+            if  confidence != False:    
+                showFrontalFaces(image_cv2_yunet, confidence, frontalCount)
+                #Our frontal image is ready
+                #create a folder that named frontal, and copy this into
+                writeFrontalFaceToFolder(image_cv2_yunet, confidence, frontalCount, output_folder)
+                
         firstFlag = False
         holdID = file_id
         if YoutubeFaceDB == True:
