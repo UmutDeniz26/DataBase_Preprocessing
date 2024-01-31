@@ -4,7 +4,7 @@ from skimage.metrics import structural_similarity as ssim
 
 def benzerlik_orani_hesapla(img1, img2):
     benzerlik_orani, _ = ssim( img1, img2, full=True)
-    print(benzerlik_orani)
+    #print(benzerlik_orani)
     return benzerlik_orani
 
 def klasor_benzerlik_kontrolu(klasor_yolu):
@@ -22,29 +22,27 @@ def klasor_benzerlik_kontrolu(klasor_yolu):
 
         if benzerlik12 >= 0.9:
             i += 1  # İki görsel de %90'ın üzerinde benzerlik oranına sahipse bir sonraki çiftle devam et
-            print("{person_name}_{subfolder_name}")
+           # print("{person_name}_{subfolder_name}: {benzerlik_orani}")
 
         else:
-            return False
+            print("{klasor_yolu}_{subfolder_name}")
 
     return True
 
 def main():
-        print("a")
         # Veri setinin bulunduğu dizin
-        dataset_path = 'aligned_images_DB2'
+        dataset_path = './Elif/YoutubeFace/aligned_images_DB2'
         for person_name in os.listdir(dataset_path):
-            print("b")
             person_path = os.path.join(dataset_path, person_name)
             if os.path.isdir(person_path):
                 for subfolder_name in os.listdir(person_path):
                     subfolder_path = os.path.join(person_path, subfolder_name)
                     if os.path.isdir(subfolder_path):
-                        print("c")
                         for image_file in os.listdir(subfolder_path):
                             klasor_benzerlik_kontrolu(subfolder_path)
                         #if klasor_benzerlik_kontrolu(subfolder_path):
-                        #print(f"{person_name}: Tüm görsellerde benzerlik oranı %90'ın üzerinde.")        
+                        #print(f"{person_name}: Tüm görsellerde benzerlik oranı %90'ın üzerinde.")    
+                            #print("{person_name}_{subfolder_name}: benzerlik_orani")    
 
 if __name__ == "__main__":
     main()
