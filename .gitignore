@@ -23,3 +23,7 @@
 /YoutubeFace
 /YoutubeFace_FOLDERED
 /.gitignore
+/descriptors_DB
+/headpose_DB
+/aligned_images_DB
+/aligned_images_DB2

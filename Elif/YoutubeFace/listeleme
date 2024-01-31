@@ -1,0 +1,46 @@
+import os
+
+# Veri setinin bulunduğu dizin
+dataset_path = 'aligned_images_DB2'
+
+# Çıktı dosyasının adı
+output_file = 'output2.txt'
+
+counter = 0
+
+# Dosya açma işlemi
+with open(output_file, 'w') as file:
+    #file.write('personname_klasor_img\n')
+    # Ana dizindeki klasörleri listele
+    for person_name in os.listdir(dataset_path):
+        person_path = os.path.join(dataset_path, person_name)
+
+        # Klasörleri kontrol et ve içerisindeki dosyaları listele
+        if os.path.isdir(person_path):
+           # file.write(f'{person_name}')
+
+            # Person'a ait tüm alt klasörlerdeki görselleri listele
+            person_images = []
+
+            for subfolder_name in os.listdir(person_path):
+                subfolder_path = os.path.join(person_path, subfolder_name)
+
+                if os.path.isdir(subfolder_path):
+                    # Alt klasördeki dosyaları listele
+                    for image_file in os.listdir(subfolder_path):
+                        person_number = f'{counter:05d}'
+                        image_file = image_file.split('.')
+                        if len(image_file) > 2:
+                            number_between_dots = image_file[-2]
+                        else:
+                            print("Noktalar arasında bir sayı bulunamadı.")
+                        person_images.append(f'\t {person_number}_{subfolder_name}_{number_between_dots}')
+
+            # Person'a ait tüm görselleri tek bir satırda listeleyerek yaz
+            file.write('\n'.join(person_images))
+            file.write('\n')
+
+            counter += 1
+
+# Bilgileri içeren txt dosyası oluşturuldu
+print(f'Liste oluşturuldu ve {output_file} adında kaydedildi.')

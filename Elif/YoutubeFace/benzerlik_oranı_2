@@ -1,0 +1,42 @@
+import os
+import cv2
+from skimage.metrics import structural_similarity as ssim
+
+def benzerlik_orani_hesapla(img1, img2):
+    benzerlik_orani, _ = ssim( img1, img2, full=True)
+    print(benzerlik_orani)
+    return benzerlik_orani
+
+def klasor_benzerlik_kontrolu(klasor_yolu):
+    gorsel_yollar = [os.path.join(klasor_yolu, gorsel) for gorsel in os.listdir(klasor_yolu) if gorsel.endswith(('.jpg', '.jpeg', '.png'))]
+
+    i = 0
+    while i < len(gorsel_yollar)-1:
+        gorsel1 = cv2.imread(gorsel_yollar[i], cv2.IMREAD_GRAYSCALE)
+        gorsel2 = cv2.imread(gorsel_yollar[i+1], cv2.IMREAD_GRAYSCALE)
+
+        gorsel1 = cv2.resize(gorsel1, (400, 400))
+        gorsel2 = cv2.resize(gorsel2, (400, 400))
+
+        benzerlik12 = benzerlik_orani_hesapla(gorsel1, gorsel2)
+
+        if benzerlik12 >= 0.9:
+            i += 1  # İki görsel de %90'ın üzerinde benzerlik oranına sahipse bir sonraki çiftle devam et
+        else:
+            return False
+
+    return True
+
+def main():
+    dataset_path = "aligned_images_DB/Zulfiqar_Ahmed"
+    kisiler = os.listdir(dataset_path)
+
+    for kisi in kisiler:
+        kisi_yolu = os.path.join(dataset_path, kisi)
+        if os.path.isdir(kisi_yolu):
+            if klasor_benzerlik_kontrolu(kisi_yolu):
+                print(f"{kisi}: Tüm görsellerde benzerlik oranı %90'ın üzerinde.")
+            
+
+if __name__ == "__main__":
+    main()
