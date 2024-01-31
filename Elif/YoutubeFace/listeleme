@@ -1,12 +1,13 @@
 import os
 
 # Veri setinin bulunduğu dizin
-dataset_path = 'DATABASE_PREPROCESSING/Elif/aligned_images_DB2'
+dataset_path = "./Elif/YoutubeFace/aligned_images_DB2"
 
 # Çıktı dosyasının adı
-output_file = 'output2.txt'
+output_file = './Elif/YoutubeFace/output2.txt'
 
 counter = 0
+#print(os.listdir("./Elif/YoutubeFace/aligned_images_DB2"))
 
 # Dosya açma işlemi
 with open(output_file, 'w') as file:
