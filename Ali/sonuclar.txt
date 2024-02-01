@@ -1,3 +1,0 @@
-distance_nose_left_eye: 36.71883162588637
-distance_nose_right_eye: 35.43080816045169
-difference_between_le_re: 1.2880234654346765
