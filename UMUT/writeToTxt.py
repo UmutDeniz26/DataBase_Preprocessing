@@ -15,5 +15,3 @@ def run(txt_path, resp):
                 file.write(f" \"{key}\" : {value},\n")
         file.write("}")
         return "Added txt: " + txt_path + " successfully!"
-    return "Error while adding txt: " + txt_path + " !"
-
