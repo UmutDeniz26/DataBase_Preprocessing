@@ -6,9 +6,11 @@ import matplotlib.pyplot as plt
 
 
 import sys
-#IMPORT HERE ALI.detect_distances_of_sides.py
+
 sys.path.insert(0, './Ali')
 import detect_distences_of_sides
+
+import writeToTxt
 
 #Change these
 dbName = 'YoutubeFace' #IBUG, LFPW, HELEN, AFW, IBUG, YoutubeFace, LFW
@@ -179,29 +181,13 @@ def FaceRecogFrontalHandle(image_cv2_yunet,img_path,confidenceArray, copyTextPat
         return confidenceArray
     
     resp = detect_distences_of_sides.detect_best_frontal_face(img_path)
+    if resp == False:
+        return confidenceArray
     confidence = resp["difference_between_le_re"]
     confidenceArray.append({'confidence': confidence, 'img': image_cv2_yunet})
-    writeToTxt(txt_path, resp)
+    writeToTxt.run(txt_path, resp)
 
     return confidenceArray
-
-def writeToTxt(txt_path, resp):
-    new_dict = {key: value for key, value in resp.items() if key not in ['distance_nose_left_eye', 'distance_nose_right_eye', 'difference_between_le_re']}
-    keys = list(new_dict.keys())
-    
-    #txt file operations
-    os.makedirs(os.path.dirname(txt_path), exist_ok=True)
-    
-    with open(txt_path , 'w') as file:
-        file.write("{\n")
-        for key, value in new_dict.items():
-            if key == keys[-1]:
-                file.write(f" \"{key}\" : {value}\n")
-            else:
-                file.write(f" \"{key}\" : {value},\n")
-        file.write("}")
-
-        writeLog( logFolderPath +'/txtLandmarksLog.txt', "Added txt: " + txt_path + " - " + file_name + " - ")
 
 def writeLog(log_file_path, log):
     print(log_file_path + " - " + log)
@@ -399,7 +385,7 @@ for file in files:
         image_cv2_yunet = cv2.imread(input_file_path)
         
         confidenceArray = FaceRecogFrontalHandle(image_cv2_yunet,input_file_path,confidenceArray,output_folder) #remove output_folder 
-       
+        print("Length of confidence array: " + str(len(confidenceArray)))
         #_, faces = yunetDetectionDNN(image_cv2_yunet,input_file_path)
         #DNNFrontalHandle(faces, image_cv2_yunet)
 
