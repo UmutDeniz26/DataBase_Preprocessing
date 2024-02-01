@@ -145,13 +145,13 @@ for file in files:
     #Frontal detection
     if extension == 'jpg':
         if holdID != file_id and firstFlag == False:
-            image_cv2_yunet, confidence = FrontalFaceFunctions.findMaxFrontalFace(confidenceArray,logFolderPath,out_file_name)
-            
+            image_cv2, confidence = FrontalFaceFunctions.findMaxFrontalFace(confidenceArray,logFolderPath,out_file_name)
+            exit()
             confidenceArray.clear()
             frontalCount += 1
 
             if  confidence != False:    
-                FrontalFaceFunctions.showFrontalFaces(image_cv2_yunet, confidence, frontalCount,showFrontalFaceExamples)
+                FrontalFaceFunctions.showFrontalFaces(image_cv2, confidence, frontalCount,showFrontalFaceExamples)
                 #Our frontal image is ready
                 #create a folder that named frontal, and copy this into
                 FrontalFaceFunctions.writeFrontalFaceToFolder(confidence, frontalCount, output_folder, 
@@ -165,11 +165,11 @@ for file in files:
         else:
             input_file_path = './' + dbName + '/' + out_file_name
         
-        image_cv2_yunet = cv2.imread(input_file_path)
+        image_cv2 = cv2.imread(input_file_path)
         
-        confidenceArray = FrontalFaceFunctions.FaceRecogFrontalHandle(image_cv2_yunet,input_file_path,confidenceArray,output_folder,out_file_name)#remove output_folder 
+        confidenceArray = FrontalFaceFunctions.FaceRecogFrontalHandle(image_cv2,input_file_path,confidenceArray,output_folder,out_file_name)#remove output_folder 
         print("Length of confidence array: " + str(len(confidenceArray)))
-        #_, faces = yunetDetectionDNN(image_cv2_yunet,input_file_path,confidenceArray,output_folder,out_file_name) #remove output_folder
-        #DNNFrontalHandle(faces, image_cv2_yunet)
+        #_, faces = yunetDetectionDNN(image_cv2,input_file_path,confidenceArray,output_folder,out_file_name) #remove output_folder
+        #DNNFrontalHandle(faces, image_cv2)
 
 
