@@ -1,24 +1,32 @@
 
-def detect_best_frontal_face(img_path):
-   import math
-   from retinaface import RetinaFace
+def detect_best_frontal_face(image_path):
+     import math
+     from retinaface import RetinaFace
+     resp = RetinaFace.detect_faces(image_path)
+     if 'face_1' not in resp:
+        return False
+     else:   
+          landmarks = resp['face_1']['landmarks']
+          facial_area = resp["face_1"]["facial_area"]
+          nose_point = landmarks['nose']
+          left_eye_point = landmarks['left_eye']
+          right_eye_point = landmarks['right_eye']
+          mouth_left_point = landmarks.get('mouth_left')
+          mouth_right_point = landmarks.get('mouth_right')
 
-   resp = RetinaFace.detect_faces(img_path)
-   landmarks = resp['face_1']['landmarks']
-   nose_point = landmarks['nose']
-   left_eye_point = landmarks['left_eye']
-   right_eye_point = landmarks['right_eye']
-   print("nose_point:", nose_point)
+          distance_nose_left_eye = math.sqrt((left_eye_point[0] - nose_point[0])**2 + (left_eye_point[1] - nose_point[1])**2)
+          distance_nose_right_eye = math.sqrt((right_eye_point[0] - nose_point[0])**2 + (right_eye_point[1] - nose_point[1])**2)
+          difference_between_le_re = abs(distance_nose_left_eye-distance_nose_right_eye)
 
-   distance_nose_left_eye = math.sqrt((left_eye_point[0] - nose_point[0])**2 + (left_eye_point[1] - nose_point[1])**2)
-   distance_nose_right_eye = math.sqrt((right_eye_point[0] - nose_point[0])**2 + (right_eye_point[1] - nose_point[1])**2)
-   difference_between_le_re = abs(distance_nose_left_eye-distance_nose_right_eye)
-
-   result_dict = {
-        "distance_nose_left_eye": distance_nose_left_eye,
-        "distance_nose_right_eye": distance_nose_right_eye,
-        "difference_between_le_re": difference_between_le_re
-    }
-   return result_dict
-
-
+          result_dict = {
+                    "distance_nose_left_eye": distance_nose_left_eye,
+                    "distance_nose_right_eye": distance_nose_right_eye,
+                    "difference_between_le_re": difference_between_le_re,
+                    'left_eye': left_eye_point,
+                    'right_eye':right_eye_point,
+                    'nose': nose_point,
+                    'mouth_left': mouth_left_point,
+                    'mouth_right':mouth_right_point,
+                    "facial_area":facial_area
+               }
+          return result_dict

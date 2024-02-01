@@ -6,15 +6,17 @@ import matplotlib.pyplot as plt
 
 
 import sys
-#IMPORT HERE ALI.detect_distances_of_sides.py
+
 sys.path.insert(0, './Ali')
 import detect_distences_of_sides
 
+import writeToTxt
+
 #Change these
-dbName = 'LFPW' #IBUG, LFPW, HELEN, AFW, IBUG, YoutubeFace
+dbName = 'YoutubeFace' #IBUG, LFPW, HELEN, AFW, IBUG, YoutubeFace, LFW
 logFolderPath = './UMUT/LOG/'+ dbName
 dbName = './UMUT/'+dbName
-youtubeInfoTxtPath = './UMUT/output2.txt' #only for YoutubeFaceDB
+txtInfoPath = './UMUT/youtubeFaceDB.txt' #only for imgTxtDBs
 showFrontalFaceExamples = False #True for show, False for not show
 isThereTrainTest = False #True for LFPW Dataset, False for anothers
 
@@ -27,27 +29,27 @@ file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_in
 #This variable will be automatically changed according to the number of features
 copyFlag = False
 
-if dbName == './UMUT/YoutubeFace':
-    YoutubeFaceDB = True
+print("DB Name: " + dbName)
+if dbName == './UMUT/YoutubeFace' or dbName == './UMUT/LFW':
+    imgTxtDBs = True
 else:
-    YoutubeFaceDB = False
+    imgTxtDBs = False
 
-
+#This function is for see the features
 def printFeatures( output_dict ):
-    print("\n\nfile_name: " + output_dict["file_name"])
-    print("file_name_withoutExtension: " + output_dict["file_name_withoutExtension"])
-    print("extension: " + output_dict["extension"])
-    print("learnType: " + str(output_dict["learnType"]))
-    print("file_id: " + output_dict["file_id"])
-    print("inner_id_right_side: " + output_dict["inner_id_right_side"])
-    print("inner_id_left_side: " + output_dict["inner_id_left_side"])
+    print(f"\n\nfile_name: {output_dict['file_name']}\n"
+          f"file_name_withoutExtension: {output_dict['file_name_withoutExtension']}\n"
+          f"extension: {output_dict['extension']}\n"
+          f"learnType: {output_dict['learnType']}\n"
+          f"file_id: {output_dict['file_id']}\n"
+          f"inner_id_right_side: {output_dict['inner_id_right_side']}\n"
+          f"inner_id_left_side: {output_dict['inner_id_left_side']}"
+    )
 
+#Dynamic feature extraction
+#This function will run only once, when the number of slices changed
 def decideWhichElementsWhichFeatures( file_name_split ):
-    file_id_index = 0
-    inner_id_right_side_index = 0
-    inner_id_left_side_index = 0
-    learnType_index = 0
-
+    file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_index = 0, 0, 0, 0
     for element in file_name_split:
         os.system('cls')
         print("File Name: " + file_name)
@@ -72,15 +74,13 @@ def decideWhichElementsWhichFeatures( file_name_split ):
             print("Wrong Input!")
             exit()
 
-    print("\nElement indexes: \n" + 
-            "file_id_index: " + str(file_id_index) + "\n" +
+    print("\nElement indexes: \n" + "file_id_index: " + str(file_id_index) + "\n" +
             "inner_id_right_side_index: " + str(inner_id_right_side_index) + "\n" +
             "inner_id_left_side_index: " + str(inner_id_left_side_index) + "\n" +
-            "learnType_index: " + str(learnType_index) + "\n" )
-    
+            "learnType_index: " + str(learnType_index) + "\n")
     return file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_index
 
-#You should change this function according to your dataset,if you want to use auto mod
+#You should change this function according to your dataset,if you want to use auto mod !!!!!!!
 #Adjusted for IBUG Dataset
 def autoDetermineAccordingToFeatureCount( file_name_split ):
     global file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_index
@@ -91,6 +91,8 @@ def autoDetermineAccordingToFeatureCount( file_name_split ):
         if re.match("^\d+$", element):
             integerFeatureSliceCount += 1
     print("Integer Feature Slice Count: " + str(integerFeatureSliceCount))
+
+    #Change these indexes according to your dataset
     if isThereTrainTest:
         if integerFeatureSliceCount == 2:
             file_id_index = 3
@@ -116,6 +118,7 @@ def autoDetermineAccordingToFeatureCount( file_name_split ):
             exit()
     return file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_index
 
+#This function will extract features from file name
 def extractFeaturesFromFileName(fileName): # this should change according to the dataset
     global file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_index,makeDeceisonFlag  # Declare as global
     #Don't change this part
@@ -143,19 +146,15 @@ def extractFeaturesFromFileName(fileName): # this should change according to the
     if learnType != 'train' and learnType != 'test':
         learnType = False
 
-    #Only for YoutubeFaceDB
+    #Only for imgTxtDBs
     output_dict = {
-            "file_name": file_name,
-            "file_name_withoutExtension": file_name_withoutExtension, 
-            "extension": extension, 
-            "inner_id_right_side": inner_id_right_side, 
-            "learnType": learnType, 
-            "file_id": file_id, 
-            "inner_id_left_side": inner_id_left_side,
-            "numberOfSlices": numberOfSlices
+            "file_name": file_name,                   "file_name_withoutExtension": file_name_withoutExtension, 
+            "extension": extension,                   "inner_id_right_side": inner_id_right_side, 
+            "learnType": learnType,                   "file_id": file_id, 
+            "inner_id_left_side": inner_id_left_side, "numberOfSlices": numberOfSlices
         }
     
-    #Uncomment this for see the features
+    #Uncomment this to see the features
     printFeatures(output_dict)
     return output_dict
 
@@ -176,10 +175,18 @@ def DNNFrontalHandle(faces, image_cv2_yunet):
         logString = "No face detected: " + file_name
         writeLog( logFolderPath +'/logNoFace.txt', logString)
         
-def FaceRecogFrontalHandle(image_cv2_yunet,img_path,confidenceArray):
+def FaceRecogFrontalHandle(image_cv2_yunet,img_path,confidenceArray, copyTextPath):
+    txt_path = copyTextPath + ".".join(img_path.split('/')[-1].split('.')[:-1]) + ".txt"
+    if os.path.exists(txt_path):
+        return confidenceArray
+    
     resp = detect_distences_of_sides.detect_best_frontal_face(img_path)
+    if resp == False:
+        return confidenceArray
     confidence = resp["difference_between_le_re"]
     confidenceArray.append({'confidence': confidence, 'img': image_cv2_yunet})
+    writeToTxt.run(txt_path, resp)
+
     return confidenceArray
 
 def writeLog(log_file_path, log):
@@ -223,7 +230,7 @@ def writeFrontalFaceToFolder(image, confidence, frontalCount, destination):
     os.makedirs( destination + 'frontal/', exist_ok=True)
     output_file_path_frontal = destination + 'frontal/' + file_name_withoutExtension + '.' + extension
     
-    if YoutubeFaceDB == True:
+    if imgTxtDBs == True:
         input_file_path_frontal = file
     else:
         input_file_path_frontal = './' + dbName + '/' + file_name
@@ -238,6 +245,7 @@ def writeFrontalFaceToFolder(image, confidence, frontalCount, destination):
 
 def youtubeDBFilesConcat(inFiles):
     outFilesPaths = []
+    
     for file in inFiles:
         #example ->AFW_815038_1_12.jpg
         file_name = file.name
@@ -246,6 +254,8 @@ def youtubeDBFilesConcat(inFiles):
             innerFolder = os.scandir('./'+dbName+'/'+file_name)
             for inner_file in innerFolder:
                 folder_flag = len(inner_file.name.split('.')) == 1
+                if folder_flag == False:
+                    outFilesPaths.append('./'+dbName+'/'+file_name+'/'+inner_file.name)
                 if folder_flag == True:
                     inner_inner_folder = os.scandir('./'+dbName+'/'+file_name+'/'+inner_file.name)
                     for inner_inner_file in inner_inner_folder:
@@ -270,20 +280,21 @@ plt.figure(figsize=(20,10))
 files = os.scandir('./'+dbName)
 confidenceArray = []
 firstFlag = True;makeDeceisonFlag = True
-imageCounter = 0 # only for youtubeFaceDB
+imageCounter = 0 # only for imgTxtDBs
 holdID = 0;holdFeaturesLen = 0;frontalCount = 0
 
 os.makedirs(logFolderPath, exist_ok=True)
 
-if YoutubeFaceDB ==True:
-    imageInformationsTxt = open(youtubeInfoTxtPath, 'r') # change this
+#Txt operations for YoutubeFace and LFW
+if imgTxtDBs ==True:
+    imageInformationsTxt = open(txtInfoPath, 'r') # change this
     imageInformations = imageInformationsTxt.readlines()
     imageInformations = replaceEntersAndTabs(imageInformations)
     files = youtubeDBFilesConcat(files)
-
+    
+#example ->AFW_815038_1_12.jpg
 for file in files:
-    #example ->AFW_815038_1_12.jpg
-    if YoutubeFaceDB == True:
+    if imgTxtDBs == True:
         file_name = imageInformations[imageCounter]+'.jpg'
         imageCounter += 1
         if imageCounter%1000 == 0:
@@ -291,8 +302,7 @@ for file in files:
     else:
         file_name = file.name
     
-    features = extractFeaturesFromFileName(file_name)  
-    
+    features = extractFeaturesFromFileName(file_name)      
     file_name_withoutExtension = features["file_name_withoutExtension"]
     inner_id_right_side = features["inner_id_right_side"]
     inner_id_left_side = features["inner_id_left_side"]
@@ -320,10 +330,6 @@ for file in files:
     if inner_id_left_side != False and inner_id_left_side.isdigit() == True:
         output_folder = output_folder + inner_id_left_side + '/'
 
-    #print("File Name: " + file_name)
-    #print("Output Folder: " + output_folder)
-
-    #get match value as an integer
 
     # Create folders if they don't exist / COPY PROCESS
     # If len of files in output folder is less than 10, copy the file
@@ -331,6 +337,7 @@ for file in files:
         try:
             if len(os.listdir(output_folder)) < 10 or copyFlag == True:
                 copyFlag = True
+        # If folder does not exist, create folder and copy the file
         except:
             copyFlag = True
             print("Folder does not exist, creating folder: " + output_folder)    
@@ -339,7 +346,7 @@ for file in files:
         os.makedirs(output_folder, exist_ok=True)
         output_file_path = output_folder + file_name
         
-        if YoutubeFaceDB == True:
+        if imgTxtDBs == True:
             input_file_path = file
             #print("Input File Path: " + input_file_path)
         else:
@@ -354,7 +361,7 @@ for file in files:
         writeLog(logFolderPath+'/logAddedImage.txt', logString)
     
     
-    #DNN frontal detection
+    #Frontal detection
     if extension == 'jpg':
         if holdID != file_id and firstFlag == False:
             image_cv2_yunet, confidence = findMaxFrontalFace(confidenceArray)
@@ -370,14 +377,15 @@ for file in files:
                 
         firstFlag = False
         holdID = file_id
-        if YoutubeFaceDB == True:
+        if imgTxtDBs == True:
             input_file_path = file    
         else:
             input_file_path = './' + dbName + '/' + file_name
         
         image_cv2_yunet = cv2.imread(input_file_path)
         
-        confidenceArray = FaceRecogFrontalHandle(image_cv2_yunet,input_file_path,confidenceArray)
+        confidenceArray = FaceRecogFrontalHandle(image_cv2_yunet,input_file_path,confidenceArray,output_folder) #remove output_folder 
+        print("Length of confidence array: " + str(len(confidenceArray)))
         #_, faces = yunetDetectionDNN(image_cv2_yunet,input_file_path)
         #DNNFrontalHandle(faces, image_cv2_yunet)
 
