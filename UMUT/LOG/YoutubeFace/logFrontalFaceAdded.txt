@@ -1,0 +1,4 @@
+Added Frontal Image Count: 1 - 00001 - 17.788759904265074 - 00001_5_1841.jpg
+Added Frontal Image Count: 2 - 00002 - 23.45029312352552 - 00002_0_100.jpg
+Added Frontal Image Count: 3 - 00003 - 14.64637747515242 - 00003_0_406.jpg
+Added Frontal Image Count: 4 - 00004 - 17.31338243118105 - 00004_0_1399.jpg
