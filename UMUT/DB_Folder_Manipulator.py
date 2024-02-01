@@ -174,18 +174,24 @@ def DNNFrontalHandle(faces, image_cv2_yunet):
         writeLog( logFolderPath +'/logNoFace.txt', logString)
         
 def FaceRecogFrontalHandle(image_cv2_yunet,img_path,confidenceArray, copyTextPath):
+    txt_path = copyTextPath + ".".join(img_path.split('/')[-1].split('.')[:-1]) + ".txt"
+    if os.path.exists(txt_path):
+        return confidenceArray
+    
     resp = detect_distences_of_sides.detect_best_frontal_face(img_path)
     confidence = resp["difference_between_le_re"]
     confidenceArray.append({'confidence': confidence, 'img': image_cv2_yunet})
-    
+    writeToTxt(txt_path, resp)
+
+    return confidenceArray
+
+def writeToTxt(txt_path, resp):
     new_dict = {key: value for key, value in resp.items() if key not in ['distance_nose_left_eye', 'distance_nose_right_eye', 'difference_between_le_re']}
     keys = list(new_dict.keys())
-
-    txt_path = copyTextPath + ".".join(img_path.split('/')[-1].split('.')[:-1]) + ".txt"
-    print("Txt Path: " + txt_path)
     
     #txt file operations
     os.makedirs(os.path.dirname(txt_path), exist_ok=True)
+    
     with open(txt_path , 'w') as file:
         file.write("{\n")
         for key, value in new_dict.items():
@@ -196,8 +202,6 @@ def FaceRecogFrontalHandle(image_cv2_yunet,img_path,confidenceArray, copyTextPat
         file.write("}")
 
         writeLog( logFolderPath +'/txtLandmarksLog.txt', "Added txt: " + txt_path + " - " + file_name + " - ")
-    
-    return confidenceArray
 
 def writeLog(log_file_path, log):
     print(log_file_path + " - " + log)
