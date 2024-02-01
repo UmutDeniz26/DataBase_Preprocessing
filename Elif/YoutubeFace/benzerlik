@@ -33,8 +33,11 @@ def klasor_benzerlik_kontrolu(klasor_yolu): #,file
         else:
             False
     
-    #file.write( f"High score nums: {highScoreCnt}    Total length: {len(gorsel_yollar)}      Percentage:  {percentage}\n\n")
-    
+    output_file = './Elif/YoutubeFace/benzerlik_oranları.txt'
+    #file = open('./Elif/YoutubeFace/benzerlik_oranları.txt', "a")
+    with open(output_file, 'a') as file:
+        file.write( f"     High score nums: {highScoreCnt}    Total length: {len(gorsel_yollar)}      Percentage:  {percentage}\n\n")
+  
     print("High score nums: " + str(highScoreCnt) + "    Total length: "+ str(len(gorsel_yollar))  +  "    Percentage: "+ str(percentage) )
     return True
 
@@ -43,18 +46,21 @@ def main():
         dataset_path = './Elif/YoutubeFace/aligned_images_DB'
         output_file = './Elif/YoutubeFace/benzerlik_oranları.txt'
         
+        file = open('./Elif/YoutubeFace/benzerlik_oranları.txt', "w")
         #with open(output_file, 'w') as file:
-        #    file.write("Benzerlik Oranlari\n\n")
+        file.write("Benzerlik Oranlari\n\n")
 
         for person_name in os.listdir(dataset_path):
             person_path = os.path.join(dataset_path, person_name)
             if os.path.isdir(person_path):
                 for subfolder_name in os.listdir(person_path):
+                    
                     subfolder_path = os.path.join(person_path, subfolder_name)
-                    #file.write(subfolder_path)
+                    file.write(subfolder_path)
+                    file.close()
                     print(subfolder_path)
                     if os.path.isdir(subfolder_path):
-
+                        
                         #print(image_file)
                         klasor_benzerlik_kontrolu(subfolder_path) #, file
                         

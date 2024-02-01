@@ -1,2 +1,4 @@
 Benzerlik Oranlari
 
+./Elif/YoutubeFace/aligned_images_DB\Aaron_Eckhart\0     High score nums: 2    Total length: 85      Percentage:  0.023529411764705882
+
