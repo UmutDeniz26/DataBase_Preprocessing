@@ -11,10 +11,10 @@ sys.path.insert(0, './Ali')
 import detect_distences_of_sides
 
 #Change these
-dbName = 'LFPW' #IBUG, LFPW, HELEN, AFW, IBUG, YoutubeFace
+dbName = 'LFW' #IBUG, LFPW, HELEN, AFW, IBUG, YoutubeFace, LFW
 logFolderPath = './UMUT/LOG/'+ dbName
 dbName = './UMUT/'+dbName
-youtubeInfoTxtPath = './UMUT/output2.txt' #only for YoutubeFaceDB
+youtubeInfoTxtPath = './UMUT/LFWDB.txt' #only for YoutubeFaceDB
 showFrontalFaceExamples = False #True for show, False for not show
 isThereTrainTest = False #True for LFPW Dataset, False for anothers
 
@@ -27,27 +27,27 @@ file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_in
 #This variable will be automatically changed according to the number of features
 copyFlag = False
 
-if dbName == './UMUT/YoutubeFace':
+print("DB Name: " + dbName)
+if dbName == './UMUT/YoutubeFace' or dbName == './UMUT/LFW':
     YoutubeFaceDB = True
 else:
     YoutubeFaceDB = False
 
-
+#This function is for see the features
 def printFeatures( output_dict ):
-    print("\n\nfile_name: " + output_dict["file_name"])
-    print("file_name_withoutExtension: " + output_dict["file_name_withoutExtension"])
-    print("extension: " + output_dict["extension"])
-    print("learnType: " + str(output_dict["learnType"]))
-    print("file_id: " + output_dict["file_id"])
-    print("inner_id_right_side: " + output_dict["inner_id_right_side"])
-    print("inner_id_left_side: " + output_dict["inner_id_left_side"])
+    print(f"\n\nfile_name: {output_dict['file_name']}\n"
+          f"file_name_withoutExtension: {output_dict['file_name_withoutExtension']}\n"
+          f"extension: {output_dict['extension']}\n"
+          f"learnType: {output_dict['learnType']}\n"
+          f"file_id: {output_dict['file_id']}\n"
+          f"inner_id_right_side: {output_dict['inner_id_right_side']}\n"
+          f"inner_id_left_side: {output_dict['inner_id_left_side']}"
+    )
 
+#Dynamic feature extraction
+#This function will run only once, when the number of slices changed
 def decideWhichElementsWhichFeatures( file_name_split ):
-    file_id_index = 0
-    inner_id_right_side_index = 0
-    inner_id_left_side_index = 0
-    learnType_index = 0
-
+    file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_index = 0, 0, 0, 0
     for element in file_name_split:
         os.system('cls')
         print("File Name: " + file_name)
@@ -72,15 +72,13 @@ def decideWhichElementsWhichFeatures( file_name_split ):
             print("Wrong Input!")
             exit()
 
-    print("\nElement indexes: \n" + 
-            "file_id_index: " + str(file_id_index) + "\n" +
+    print("\nElement indexes: \n" + "file_id_index: " + str(file_id_index) + "\n" +
             "inner_id_right_side_index: " + str(inner_id_right_side_index) + "\n" +
             "inner_id_left_side_index: " + str(inner_id_left_side_index) + "\n" +
-            "learnType_index: " + str(learnType_index) + "\n" )
-    
+            "learnType_index: " + str(learnType_index) + "\n")
     return file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_index
 
-#You should change this function according to your dataset,if you want to use auto mod
+#You should change this function according to your dataset,if you want to use auto mod !!!!!!!
 #Adjusted for IBUG Dataset
 def autoDetermineAccordingToFeatureCount( file_name_split ):
     global file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_index
@@ -91,6 +89,8 @@ def autoDetermineAccordingToFeatureCount( file_name_split ):
         if re.match("^\d+$", element):
             integerFeatureSliceCount += 1
     print("Integer Feature Slice Count: " + str(integerFeatureSliceCount))
+
+    #Change these indexes according to your dataset
     if isThereTrainTest:
         if integerFeatureSliceCount == 2:
             file_id_index = 3
@@ -116,6 +116,7 @@ def autoDetermineAccordingToFeatureCount( file_name_split ):
             exit()
     return file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_index
 
+#This function will extract features from file name
 def extractFeaturesFromFileName(fileName): # this should change according to the dataset
     global file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_index,makeDeceisonFlag  # Declare as global
     #Don't change this part
@@ -145,17 +146,13 @@ def extractFeaturesFromFileName(fileName): # this should change according to the
 
     #Only for YoutubeFaceDB
     output_dict = {
-            "file_name": file_name,
-            "file_name_withoutExtension": file_name_withoutExtension, 
-            "extension": extension, 
-            "inner_id_right_side": inner_id_right_side, 
-            "learnType": learnType, 
-            "file_id": file_id, 
-            "inner_id_left_side": inner_id_left_side,
-            "numberOfSlices": numberOfSlices
+            "file_name": file_name,                   "file_name_withoutExtension": file_name_withoutExtension, 
+            "extension": extension,                   "inner_id_right_side": inner_id_right_side, 
+            "learnType": learnType,                   "file_id": file_id, 
+            "inner_id_left_side": inner_id_left_side, "numberOfSlices": numberOfSlices
         }
     
-    #Uncomment this for see the features
+    #Uncomment this to see the features
     printFeatures(output_dict)
     return output_dict
 
@@ -238,6 +235,7 @@ def writeFrontalFaceToFolder(image, confidence, frontalCount, destination):
 
 def youtubeDBFilesConcat(inFiles):
     outFilesPaths = []
+    
     for file in inFiles:
         #example ->AFW_815038_1_12.jpg
         file_name = file.name
@@ -246,6 +244,8 @@ def youtubeDBFilesConcat(inFiles):
             innerFolder = os.scandir('./'+dbName+'/'+file_name)
             for inner_file in innerFolder:
                 folder_flag = len(inner_file.name.split('.')) == 1
+                if folder_flag == False:
+                    outFilesPaths.append('./'+dbName+'/'+file_name+'/'+inner_file.name)
                 if folder_flag == True:
                     inner_inner_folder = os.scandir('./'+dbName+'/'+file_name+'/'+inner_file.name)
                     for inner_inner_file in inner_inner_folder:
@@ -280,7 +280,7 @@ if YoutubeFaceDB ==True:
     imageInformations = imageInformationsTxt.readlines()
     imageInformations = replaceEntersAndTabs(imageInformations)
     files = youtubeDBFilesConcat(files)
-
+    
 for file in files:
     #example ->AFW_815038_1_12.jpg
     if YoutubeFaceDB == True:
@@ -377,8 +377,8 @@ for file in files:
         
         image_cv2_yunet = cv2.imread(input_file_path)
         
-        confidenceArray = FaceRecogFrontalHandle(image_cv2_yunet,input_file_path,confidenceArray)
-        #_, faces = yunetDetectionDNN(image_cv2_yunet,input_file_path)
-        #DNNFrontalHandle(faces, image_cv2_yunet)
+        #confidenceArray = FaceRecogFrontalHandle(image_cv2_yunet,input_file_path,confidenceArray)
+        _, faces = yunetDetectionDNN(image_cv2_yunet,input_file_path)
+        DNNFrontalHandle(faces, image_cv2_yunet)
 
 
