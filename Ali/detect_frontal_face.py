@@ -18,7 +18,7 @@ def copy_max_abs_image_to_folder(source_folder, destination_folder):
                 max_abs_image = image_path
 
     if max_abs_image:
-        if max_abs_value < 11:
+        if max_abs_value < 5:
             image_info_text = f"Belirlenen eşik değeri altında kalan görsel:\n"
             image_info_text += f"Path: {os.path.abspath(max_abs_image)}\n"
             image_info_text += f"Value: {max_abs_value}\n"

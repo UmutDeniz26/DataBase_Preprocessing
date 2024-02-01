@@ -10,4 +10,4 @@ for filename in os.listdir(source_folder):
     image_path = os.path.join(source_folder, filename)
 
     # copy_max_abs_image_to_folder fonksiyonunu çağır
-    copy_max_abs_image_to_folder(image_path, image_path)
+    copy_max_abs_image_to_folder(image_path, destination_folder)
