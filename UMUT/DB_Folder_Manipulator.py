@@ -11,10 +11,10 @@ sys.path.insert(0, './Ali')
 import detect_distences_of_sides
 
 #Change these
-dbName = 'LFW' #IBUG, LFPW, HELEN, AFW, IBUG, YoutubeFace, LFW
+dbName = 'YoutubeFace' #IBUG, LFPW, HELEN, AFW, IBUG, YoutubeFace, LFW
 logFolderPath = './UMUT/LOG/'+ dbName
 dbName = './UMUT/'+dbName
-txtInfoPath = './UMUT/LFWDB.txt' #only for imgTxtDBs
+txtInfoPath = './UMUT/youtubeFaceDB.txt' #only for imgTxtDBs
 showFrontalFaceExamples = False #True for show, False for not show
 isThereTrainTest = False #True for LFPW Dataset, False for anothers
 
@@ -173,10 +173,30 @@ def DNNFrontalHandle(faces, image_cv2_yunet):
         logString = "No face detected: " + file_name
         writeLog( logFolderPath +'/logNoFace.txt', logString)
         
-def FaceRecogFrontalHandle(image_cv2_yunet,img_path,confidenceArray):
+def FaceRecogFrontalHandle(image_cv2_yunet,img_path,confidenceArray, copyTextPath):
     resp = detect_distences_of_sides.detect_best_frontal_face(img_path)
     confidence = resp["difference_between_le_re"]
     confidenceArray.append({'confidence': confidence, 'img': image_cv2_yunet})
+    
+    new_dict = {key: value for key, value in resp.items() if key not in ['distance_nose_left_eye', 'distance_nose_right_eye', 'difference_between_le_re']}
+    keys = list(new_dict.keys())
+
+    txt_path = copyTextPath + ".".join(img_path.split('/')[-1].split('.')[:-1]) + ".txt"
+    print("Txt Path: " + txt_path)
+    
+    #txt file operations
+    os.makedirs(os.path.dirname(txt_path), exist_ok=True)
+    with open(txt_path , 'w') as file:
+        file.write("{\n")
+        for key, value in new_dict.items():
+            if key == keys[-1]:
+                file.write(f" \"{key}\" : {value}\n")
+            else:
+                file.write(f" \"{key}\" : {value},\n")
+        file.write("}")
+
+        writeLog( logFolderPath +'/txtLandmarksLog.txt', "Added txt: " + txt_path + " - " + file_name + " - ")
+    
     return confidenceArray
 
 def writeLog(log_file_path, log):
@@ -275,14 +295,15 @@ holdID = 0;holdFeaturesLen = 0;frontalCount = 0
 
 os.makedirs(logFolderPath, exist_ok=True)
 
+#Txt operations for YoutubeFace and LFW
 if imgTxtDBs ==True:
     imageInformationsTxt = open(txtInfoPath, 'r') # change this
     imageInformations = imageInformationsTxt.readlines()
     imageInformations = replaceEntersAndTabs(imageInformations)
     files = youtubeDBFilesConcat(files)
     
+#example ->AFW_815038_1_12.jpg
 for file in files:
-    #example ->AFW_815038_1_12.jpg
     if imgTxtDBs == True:
         file_name = imageInformations[imageCounter]+'.jpg'
         imageCounter += 1
@@ -291,8 +312,7 @@ for file in files:
     else:
         file_name = file.name
     
-    features = extractFeaturesFromFileName(file_name)  
-    
+    features = extractFeaturesFromFileName(file_name)      
     file_name_withoutExtension = features["file_name_withoutExtension"]
     inner_id_right_side = features["inner_id_right_side"]
     inner_id_left_side = features["inner_id_left_side"]
@@ -320,10 +340,6 @@ for file in files:
     if inner_id_left_side != False and inner_id_left_side.isdigit() == True:
         output_folder = output_folder + inner_id_left_side + '/'
 
-    #print("File Name: " + file_name)
-    #print("Output Folder: " + output_folder)
-
-    #get match value as an integer
 
     # Create folders if they don't exist / COPY PROCESS
     # If len of files in output folder is less than 10, copy the file
@@ -331,6 +347,7 @@ for file in files:
         try:
             if len(os.listdir(output_folder)) < 10 or copyFlag == True:
                 copyFlag = True
+        # If folder does not exist, create folder and copy the file
         except:
             copyFlag = True
             print("Folder does not exist, creating folder: " + output_folder)    
@@ -354,7 +371,7 @@ for file in files:
         writeLog(logFolderPath+'/logAddedImage.txt', logString)
     
     
-    #DNN frontal detection
+    #Frontal detection
     if extension == 'jpg':
         if holdID != file_id and firstFlag == False:
             image_cv2_yunet, confidence = findMaxFrontalFace(confidenceArray)
@@ -377,8 +394,9 @@ for file in files:
         
         image_cv2_yunet = cv2.imread(input_file_path)
         
-        #confidenceArray = FaceRecogFrontalHandle(image_cv2_yunet,input_file_path,confidenceArray)
-        _, faces = yunetDetectionDNN(image_cv2_yunet,input_file_path)
-        DNNFrontalHandle(faces, image_cv2_yunet)
+        confidenceArray = FaceRecogFrontalHandle(image_cv2_yunet,input_file_path,confidenceArray,output_folder) #remove output_folder 
+       
+        #_, faces = yunetDetectionDNN(image_cv2_yunet,input_file_path)
+        #DNNFrontalHandle(faces, image_cv2_yunet)
 
 
