@@ -5,8 +5,10 @@ import shutil
 import matplotlib.pyplot as plt
 
 
+import sys
 #IMPORT HERE ALI.detect_distances_of_sides.py
-import detect_distences_of_sides 
+sys.path.insert(0, './Ali')
+import detect_distences_of_sides
 
 #Change these
 dbName = 'LFPW' #IBUG, LFPW, HELEN, AFW, IBUG, YoutubeFace
@@ -18,7 +20,6 @@ isThereTrainTest = False #True for LFPW Dataset, False for anothers
 
 #It doesnt work properly right now!!!
 inputOrAutoMod = False #True for auto, False for input, auto mod is only for IBUG Dataset. If you want to use auto mod, you should change the function autoDetermineAccordingToFeatureCount
-
 
 #Global Variables for decideWhichElementsWhichFeatures
 file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_index= 0, 0, 0, 0 
@@ -162,10 +163,6 @@ def extractFeaturesFromFileName(fileName): # this should change according to the
 def yunetDetectionDNN(img,img_path):
     height, width, _ = img.shape
     detector = cv2.FaceDetectorYN.create("./UMUT/face_detection_yunet.onnx",  "", (0, 0))
-
-    #result = detect_distences_of_sides.detect_best_frontal_face(img_path)
-    #print("Result: " + str(result))
-
     detector.setInputSize((width, height))
     return detector.detect(img)
 
@@ -179,6 +176,12 @@ def DNNFrontalHandle(faces, image_cv2_yunet):
         logString = "No face detected: " + file_name
         writeLog( logFolderPath +'/logNoFace.txt', logString)
         
+def FaceRecogFrontalHandle(image_cv2_yunet,img_path,confidenceArray):
+    resp = detect_distences_of_sides.detect_best_frontal_face(img_path)
+    confidence = resp["difference_between_le_re"]
+    confidenceArray.append({'confidence': confidence, 'img': image_cv2_yunet})
+    return confidenceArray
+
 def writeLog(log_file_path, log):
     print(log_file_path + " - " + log)
     with open(log_file_path, 'a') as log_file:
@@ -373,7 +376,9 @@ for file in files:
             input_file_path = './' + dbName + '/' + file_name
         
         image_cv2_yunet = cv2.imread(input_file_path)
-        _, faces = yunetDetectionDNN(image_cv2_yunet,input_file_path)
-        DNNFrontalHandle(faces, image_cv2_yunet)
+        
+        confidenceArray = FaceRecogFrontalHandle(image_cv2_yunet,input_file_path,confidenceArray)
+        #_, faces = yunetDetectionDNN(image_cv2_yunet,input_file_path)
+        #DNNFrontalHandle(faces, image_cv2_yunet)
 
 

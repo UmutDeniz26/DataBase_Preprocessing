@@ -1,7 +1,8 @@
-Added Frontal Image Count: 1 - 0002 - 0.9529971 - LFPW_image_test_0002_0.jpg
-Added Frontal Image Count: 2 - 0003 - 0.94757783 - LFPW_image_test_0003_0.jpg
-Added Frontal Image Count: 3 - 0004 - 0.94030994 - LFPW_image_test_0004_0.jpg
-Added Frontal Image Count: 4 - 0005 - 0.93752974 - LFPW_image_test_0005_0.jpg
-Added Frontal Image Count: 5 - 0006 - 0.94136816 - LFPW_image_test_0006_0.jpg
-Added Frontal Image Count: 6 - 0007 - 0.93345875 - LFPW_image_test_0007_0.jpg
-Added Frontal Image Count: 7 - 0008 - 0.93348986 - LFPW_image_test_0008_0.jpg
+Added Frontal Image Count: 1 - 0002 - 33.112375562028014 - LFPW_image_test_0002_0.jpg
+Added Frontal Image Count: 2 - 0003 - 32.27215832472452 - LFPW_image_test_0003_0.jpg
+Added Frontal Image Count: 3 - 0004 - 29.233422533795412 - LFPW_image_test_0004_0.jpg
+Added Frontal Image Count: 4 - 0005 - 34.15244679697948 - LFPW_image_test_0005_0.jpg
+Added Frontal Image Count: 5 - 0006 - 22.286274887152054 - LFPW_image_test_0006_0.jpg
+Added Frontal Image Count: 6 - 0007 - 31.39876425947584 - LFPW_image_test_0007_0.jpg
+Added Frontal Image Count: 7 - 0008 - 34.49042670989193 - LFPW_image_test_0008_0.jpg
+Added Frontal Image Count: 8 - 0009 - 31.237582705579783 - LFPW_image_test_0009_0.jpg
