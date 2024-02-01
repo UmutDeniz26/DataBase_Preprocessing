@@ -2,7 +2,6 @@
 def detect_best_frontal_face(image_path):
      import math
      from retinaface import RetinaFace
-
      resp = RetinaFace.detect_faces(image_path)
      if 'face_1' not in resp:
         return False
@@ -31,6 +30,3 @@ def detect_best_frontal_face(image_path):
                     "facial_area":facial_area
                }
           return result_dict
-
-
-
