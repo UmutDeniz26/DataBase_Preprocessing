@@ -14,7 +14,7 @@ import detect_distences_of_sides
 dbName = 'LFW' #IBUG, LFPW, HELEN, AFW, IBUG, YoutubeFace, LFW
 logFolderPath = './UMUT/LOG/'+ dbName
 dbName = './UMUT/'+dbName
-youtubeInfoTxtPath = './UMUT/LFWDB.txt' #only for YoutubeFaceDB
+txtInfoPath = './UMUT/LFWDB.txt' #only for imgTxtDBs
 showFrontalFaceExamples = False #True for show, False for not show
 isThereTrainTest = False #True for LFPW Dataset, False for anothers
 
@@ -29,9 +29,9 @@ copyFlag = False
 
 print("DB Name: " + dbName)
 if dbName == './UMUT/YoutubeFace' or dbName == './UMUT/LFW':
-    YoutubeFaceDB = True
+    imgTxtDBs = True
 else:
-    YoutubeFaceDB = False
+    imgTxtDBs = False
 
 #This function is for see the features
 def printFeatures( output_dict ):
@@ -144,7 +144,7 @@ def extractFeaturesFromFileName(fileName): # this should change according to the
     if learnType != 'train' and learnType != 'test':
         learnType = False
 
-    #Only for YoutubeFaceDB
+    #Only for imgTxtDBs
     output_dict = {
             "file_name": file_name,                   "file_name_withoutExtension": file_name_withoutExtension, 
             "extension": extension,                   "inner_id_right_side": inner_id_right_side, 
@@ -220,7 +220,7 @@ def writeFrontalFaceToFolder(image, confidence, frontalCount, destination):
     os.makedirs( destination + 'frontal/', exist_ok=True)
     output_file_path_frontal = destination + 'frontal/' + file_name_withoutExtension + '.' + extension
     
-    if YoutubeFaceDB == True:
+    if imgTxtDBs == True:
         input_file_path_frontal = file
     else:
         input_file_path_frontal = './' + dbName + '/' + file_name
@@ -270,20 +270,20 @@ plt.figure(figsize=(20,10))
 files = os.scandir('./'+dbName)
 confidenceArray = []
 firstFlag = True;makeDeceisonFlag = True
-imageCounter = 0 # only for youtubeFaceDB
+imageCounter = 0 # only for imgTxtDBs
 holdID = 0;holdFeaturesLen = 0;frontalCount = 0
 
 os.makedirs(logFolderPath, exist_ok=True)
 
-if YoutubeFaceDB ==True:
-    imageInformationsTxt = open(youtubeInfoTxtPath, 'r') # change this
+if imgTxtDBs ==True:
+    imageInformationsTxt = open(txtInfoPath, 'r') # change this
     imageInformations = imageInformationsTxt.readlines()
     imageInformations = replaceEntersAndTabs(imageInformations)
     files = youtubeDBFilesConcat(files)
     
 for file in files:
     #example ->AFW_815038_1_12.jpg
-    if YoutubeFaceDB == True:
+    if imgTxtDBs == True:
         file_name = imageInformations[imageCounter]+'.jpg'
         imageCounter += 1
         if imageCounter%1000 == 0:
@@ -339,7 +339,7 @@ for file in files:
         os.makedirs(output_folder, exist_ok=True)
         output_file_path = output_folder + file_name
         
-        if YoutubeFaceDB == True:
+        if imgTxtDBs == True:
             input_file_path = file
             #print("Input File Path: " + input_file_path)
         else:
@@ -370,7 +370,7 @@ for file in files:
                 
         firstFlag = False
         holdID = file_id
-        if YoutubeFaceDB == True:
+        if imgTxtDBs == True:
             input_file_path = file    
         else:
             input_file_path = './' + dbName + '/' + file_name
