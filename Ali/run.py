@@ -1,8 +1,14 @@
 from detect_frontal_face import copy_max_abs_image_to_folder
 import os
 
-source_folder = "CASIA-FaceV5(BMP)/Face/"
-destination_folder = "CASIA-FaceV5(BMP)/Face/"
+
+import sys
+sys.path.insert(0, "./UMUT")
+import writeToTxt
+
+
+source_folder = "./Ali/CASIA-FaceV5(BMP)/Face/"
+destination_folder = "./Ali/CASIA-FaceV5(BMP)/Face"
 
 for filename in os.listdir(source_folder):
 

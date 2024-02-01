@@ -1,0 +1,7 @@
+LFPW Files => LFPW_image_test_0001_0  .jpg or .mat | LFPW_image_learnType_ImgID_InnerID.extension
+
+IBUG Files => IBUG_image_003_1_0 .jpg or .mat      | IBUG_image_ImgID_innerIDLeft_innerIDRight.extension
+
+AFW Files =>  AFW_134212_1_1 .jpg or .mat          | AFW_imgID_innerIDLeft_innerIDRight.extension
+
+HELEN Files => HELEN_232194_1_0 .jpg or .mat       | HELEN_imgID_innerIDLeft_innerIDRight.extension

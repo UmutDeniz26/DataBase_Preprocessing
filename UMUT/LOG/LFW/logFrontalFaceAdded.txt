@@ -1,0 +1,12 @@
+Added Frontal Image Count: 1 - 00001 - 10.381574451005815 - 00001_00000.jpg
+Added Frontal Image Count: 2 - 00002 - 13.91895263468998 - 00002_00000.jpg
+Added Frontal Image Count: 3 - 00003 - 13.142941896468525 - 00003_00000.jpg
+Added Frontal Image Count: 4 - 00004 - 16.251190483235295 - 00004_00000.jpg
+Added Frontal Image Count: 5 - 00005 - 12.459155046053397 - 00005_00000.jpg
+Added Frontal Image Count: 6 - 00006 - 13.535301785111553 - 00006_00000.jpg
+Added Frontal Image Count: 7 - 00007 - 12.536246009463202 - 00007_00000.jpg
+Added Frontal Image Count: 8 - 00008 - 9.935663351715707 - 00008_00000.jpg
+Added Frontal Image Count: 9 - 00009 - 11.062746632558081 - 00009_00000.jpg
+Added Frontal Image Count: 10 - 00010 - 7.576078299107937 - 00010_00000.jpg
+Added Frontal Image Count: 11 - 00011 - 15.190548456942924 - 00011_00000.jpg
+Added Frontal Image Count: 12 - 00012 - 10.061143081232487 - 00012_00000.jpg
