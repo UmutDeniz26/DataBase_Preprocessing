@@ -28,7 +28,6 @@ def main(dbName='YoutubeFace', logFolderPath='./UMUT/LOG/YoutubeFace', txtInfoPa
     txtInfoPath = './UMUT/youtubeFaceDB.txt' #only for imgTxtDBs
     showFrontalFaceExamples = False #True for show, False for not show
     isThereTrainTest = False #True for LFPW Dataset, False for anothers
-
     #It doesnt work properly right now!!!
     inputOrAutoMod = False #True for auto, False for input, auto mod is only for IBUG Dataset. If you want to use auto mod, you should change the function autoDetermineAccordingToFeatureCount
     """
@@ -140,7 +139,7 @@ def main(dbName='YoutubeFace', logFolderPath='./UMUT/LOG/YoutubeFace', txtInfoPa
 
             #print("Output File Path: " + output_file_path)
             #copy input filepath to output filepath
-            print("Copying: " + input_file_path + " to " + output_file_path)
+            #print("Copying: " + input_file_path + " to " + output_file_path)
             shutil.copy(input_file_path, output_file_path)
 
             logString = "Added Image: " + out_file_name
@@ -172,7 +171,7 @@ def main(dbName='YoutubeFace', logFolderPath='./UMUT/LOG/YoutubeFace', txtInfoPa
             image_cv2 = cv2.imread(input_file_path)
             
             confidenceArray = FrontalFaceFunctions.FaceRecogFrontalHandle(image_cv2,input_file_path,confidenceArray,output_folder,out_file_name)#remove output_folder 
-            print("Length of confidence array: " + str(len(confidenceArray)))
+            #print("Length of confidence array: " + str(len(confidenceArray)))
             #_, faces = yunetDetectionDNN(image_cv2,input_file_path,confidenceArray,output_folder,out_file_name) #remove output_folder
             #DNNFrontalHandle(faces, image_cv2)
 

@@ -132,6 +132,6 @@ def extractFeaturesFromFileName(out_file_name, indexDict, inputOrAutoMod=False, 
         }
     
     #Uncomment this to see the features
-    printFeatures(output_dict)
+    #printFeatures(output_dict)
     return output_dict, indexDict, makeDeceisonFlag
 
