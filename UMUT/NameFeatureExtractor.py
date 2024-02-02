@@ -114,8 +114,7 @@ def extractFeaturesFromFileName(out_file_name, indexDict, inputOrAutoMod=False, 
         "learnType_index": learnType_index
     }   
 
-    file_id = file_name_split[file_id_index]
-    inner_id_right_side = file_name_split[inner_id_right_side_index]
+    file_id = file_name_split[file_id_index];inner_id_right_side = file_name_split[inner_id_right_side_index]
     inner_id_left_side = file_name_split[inner_id_left_side_index]
     
     # train or test only for LFPW Dataset
@@ -125,7 +124,7 @@ def extractFeaturesFromFileName(out_file_name, indexDict, inputOrAutoMod=False, 
 
     #Only for imgTxtDBs
     output_dict = {
-            "out_file_name": out_file_name,                   "file_name_withoutExtension": file_name_withoutExtension, 
+            "out_file_name": out_file_name,           "file_name_withoutExtension": file_name_withoutExtension, 
             "extension": extension,                   "inner_id_right_side": inner_id_right_side, 
             "learnType": learnType,                   "file_id": file_id, 
             "inner_id_left_side": inner_id_left_side, "numberOfSlices": numberOfSlices
@@ -134,4 +133,3 @@ def extractFeaturesFromFileName(out_file_name, indexDict, inputOrAutoMod=False, 
     #Uncomment this to see the features
     printFeatures(output_dict)
     return output_dict, indexDict, makeDeceisonFlag
-
