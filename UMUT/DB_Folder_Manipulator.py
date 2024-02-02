@@ -158,7 +158,6 @@ def main(dbName='YoutubeFace', logFolderPath='./UMUT/LOG/YoutubeFace', txtInfoPa
         if extension == 'jpg':
             if holdID != file_id and firstFlag == False:
                 image_cv2, confidence = FrontalFaceFunctions.findMaxFrontalFace(confidenceArray,logFolderPath,out_file_name)
-                exit()
                 confidenceArray.clear()
                 frontalCount += 1
 
