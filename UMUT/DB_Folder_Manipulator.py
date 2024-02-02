@@ -18,7 +18,7 @@ import DBsWithTxtInfo
 import FrontalFaceFunctions
 
 
-def main():
+def main(dbName='YoutubeFace', logFolderPath='./UMUT/LOG/YoutubeFace', txtInfoPath='./UMUT/youtubeFaceDB.txt', showFrontalFaceExamples=False, isThereTrainTest=False, inputOrAutoMod=False):
     #Change these
     dbName = 'YoutubeFace' #IBUG, LFPW, HELEN, AFW, IBUG, YoutubeFace, LFW
     logFolderPath = './UMUT/LOG/'+ dbName
