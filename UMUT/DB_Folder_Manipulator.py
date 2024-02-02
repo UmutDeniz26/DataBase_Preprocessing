@@ -18,7 +18,9 @@ import DBsWithTxtInfo
 import FrontalFaceFunctions
 
 
-def main(dbName='YoutubeFace', logFolderPath='./UMUT/LOG/YoutubeFace', txtInfoPath='./UMUT/youtubeFaceDB.txt', showFrontalFaceExamples=False, isThereTrainTest=False, inputOrAutoMod=False):
+def main(dbName='YoutubeFace', logFolderPath='./UMUT/LOG/YoutubeFace', txtInfoPath='./UMUT/youtubeFaceDB.txt', showFrontalFaceExamples=False, isThereTrainTest=False, inputOrAutoMod=False, upperFolderName='UMUT'):
+    
+    """
     #Change these
     dbName = 'YoutubeFace' #IBUG, LFPW, HELEN, AFW, IBUG, YoutubeFace, LFW
     logFolderPath = './UMUT/LOG/'+ dbName
@@ -29,6 +31,7 @@ def main(dbName='YoutubeFace', logFolderPath='./UMUT/LOG/YoutubeFace', txtInfoPa
 
     #It doesnt work properly right now!!!
     inputOrAutoMod = False #True for auto, False for input, auto mod is only for IBUG Dataset. If you want to use auto mod, you should change the function autoDetermineAccordingToFeatureCount
+    """
 
     #Global Variables for decideWhichElementsWhichFeatures
     file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_index= 0, 0, 0, 0 
@@ -37,7 +40,7 @@ def main(dbName='YoutubeFace', logFolderPath='./UMUT/LOG/YoutubeFace', txtInfoPa
     copyFlag = False
 
     print("DB Name: " + dbName)
-    if dbName == './UMUT/YoutubeFace' or dbName == './UMUT/LFW':
+    if dbName == './'+upperFolderName+'/YoutubeFace' or dbName == './'+upperFolderName+'/LFW':
         imgTxtDBs = True
     else:
         imgTxtDBs = False
