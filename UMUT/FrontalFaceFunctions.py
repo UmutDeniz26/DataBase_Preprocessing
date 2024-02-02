@@ -47,14 +47,15 @@ def FaceRecogFrontalHandle(image_cv2_yunet, img_path, confidenceArray, txt_path,
 
 def findMaxFrontalFace(confidenceArr,logFolderPath,out_file_name): 
     #find max confidence and write it to the folder
-    maxConf = 0
+    #max int
+    maxConf =  sys.maxsize
     confidence = 0
     if len(confidenceArr) == 0:
         Common.writeLog( logFolderPath +'/logNoFrontalFace.txt', out_file_name)
         return False, False
         
     for conf in confidenceArr:
-        if conf['confidence'] > maxConf:
+        if conf['confidence'] < maxConf:
             maxConf = float(conf['confidence'])
             bestImage = conf['img']
             confidence = conf['confidence']
@@ -84,6 +85,5 @@ def writeFrontalFaceToFolder(confidence, frontalCount, destination, file_name_wi
     shutil.copy(input_file_path_frontal, output_file_path_frontal)
 
     logString = "Added Frontal Image Count: " + str(frontalCount) + " - " + str(file_id)+ " - " + str(confidence) + " - " + out_file_name
-    if confidence < 0.9:
-        logString = logString + " Low Confidence! "
+    
     Common.writeLog( logFolderPath+'/logFrontalFaceAdded.txt', logString)

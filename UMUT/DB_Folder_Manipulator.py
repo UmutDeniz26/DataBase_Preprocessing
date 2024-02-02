@@ -18,9 +18,13 @@ import DBsWithTxtInfo
 import FrontalFaceFunctions
 
 
-def main(dbName='YoutubeFace', logFolderPath='./UMUT/LOG/YoutubeFace', txtInfoPath='./UMUT/youtubeFaceDB.txt', showFrontalFaceExamples=False, isThereTrainTest=False, inputOrAutoMod=False, upperFolderName='UMUT'):
+def main(dbName, upperFolderName, showFrontalFaceExamples, isThereTrainTest, inputOrAutoMod):
+    logFolderPath = f'./{upperFolderName}/LOG/{dbName}'
+    txtInfoPath = f'./{upperFolderName}/{dbName}DB.txt'
     
     dbName = './'+upperFolderName+'/'+dbName
+    
+    
     print("DB Name: " + dbName)
     print("Log Folder Path: " + logFolderPath)
     print("Txt Info Path: " + txtInfoPath)
@@ -29,6 +33,7 @@ def main(dbName='YoutubeFace', logFolderPath='./UMUT/LOG/YoutubeFace', txtInfoPa
     print("Input Or Auto Mod: " + str(inputOrAutoMod))
     print("Upper Folder Name: " + upperFolderName)
     
+
 
     """
     #Change these
@@ -158,6 +163,11 @@ def main(dbName='YoutubeFace', logFolderPath='./UMUT/LOG/YoutubeFace', txtInfoPa
         if extension == 'jpg':
             if holdID != file_id and firstFlag == False:
                 image_cv2, confidence = FrontalFaceFunctions.findMaxFrontalFace(confidenceArray,logFolderPath,out_file_name)
+                
+                for conf in confidenceArray:    
+                    print("Confidence: " + str(conf['confidence']))
+                print("Best Confidence: " + str(confidence))
+
                 confidenceArray.clear()
                 frontalCount += 1
 
@@ -168,6 +178,7 @@ def main(dbName='YoutubeFace', logFolderPath='./UMUT/LOG/YoutubeFace', txtInfoPa
                     FrontalFaceFunctions.writeFrontalFaceToFolder(confidence, frontalCount, output_folder, 
                                                                 file_name_withoutExtension, extension, file_id, logFolderPath, 
                                                                 out_file_name, imgTxtDBs, dbName, file)
+                    exit()
             firstFlag = False
             holdID = file_id
             
@@ -185,4 +196,4 @@ def main(dbName='YoutubeFace', logFolderPath='./UMUT/LOG/YoutubeFace', txtInfoPa
 
 
 if __name__ == "__main__":
-    main()
+    main('YoutubeFace', 'UMUT', False, False, False)
