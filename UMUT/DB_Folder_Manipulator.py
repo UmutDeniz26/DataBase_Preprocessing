@@ -19,8 +19,19 @@ import FrontalFaceFunctions
 
 
 def main(dbName='YoutubeFace', logFolderPath='./UMUT/LOG/YoutubeFace', txtInfoPath='./UMUT/youtubeFaceDB.txt', showFrontalFaceExamples=False, isThereTrainTest=False, inputOrAutoMod=False, upperFolderName='UMUT'):
-    dbName = './'+upperFolderName+'/'+dbName
     
+    dbName = './'+upperFolderName+'/'+dbName
+    print("DB Name: " + dbName)
+    print("Log Folder Path: " + logFolderPath)
+    print("Txt Info Path: " + txtInfoPath)
+    print("Show Frontal Face Examples: " + str(showFrontalFaceExamples))
+    print("Is There Train Test: " + str(isThereTrainTest))
+    print("Input Or Auto Mod: " + str(inputOrAutoMod))
+    print("Upper Folder Name: " + upperFolderName)
+    print("Image Txt DBs: " + str(imgTxtDBs))
+    print("Copy Flag: " + str(copyFlag))
+    
+
     """
     #Change these
     dbName = 'YoutubeFace' #IBUG, LFPW, HELEN, AFW, IBUG, YoutubeFace, LFW
@@ -174,7 +185,6 @@ def main(dbName='YoutubeFace', logFolderPath='./UMUT/LOG/YoutubeFace', txtInfoPa
             #print("Length of confidence array: " + str(len(confidenceArray)))
             #_, faces = yunetDetectionDNN(image_cv2,input_file_path,confidenceArray,output_folder,out_file_name) #remove output_folder
             #DNNFrontalHandle(faces, image_cv2)
-
 
 
 if __name__ == "__main__":
