@@ -16,5 +16,7 @@ def run(folder_path):
             if difference_between_le_re > max_abs_value:
                 max_abs_value = difference_between_le_re
                 max_abs_image = filename.replace(".txt","")
-    print(max_abs_value,max_abs_image)
+    #print(max_abs_value,max_abs_image)
+    if max_abs_value == -1:
+        return False, False
     return max_abs_value,max_abs_image

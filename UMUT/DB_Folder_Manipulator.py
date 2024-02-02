@@ -3,12 +3,11 @@ import re
 import cv2
 import shutil
 import matplotlib.pyplot as plt
-
-
 import sys
 
 sys.path.insert(0, './Ali')
 import detect_distences_of_sides
+import detectFrontelImageFromTxt
 
 sys.path.insert(0, './UMUT')
 import writeToTxt
@@ -64,8 +63,8 @@ def main(dbName, upperFolderName, showFrontalFaceExamples, isThereTrainTest, inp
     confidenceArray = []
     firstFlag = True;makeDeceisonFlag = True
     imageCounter = 0 # only for imgTxtDBs
-    holdID = 0;holdFeaturesLen = 0;frontalCount = 0
-
+    holdID = 0;holdFeaturesLen = 0;frontalCount = 0;holdLeftInnerID = 0;
+    
     Common.clearLogs(logFolderPath)
     os.makedirs(logFolderPath, exist_ok=True)
 
@@ -161,13 +160,27 @@ def main(dbName, upperFolderName, showFrontalFaceExamples, isThereTrainTest, inp
         
         #Frontal detection
         if extension == 'jpg':
-            if holdID != file_id and firstFlag == False:
-                image_cv2, confidence = FrontalFaceFunctions.findMaxFrontalFace(confidenceArray,logFolderPath,out_file_name)
+            if ( holdID != file_id or holdLeftInnerID == inner_id_left_side ) and firstFlag == False:
+                confidence,image_cv2 = detectFrontelImageFromTxt.run(output_folder)
+
+                if confidence == False and image_cv2 == False:
+                    print("No frontal face detected!")
+                    Common.writeLog( logFolderPath +'/logNoFrontalFace.txt', out_file_name)
+                
+                if len(os.listdir(output_folder+'frontal/')) > 0:
+                    print("Frontal Image Already Exists!")
+                    Common.writeLog( logFolderPath +'/logFrontalExists.txt', out_file_name)
+                    continue
+
+                bestImageFilePath = output_folder + image_cv2 + ".jpg"
+                print("Best Image File Path: " + bestImageFilePath)
+                os.makedirs(output_folder + "frontal/", exist_ok=True)
+                shutil.copy(bestImageFilePath, output_folder + "frontal/" + image_cv2 + ".jpg")
                 
                 for conf in confidenceArray:    
                     print("Confidence: " + str(conf['confidence']))
                 print("Best Confidence: " + str(confidence))
-
+                
                 confidenceArray.clear()
                 frontalCount += 1
 
@@ -178,9 +191,10 @@ def main(dbName, upperFolderName, showFrontalFaceExamples, isThereTrainTest, inp
                     FrontalFaceFunctions.writeFrontalFaceToFolder(confidence, frontalCount, output_folder, 
                                                                 file_name_withoutExtension, extension, file_id, logFolderPath, 
                                                                 out_file_name, imgTxtDBs, dbName, file)
-                    exit()
+            
             firstFlag = False
             holdID = file_id
+            holdLeftInnerID = inner_id_left_side
             
             if imgTxtDBs == True:
                 input_file_path = file    
@@ -189,11 +203,10 @@ def main(dbName, upperFolderName, showFrontalFaceExamples, isThereTrainTest, inp
             
             image_cv2 = cv2.imread(input_file_path)
             
+
             confidenceArray = FrontalFaceFunctions.FaceRecogFrontalHandle(image_cv2,input_file_path,confidenceArray,output_folder,out_file_name)#remove output_folder 
             #print("Length of confidence array: " + str(len(confidenceArray)))
-            #_, faces = yunetDetectionDNN(image_cv2,input_file_path,confidenceArray,output_folder,out_file_name) #remove output_folder
-            #DNNFrontalHandle(faces, image_cv2)
-
+            
 
 if __name__ == "__main__":
     main('YoutubeFace', 'UMUT', False, False, False)
