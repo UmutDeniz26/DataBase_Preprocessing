@@ -153,6 +153,7 @@ def main(dbName, upperFolderName, showFrontalFaceExamples, isThereTrainTest, inp
             #print("Output File Path: " + output_file_path)
             #copy input filepath to output filepath
             #print("Copying: " + input_file_path + " to " + output_file_path)
+            #Here we copy the jpg file to the output folder
             shutil.copy(input_file_path, output_file_path)
 
             logString = "Added Image: " + out_file_name
@@ -160,38 +161,40 @@ def main(dbName, upperFolderName, showFrontalFaceExamples, isThereTrainTest, inp
         
         #Frontal detection
         if extension == 'jpg':
-            if ( holdID != file_id or holdLeftInnerID == inner_id_left_side ) and firstFlag == False:
-                confidence,image_cv2 = detectFrontelImageFromTxt.run(output_folder)
-
-                if confidence == False and image_cv2 == False:
-                    print("No frontal face detected!")
-                    Common.writeLog( logFolderPath +'/logNoFrontalFace.txt', out_file_name)
-                
-                if len(os.listdir(output_folder+'frontal/')) > 0:
-                    print("Frontal Image Already Exists!")
-                    Common.writeLog( logFolderPath +'/logFrontalExists.txt', out_file_name)
-                    continue
-
-                bestImageFilePath = output_folder + image_cv2 + ".jpg"
-                print("Best Image File Path: " + bestImageFilePath)
+            if ( holdID != file_id or holdLeftInnerID != inner_id_left_side ) and firstFlag == False:
                 os.makedirs(output_folder + "frontal/", exist_ok=True)
-                shutil.copy(bestImageFilePath, output_folder + "frontal/" + image_cv2 + ".jpg")
-                
-                for conf in confidenceArray:    
-                    print("Confidence: " + str(conf['confidence']))
-                print("Best Confidence: " + str(confidence))
-                
-                confidenceArray.clear()
-                frontalCount += 1
+                os.makedirs(output_folder, exist_ok=True)
 
+                confidence,image_cv2 = detectFrontelImageFromTxt.run(output_folder)
+                FrontalFaceFunctions.showFrontalFaces(image_cv2, confidence, frontalCount,showFrontalFaceExamples)
+                
+                if image_cv2 == False:
+                    print("There is no frontal face in frontal folder")
+                    Common.writeLog( logFolderPath +'/logNoFrontalFace.txt', out_file_name)
+                else:
+                    if len(os.listdir(output_folder+'frontal/')) > 0:
+                        print("Frontal Image Already Exists!")
+                        Common.writeLog( logFolderPath +'/logFrontalExists.txt', out_file_name)
+                    else:
+                                
+                        bestImageFilePath = output_folder + image_cv2 + ".jpg"
+                        print("Best Image File Path: " + bestImageFilePath)
+                        frontalCount += 1
+                        shutil.copy(bestImageFilePath, output_folder + "frontal/" + image_cv2 + ".jpg")
+                        print(len(os.listdir(output_folder+'frontal/')))
+                    
+                confidenceArray.clear()
+
+                """
                 if  confidence != False:    
-                    FrontalFaceFunctions.showFrontalFaces(image_cv2, confidence, frontalCount,showFrontalFaceExamples)
                     #Our frontal image is ready
                     #create a folder that named frontal, and copy this into
+                    
                     FrontalFaceFunctions.writeFrontalFaceToFolder(confidence, frontalCount, output_folder, 
                                                                 file_name_withoutExtension, extension, file_id, logFolderPath, 
                                                                 out_file_name, imgTxtDBs, dbName, file)
-            
+                """
+                                                                
             firstFlag = False
             holdID = file_id
             holdLeftInnerID = inner_id_left_side

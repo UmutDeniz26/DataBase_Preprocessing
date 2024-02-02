@@ -37,7 +37,7 @@ def showFrontalFaces(image, confidence, frontalCount,showFrontalFaceExamples):
         plt.axis('off')
     elif frontalCount == 40 and showFrontalFaceExamples:
         plt.show()    
-
+"""
 #This function will write the frontal face to the folder
 def writeFrontalFaceToFolder(confidence, frontalCount, destination, file_name_withoutExtension, extension, file_id, logFolderPath, out_file_name, imgTxtDBs, dbName, file):    
     os.makedirs( destination + 'frontal/', exist_ok=True)
@@ -54,3 +54,4 @@ def writeFrontalFaceToFolder(confidence, frontalCount, destination, file_name_wi
     logString = "Added Frontal Image Count: " + str(frontalCount) + " - " + str(file_id)+ " - " + str(confidence) + " - " + out_file_name
     
     Common.writeLog( logFolderPath+'/logFrontalFaceAdded.txt', logString)
+"""
