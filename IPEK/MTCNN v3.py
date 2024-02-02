@@ -6,7 +6,7 @@ import os
 detector = MTCNN()
 
 # define the folder path containing images
-folder_path = r'./IPEK/lfw-deepfunneled'
+folder_path = r'./IPEK/LFW/Aaron_Peirsol'
 
 # Output file to record the most confident face per image
 output_file = 'most_confident_faces.txt'

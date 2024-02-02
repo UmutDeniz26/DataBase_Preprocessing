@@ -7,7 +7,7 @@ sys.path.insert(0, "./UMUT")
 import writeToTxt
 
 def copy_max_abs_image_to_folder(source_folder, destination_folder):
-    max_abs_value = -1
+    max_abs_value = 9999
     max_abs_image = None
     image_info_dict = {}
     for filename in os.listdir(source_folder):
@@ -17,7 +17,7 @@ def copy_max_abs_image_to_folder(source_folder, destination_folder):
             result = detect_best_frontal_face(image_path)
             abs_of_dnle_dnre = result["difference_between_le_re"]
             writeToTxt.run(image_path,result)
-            if abs_of_dnle_dnre > max_abs_value:
+            if abs_of_dnle_dnre < max_abs_value:
                 max_abs_value = abs_of_dnle_dnre
                 max_abs_image = image_path
 
