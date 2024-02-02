@@ -28,8 +28,6 @@ def main(dbName='YoutubeFace', logFolderPath='./UMUT/LOG/YoutubeFace', txtInfoPa
     print("Is There Train Test: " + str(isThereTrainTest))
     print("Input Or Auto Mod: " + str(inputOrAutoMod))
     print("Upper Folder Name: " + upperFolderName)
-    print("Image Txt DBs: " + str(imgTxtDBs))
-    print("Copy Flag: " + str(copyFlag))
     
 
     """
