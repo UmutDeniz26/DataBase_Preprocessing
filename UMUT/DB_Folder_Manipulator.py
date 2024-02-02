@@ -19,12 +19,12 @@ import FrontalFaceFunctions
 
 
 def main(dbName='YoutubeFace', logFolderPath='./UMUT/LOG/YoutubeFace', txtInfoPath='./UMUT/youtubeFaceDB.txt', showFrontalFaceExamples=False, isThereTrainTest=False, inputOrAutoMod=False, upperFolderName='UMUT'):
+    dbName = './'+upperFolderName+'/'+dbName
     
     """
     #Change these
     dbName = 'YoutubeFace' #IBUG, LFPW, HELEN, AFW, IBUG, YoutubeFace, LFW
     logFolderPath = './UMUT/LOG/'+ dbName
-    dbName = './UMUT/'+dbName
     txtInfoPath = './UMUT/youtubeFaceDB.txt' #only for imgTxtDBs
     showFrontalFaceExamples = False #True for show, False for not show
     isThereTrainTest = False #True for LFPW Dataset, False for anothers
