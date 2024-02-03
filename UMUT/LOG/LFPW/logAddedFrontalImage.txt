@@ -1,0 +1,15 @@
+./UMUT/LFPW_FOLDERED/test/0001/0/LFPW_image_test_0001_0.jpg
+./UMUT/LFPW_FOLDERED/test/0002/0/LFPW_image_test_0002_0.jpg
+./UMUT/LFPW_FOLDERED/test/0003/0/LFPW_image_test_0003_0.jpg
+./UMUT/LFPW_FOLDERED/test/0004/0/LFPW_image_test_0004_0.jpg
+./UMUT/LFPW_FOLDERED/test/0005/0/LFPW_image_test_0005_0.jpg
+./UMUT/LFPW_FOLDERED/test/0006/0/LFPW_image_test_0006_0.jpg
+./UMUT/LFPW_FOLDERED/test/0007/0/LFPW_image_test_0007_1.jpg
+./UMUT/LFPW_FOLDERED/test/0008/0/LFPW_image_test_0008_0.jpg
+./UMUT/LFPW_FOLDERED/test/0009/0/LFPW_image_test_0009_1.jpg
+./UMUT/LFPW_FOLDERED/test/0011/0/LFPW_image_test_0011_1.jpg
+./UMUT/LFPW_FOLDERED/test/0012/0/LFPW_image_test_0012_0.jpg
+./UMUT/LFPW_FOLDERED/test/0013/0/LFPW_image_test_0013_15.jpg
+./UMUT/LFPW_FOLDERED/test/0014/0/LFPW_image_test_0014_0.jpg
+./UMUT/LFPW_FOLDERED/test/0015/0/LFPW_image_test_0015_0.jpg
+./UMUT/LFPW_FOLDERED/test/0016/0/LFPW_image_test_0016_10.jpg

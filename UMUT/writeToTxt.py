@@ -1,13 +1,19 @@
 import os
-def run(txt_path, resp):
+import Common
+
+def run(txt_path, resp, logFolderPath=False):
     if type(resp) is not dict:
         txt_path = txt_path.replace(".txt", "_FaceNotFound.txt")
         os.makedirs(os.path.dirname(txt_path), exist_ok=True)
+        if logFolderPath != False:
+            Common.writeLog(log=txt_path, log_file_path=logFolderPath + '/logFaceNotFound.txt')
+
         with open(txt_path , 'w') as file:
             file.write("FaceNotFound")
         return "FaceNotFound"
         
-    new_dict = {key: value for key, value in resp.items() if key not in ['distance_nose_left_eye', 'distance_nose_right_eye', 'difference_between_le_re']}
+    #new_dict = {key: value for key, value in resp.items() if key not in ['distance_nose_left_eye', 'distance_nose_right_eye', 'difference_between_le_re','frontal_score']}
+    new_dict = resp
     keys = list(new_dict.keys())
 
     if txt_path.endswith(".bmp"):
