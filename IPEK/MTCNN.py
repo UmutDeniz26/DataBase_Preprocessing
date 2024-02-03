@@ -5,7 +5,7 @@ import cv2
 detector = MTCNN()
 
 # load the input image
-image = cv2.imread(r'C:\Users\ipekb\Desktop\staj lwf\DataBase_Preprocessing\IPEK\lfw-deepfunneled\Aaron_Peirsol\Aaron_Peirsol_0002.jpg')
+image = cv2.imread(r"C:\Users\ipekb\Desktop\staj lwf\DataBase_Preprocessing\IPEK\LFW\IPEK/LFW/Abdoulaye_Wade")
 
 # convert the image to grayscale
 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)

@@ -3,12 +3,11 @@ import re
 import cv2
 import shutil
 import matplotlib.pyplot as plt
-
-
 import sys
 
 sys.path.insert(0, './Ali')
 import detect_distences_of_sides
+import detectFrontelImageFromTxt
 
 sys.path.insert(0, './UMUT')
 import writeToTxt
@@ -16,32 +15,15 @@ import Common
 import NameFeatureExtractor
 import DBsWithTxtInfo
 import FrontalFaceFunctions
+logFolderPath = ""
 
-
-def main(dbName='YoutubeFace', logFolderPath='./UMUT/LOG/YoutubeFace', txtInfoPath='./UMUT/youtubeFaceDB.txt', showFrontalFaceExamples=False, isThereTrainTest=False, inputOrAutoMod=False, upperFolderName='UMUT'):
-    
+def main(dbName, upperFolderName, showFrontalFaceExamples, isThereTrainTest, inputOrAutoMod):
+    global logFolderPath
+    logFolderPath = f'./{upperFolderName}/LOG/{dbName}'
+    txtInfoPath = f'./{upperFolderName}/{dbName}DB.txt'
     dbName = './'+upperFolderName+'/'+dbName
-    print("DB Name: " + dbName)
-    print("Log Folder Path: " + logFolderPath)
-    print("Txt Info Path: " + txtInfoPath)
-    print("Show Frontal Face Examples: " + str(showFrontalFaceExamples))
-    print("Is There Train Test: " + str(isThereTrainTest))
-    print("Input Or Auto Mod: " + str(inputOrAutoMod))
-    print("Upper Folder Name: " + upperFolderName)
-    
-
-    """
-    #Change these
-    dbName = 'YoutubeFace' #IBUG, LFPW, HELEN, AFW, IBUG, YoutubeFace, LFW
-    logFolderPath = './UMUT/LOG/'+ dbName
-    txtInfoPath = './UMUT/youtubeFaceDB.txt' #only for imgTxtDBs
-    showFrontalFaceExamples = False #True for show, False for not show
-    isThereTrainTest = False #True for LFPW Dataset, False for anothers
-    #It doesnt work properly right now!!!
-    inputOrAutoMod = False #True for auto, False for input, auto mod is only for IBUG Dataset. If you want to use auto mod, you should change the function autoDetermineAccordingToFeatureCount
-    """
-
-    #Global Variables for decideWhichElementsWhichFeatures
+     
+    #These variables will be automatically changed according to the number of features
     file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_index= 0, 0, 0, 0 
 
     #This variable will be automatically changed according to the number of features
@@ -54,12 +36,11 @@ def main(dbName='YoutubeFace', logFolderPath='./UMUT/LOG/YoutubeFace', txtInfoPa
         imgTxtDBs = False
 
     ##########################   MAIN   #############################
-    plt.figure(figsize=(20,10))
     files = os.scandir('./'+dbName)
-    confidenceArray = []
     firstFlag = True;makeDeceisonFlag = True
     imageCounter = 0 # only for imgTxtDBs
-    holdID = 0;holdFeaturesLen = 0;frontalCount = 0
+    holdID = 0;holdFeaturesLen = 0;frontalCount = 0;holdLeftInnerID = 0;
+    plt.figure(figsize=(20,10))
 
     Common.clearLogs(logFolderPath)
     os.makedirs(logFolderPath, exist_ok=True)
@@ -105,7 +86,6 @@ def main(dbName='YoutubeFace', logFolderPath='./UMUT/LOG/YoutubeFace', txtInfoPa
         inner_id_left_side_index = indexDict["inner_id_left_side_index"]
         learnType_index = indexDict["learnType_index"]
 
-        file_name_withoutExtension = features["file_name_withoutExtension"]
         inner_id_right_side = features["inner_id_right_side"]
         inner_id_left_side = features["inner_id_left_side"]
         extension = features["extension"]
@@ -120,10 +100,10 @@ def main(dbName='YoutubeFace', logFolderPath='./UMUT/LOG/YoutubeFace', txtInfoPa
             output_folder = './' + dbName + '_FOLDERED/' + file_id + '/'
         else:
             output_folder = './' + dbName + '_FOLDERED/' + learnType + '/' + file_id + '/'
-            
+        
+        
         if inner_id_left_side != False and inner_id_left_side.isdigit() == True:
             output_folder = output_folder + inner_id_left_side + '/'
-
 
         # Create folders if they don't exist / COPY PROCESS
         # If len of files in output folder is less than 10, copy the file
@@ -138,7 +118,7 @@ def main(dbName='YoutubeFace', logFolderPath='./UMUT/LOG/YoutubeFace', txtInfoPa
         else:
             os.makedirs(output_folder, exist_ok=True)
             output_file_path = output_folder + out_file_name
-            
+
             if imgTxtDBs == True:
                 input_file_path = file
                 #print("Input File Path: " + input_file_path)
@@ -146,9 +126,10 @@ def main(dbName='YoutubeFace', logFolderPath='./UMUT/LOG/YoutubeFace', txtInfoPa
                 input_file_path = './' + dbName + '/' + out_file_name
 
 
-            #print("Output File Path: " + output_file_path)
             #copy input filepath to output filepath
             #print("Copying: " + input_file_path + " to " + output_file_path)
+
+            #Here we copy the jpg file to the output folder
             shutil.copy(input_file_path, output_file_path)
 
             logString = "Added Image: " + out_file_name
@@ -156,33 +137,44 @@ def main(dbName='YoutubeFace', logFolderPath='./UMUT/LOG/YoutubeFace', txtInfoPa
         
         #Frontal detection
         if extension == 'jpg':
-            if holdID != file_id and firstFlag == False:
-                image_cv2, confidence = FrontalFaceFunctions.findMaxFrontalFace(confidenceArray,logFolderPath,out_file_name)
-                confidenceArray.clear()
-                frontalCount += 1
-
-                if  confidence != False:    
-                    FrontalFaceFunctions.showFrontalFaces(image_cv2, confidence, frontalCount,showFrontalFaceExamples)
-                    #Our frontal image is ready
-                    #create a folder that named frontal, and copy this into
-                    FrontalFaceFunctions.writeFrontalFaceToFolder(confidence, frontalCount, output_folder, 
-                                                                file_name_withoutExtension, extension, file_id, logFolderPath, 
-                                                                out_file_name, imgTxtDBs, dbName, file)
+            # If all of the images was processed, in a folder:
+            
+            if ( holdID != file_id or holdLeftInnerID != inner_id_left_side ) and firstFlag == False:
+                os.makedirs(output_folder + "frontal/", exist_ok=True)
+                os.makedirs(output_folder, exist_ok=True)
+                confidence,image_cv2 = detectFrontelImageFromTxt.run(output_folder)
+                FrontalFaceFunctions.showFrontalFaces(image_cv2, confidence, frontalCount,showFrontalFaceExamples)
+                if image_cv2 == False:
+                    Common.writeLog( logFolderPath +'/logNoFrontalFace.txt', out_file_name)
+                else:
+                    if len(os.listdir(output_folder+'frontal/')) > 0:
+                        print("Frontal Image Already Exists!")
+                        Common.writeLog( logFolderPath +'/logFrontalExists.txt', out_file_name)
+                    else:
+                        bestImageFilePath = output_folder + image_cv2 + ".jpg"
+                        print("Best Image File Path: " + bestImageFilePath)
+                        frontalCount += 1
+                        shutil.copy(bestImageFilePath, output_folder + "frontal/" + image_cv2 + ".jpg")
+                        print(len(os.listdir(output_folder+'frontal/')))
+                                      
             firstFlag = False
             holdID = file_id
+            holdLeftInnerID = inner_id_left_side
             
             if imgTxtDBs == True:
                 input_file_path = file    
             else:
                 input_file_path = './' + dbName + '/' + out_file_name
             
+            #Read the image
             image_cv2 = cv2.imread(input_file_path)
-            
-            confidenceArray = FrontalFaceFunctions.FaceRecogFrontalHandle(image_cv2,input_file_path,confidenceArray,output_folder,out_file_name)#remove output_folder 
-            #print("Length of confidence array: " + str(len(confidenceArray)))
-            #_, faces = yunetDetectionDNN(image_cv2,input_file_path,confidenceArray,output_folder,out_file_name) #remove output_folder
-            #DNNFrontalHandle(faces, image_cv2)
-
+        
+            #Calculate the landmarks of the frontal face and write them to the txt file
+            response = FrontalFaceFunctions.writeRetinaFaceLandmarks(image_cv2,input_file_path,output_folder,out_file_name)#remove output_folder 
+            if response != "Txt already exists!":
+                Common.writeLog(logFolderPath+'/logAddedTxt.txt', response)
+            else:
+                Common.writeLog(logFolderPath+'/logTxtExists.txt', response)
 
 if __name__ == "__main__":
-    main()
+    main('YoutubeFace', 'UMUT', False, False, False)

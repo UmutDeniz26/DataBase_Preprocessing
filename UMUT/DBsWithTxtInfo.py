@@ -14,6 +14,5 @@ def imgTxtDBsFilesConcat(inFiles):
             traverse_directory(file.path)
         elif file.name.endswith(".jpg"):
             inFilesPaths.append(file.path)
-    
-    #exit()
+            
     return inFilesPaths
