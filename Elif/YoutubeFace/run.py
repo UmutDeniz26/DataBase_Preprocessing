@@ -6,7 +6,7 @@ import DB_Folder_Manipulator
 
 DB_Folder_Manipulator.main(dbName='YoutubeFace', 
                            logFolderPath='./Elif/LOG/YoutubeFace', 
-                           txtInfoPath='./Elif/youtubeFaceDB.txt', 
+                           txtInfoPath='./Elif/output_allimg.txt', 
                            showFrontalFaceExamples=False, 
                            isThereTrainTest=False, 
                            inputOrAutoMod=False,
