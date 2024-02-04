@@ -14,15 +14,20 @@ import Common
 import NameFeatureExtractor
 import DBsWithTxtInfo
 import FrontalFaceFunctions
+import txtFileOperations
 
 def main(dbName, upperFolderName, showFrontalFaceExamples, inputOrAutoMod, printFeaturesFlag):    
     #This is the folder path of the logs
     logFolderPath = f'./{upperFolderName}/LOG/{dbName}'
     os.makedirs(logFolderPath, exist_ok=True)
+    Common.clearLogs(logFolderPath)
 
     # This is very important for the txt operations. 
     #The txt file should be in the same folder with the images and the name of the txt file should be the same with the name of the folder
     txtInfoPath = f'./{upperFolderName}/{dbName}.txt' 
+    
+    print(txtFileOperations.initMainTxtFile(dbName,upperFolderName,
+                                            ["file_path","left_eye","right_eye","nose","mouth_left","mouth_right","facial_area"]))
     
     #These variables will be automatically changed according to the number of features
     file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_index = 0, 0, 0, 0 
@@ -30,7 +35,6 @@ def main(dbName, upperFolderName, showFrontalFaceExamples, inputOrAutoMod, print
     imgTxtDBs = False
     if dbName == 'YoutubeFace' or dbName == 'LFW':
         imgTxtDBs = True
-    
     #------------------------------------------------------- Main Part -------------------------------------------------------#
     
     files = os.scandir('./'+ upperFolderName +'/'+ dbName)
@@ -39,7 +43,6 @@ def main(dbName, upperFolderName, showFrontalFaceExamples, inputOrAutoMod, print
     holdID = 0;holdLeftInnerID = 0;holdFeaturesLen = 0;frontalCount = 0;
     
     plt.figure(figsize=(20,10))
-    Common.clearLogs(logFolderPath)
 
     #Txt operations for YoutubeFace and LFW
     if imgTxtDBs ==True:
@@ -57,7 +60,6 @@ def main(dbName, upperFolderName, showFrontalFaceExamples, inputOrAutoMod, print
 
     #Iterate through the files
     for index,file in enumerate(files):
-        print("\n\nIndex: " + str(index) + " File: " + file.name+ "\n")
         if imgTxtDBs == True:
             output_file_name = imageInformations[index]+'.jpg'
             if index%1000 == 0:
@@ -155,4 +157,4 @@ def main(dbName, upperFolderName, showFrontalFaceExamples, inputOrAutoMod, print
                 Common.writeLog(logFolderPath+'/logTxtExists.txt', output_folder)
 
 if __name__ == "__main__":
-    main('LFPW', 'UMUT', False, False, False)
+    main('YoutubeFace', 'UMUT', False, False, False)
