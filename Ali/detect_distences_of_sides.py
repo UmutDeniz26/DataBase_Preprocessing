@@ -1,3 +1,4 @@
+import cv2
 
 def detect_best_frontal_face(image_path):
      import math

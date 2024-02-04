@@ -11,7 +11,7 @@ import detect_distences_of_sides
 
 #This function will write the landmarks of the frontal face to the txt file
 #It will also return the modified confidenceArray
-def writeRetinaFaceLandmarks(image_cv2, img_path, txt_path, txt_name):
+def writeRetinaFaceLandmarks(image_cv2, img_path, txt_path, txt_name, logFolderPath):
     txt_path = txt_path+txt_name
     txt_path = os.path.splitext(txt_path)[0]# it gives extensionless path
     txt_path = txt_path + '.txt'
@@ -20,7 +20,7 @@ def writeRetinaFaceLandmarks(image_cv2, img_path, txt_path, txt_name):
         return "Txt already exists!"
     
     resp = detect_distences_of_sides.detect_best_frontal_face(img_path)
-    writeToTxt.run(txt_path, resp)
+    print(writeToTxt.run(txt_path, resp, logFolderPath))
     return "Added txt: " + txt_path + " successfully!"
 
 def showFrontalFaces(image, confidence, frontalCount,showFrontalFaceExamples):
