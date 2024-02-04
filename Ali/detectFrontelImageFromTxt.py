@@ -19,7 +19,7 @@ def run(folder_path):
             distance_nose_left_eye = math.sqrt((content["left_eye"][0] - content["nose"][0])**2 + (content["left_eye"][1] - content["nose"][1])**2)
             distance_nose_right_eye = math.sqrt((content["right_eye"][0] - content["nose"][0])**2 + (content["right_eye"][1] - content["nose"][1])**2)
             difference_between_le_re = abs(distance_nose_left_eye-distance_nose_right_eye)
-            if difference_between_le_re < max_abs_value and content["haarFaceDetected"] == 1:
+            if difference_between_le_re < max_abs_value:
                 max_abs_value = difference_between_le_re
                 max_abs_image = filename.replace(".txt","")
     #print(max_abs_value,max_abs_image)

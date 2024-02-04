@@ -10,7 +10,6 @@ def detect_best_frontal_face(image_path):
      else:   
           landmarks = resp['face_1']['landmarks']
           facial_area = resp["face_1"]["facial_area"]
-          score = resp['face_1']['score']
           nose_point = landmarks['nose']
           left_eye_point = landmarks['left_eye']
           right_eye_point = landmarks['right_eye']
