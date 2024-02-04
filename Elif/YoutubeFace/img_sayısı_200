@@ -1,61 +1,85 @@
 import os
 import shutil
 import random
+import numpy as np
 
+def newFolder(subfolder_path, new_dataset_name, person_name, subfolder_name,selected_images):
+    # Yeni klasörün oluşturulacağı yol
+    yeni_klasor_yolu = os.path.join(new_dataset_name, person_name, subfolder_name)
+
+    # Yeni klasörü oluştur (exist_ok=True, klasör zaten varsa hata vermez)
+    os.makedirs(yeni_klasor_yolu, exist_ok=True)
+
+    # Her bir seçilen görüntüyü yeni klasöre kopyala
+    for secilen_gorsel in selected_images:
+        # Mevcut görüntünün yolu
+        gorsel_yolu = os.path.join(subfolder_path, secilen_gorsel)
+        # Yeni klasöre kopyalanacak görüntünün hedef yolu
+        yeni_gorsel_yolu = os.path.join(yeni_klasor_yolu, secilen_gorsel)
+        # Görüntüyü kopyala
+        shutil.copy(gorsel_yolu, yeni_gorsel_yolu)
+
+
+def imgReduction(subfolder_path,N=200):
+    total_img = len(os.listdir(subfolder_path))
+    print(total_img)
+    if total_img <= N:
+        selected_images = os.listdir(subfolder_path)
+        return selected_images
+
+    else:
+        image_files = os.listdir(subfolder_path)
+        minVal = 0
+        maxVal = len(os.listdir(subfolder_path))
+        interval = np.floor((maxVal-minVal)/N)
+
+        x1 = np.linspace(minVal, maxVal, N, endpoint=True)
+        arr = np.floor(x1).astype(int)
+        new_arr = []
+        print(len(np.unique(arr)),len(arr))
+
+        for number in arr:
+            sign = np.random.randint(1)
+            offset = np.random.randint(interval)
+            number = number + offset * (-1) ** (sign)
+            new_arr.append(number)
+    
+        new_arr[0] = 0
+        selected_images = [image_files[i % len(image_files)] for i in new_arr]
+
+        if len(np.unique(new_arr)) == len(new_arr):
+            print(new_arr)
+        else:
+            print("Error")
+
+        return selected_images
+    
 # Veri setinin bulunduğu dizin
 dataset_path = "./Elif/YoutubeFace/YoutubeFace"
 
 # Yeni klasör adı
-new_dataset_name = "./Elif/YoutubeFace/yenidataset"
+new_dataset_name = "./Elif/YoutubeFace/New_YotubeFace"
 
-# Çıktı dosyasının adı
-output_file = './Elif/YoutubeFace/output_img_200sayisi.txt'
+for person_name in os.listdir(dataset_path):
+    person_path = os.path.join(dataset_path, person_name)
 
-counter = 0
-a=0
+    if os.path.isdir(person_path):
+        person_images = []
 
-# Dosya açma işlemi
-with open(output_file, 'w') as file:
-    file.write("PersonName_SubfolderName_TotalImg_MoreThan200Img\n")
-    for person_name in os.listdir(dataset_path):
-        person_path = os.path.join(dataset_path, person_name)
+        for subfolder_name in os.listdir(person_path):
+            subfolder_path = os.path.join(person_path, subfolder_name)
 
-        if os.path.isdir(person_path):
-            person_images = []
-
-            for subfolder_name in os.listdir(person_path):
-                subfolder_path = os.path.join(person_path, subfolder_name)
-
-                if os.path.isdir(subfolder_path):
-                    total_img = len(os.listdir(subfolder_path))
-                    if total_img >= 200:
-                        a+=1
-                        person_images.append(f'{person_name}_{subfolder_name}_{total_img}_{a}')
-                        # Her n görselde bir img seçmek için
-                        n =int(total_img/200)
-                        secilen_gorseller = random.sample(os.listdir(subfolder_path), n)
-                        yeni_klasor_yolu = os.path.join(new_dataset_name, person_name, f"{subfolder_name}_sampled")
-
-                        # Yeni klasörü oluştur
-                        os.makedirs(yeni_klasor_yolu, exist_ok=True)
-
-                        for secilen_gorsel in secilen_gorseller:
-                            gorsel_yolu = os.path.join(subfolder_path, secilen_gorsel)
-                            yeni_gorsel_yolu = os.path.join(yeni_klasor_yolu, secilen_gorsel)
-                            shutil.copy(gorsel_yolu, yeni_gorsel_yolu)
-
+            if os.path.isdir(subfolder_path):
+                selected_images = imgReduction(subfolder_path)
+                newFolder(subfolder_path, new_dataset_name, person_name, subfolder_name,selected_images)
+                """total_img = len(os.listdir(subfolder_path))
+                print(total_img)
+                if total_img <= 200:
+                    newFolder(subfolder_path, new_dataset_name, person_name, subfolder_name,selected_images=None)
+                
+                else:
+                    selected_images = imgReduction(subfolder_path, N=200)
+                    newFolder(subfolder_path, new_dataset_name, person_name, subfolder_name,selected_images)"""
                     
 
-            # Person'a ait tüm görselleri tek bir satırda listeleyerek yaz
-                    file.write('\n'.join(person_images))
-                    file.write('\n')
-
-                    counter += 1
-
-
-
-# Bilgileri içeren txt dosyası oluşturuldu
-print(f"{n} görselden 1 tanesi seçilerek kopyalama işlemi tamamlandı.")
-print(f'Liste oluşturuldu ve {output_file} adında kaydedildi.')
-
-def 
+                       
