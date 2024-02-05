@@ -10,63 +10,39 @@ import detect_distences_of_sides
 import detectFrontelImageFromTxt
 
 sys.path.insert(0, './UMUT')
-import writeToTxt
 import Common
 import NameFeatureExtractor
 import DBsWithTxtInfo
 import FrontalFaceFunctions
+import txtFileOperations
 
-
-def main(dbName, upperFolderName, showFrontalFaceExamples, isThereTrainTest, inputOrAutoMod):
+def main(dbName, upperFolderName, showFrontalFaceExamples, inputOrAutoMod, printFeaturesFlag):    
+    #This is the folder path of the logs
     logFolderPath = f'./{upperFolderName}/LOG/{dbName}'
-    txtInfoPath = f'./{upperFolderName}/{dbName}DB.txt'
-    
-    dbName = './'+upperFolderName+'/'+dbName
-    
-    
-    print("DB Name: " + dbName)
-    print("Log Folder Path: " + logFolderPath)
-    print("Txt Info Path: " + txtInfoPath)
-    print("Show Frontal Face Examples: " + str(showFrontalFaceExamples))
-    print("Is There Train Test: " + str(isThereTrainTest))
-    print("Input Or Auto Mod: " + str(inputOrAutoMod))
-    print("Upper Folder Name: " + upperFolderName)
-    
-
-
-    """
-    #Change these
-    dbName = 'YoutubeFace' #IBUG, LFPW, HELEN, AFW, IBUG, YoutubeFace, LFW
-    logFolderPath = './UMUT/LOG/'+ dbName
-    txtInfoPath = './UMUT/youtubeFaceDB.txt' #only for imgTxtDBs
-    showFrontalFaceExamples = False #True for show, False for not show
-    isThereTrainTest = False #True for LFPW Dataset, False for anothers
-    #It doesnt work properly right now!!!
-    inputOrAutoMod = False #True for auto, False for input, auto mod is only for IBUG Dataset. If you want to use auto mod, you should change the function autoDetermineAccordingToFeatureCount
-    """
-
-    #Global Variables for decideWhichElementsWhichFeatures
-    file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_index= 0, 0, 0, 0 
-
-    #This variable will be automatically changed according to the number of features
-    copyFlag = False
-
-    print("DB Name: " + dbName)
-    if dbName == './'+upperFolderName+'/YoutubeFace' or dbName == './'+upperFolderName+'/LFW':
-        imgTxtDBs = True
-    else:
-        imgTxtDBs = False
-
-    ##########################   MAIN   #############################
-    plt.figure(figsize=(20,10))
-    files = os.scandir('./'+dbName)
-    confidenceArray = []
-    firstFlag = True;makeDeceisonFlag = True
-    imageCounter = 0 # only for imgTxtDBs
-    holdID = 0;holdFeaturesLen = 0;frontalCount = 0;holdLeftInnerID = 0;
-    
-    Common.clearLogs(logFolderPath)
     os.makedirs(logFolderPath, exist_ok=True)
+    Common.clearLogs(logFolderPath)
+
+    # This is very important for the txt operations. 
+    #The txt file should be in the same folder with the images and the name of the txt file should be the same with the name of the folder
+    txtInfoPath = f'./{upperFolderName}/{dbName}.txt' 
+    
+    print(txtFileOperations.initMainTxtFile(dbName,upperFolderName,
+                                            ["file_path","left_eye","right_eye","nose","mouth_left","mouth_right","facial_area"]))
+    
+    #These variables will be automatically changed according to the number of features
+    file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_index = 0, 0, 0, 0 
+
+    imgTxtDBs = False
+    if dbName == 'YoutubeFace' or dbName == 'LFW':
+        imgTxtDBs = True
+    #------------------------------------------------------- Main Part -------------------------------------------------------#
+    
+    files = os.scandir('./'+ upperFolderName +'/'+ dbName)
+    firstFlag = True;makeDeceisonFlag = True
+
+    holdID = 0;holdLeftInnerID = 0;holdFeaturesLen = 0;frontalCount = 0;
+    
+    plt.figure(figsize=(20,10))
 
     #Txt operations for YoutubeFace and LFW
     if imgTxtDBs ==True:
@@ -82,131 +58,103 @@ def main(dbName, upperFolderName, showFrontalFaceExamples, isThereTrainTest, inp
         "learnType_index": learnType_index
     }
 
-    #example ->AFW_815038_1_12.jpg
-    for file in files:
+    #Iterate through the files
+    for index,file in enumerate(files):
         if imgTxtDBs == True:
-            out_file_name = imageInformations[imageCounter]+'.jpg'
-            imageCounter += 1
-            if imageCounter%1000 == 0:
-                print("Image Counter: " + str(imageCounter))
+            output_file_name = imageInformations[index]+'.jpg'
+            if index%1000 == 0:
+                print("Image Counter: " + str(index))
         else:
-            out_file_name = file.name
+            output_file_name = file.name
         
-        features,indexDict,makeDeceisonFlag = NameFeatureExtractor.extractFeaturesFromFileName(out_file_name, indexDict, inputOrAutoMod, makeDeceisonFlag)    
+        #Extract features from file name
+        features,indexDict,makeDeceisonFlag = NameFeatureExtractor.extractFeaturesFromFileName(output_file_name, indexDict, inputOrAutoMod, makeDeceisonFlag, printFeaturesFlag)    
         numberOfSlices = features["numberOfSlices"]
-
         #When number of slices changed, we should extract features again
         if numberOfSlices != holdFeaturesLen and firstFlag == False:
             print("Number of features changed! Please check the features!")
             if inputOrAutoMod == False:
                 input("Press Enter to continue...")
             makeDeceisonFlag = True
-            features,indexDict,makeDeceisonFlag = NameFeatureExtractor.extractFeaturesFromFileName(out_file_name, indexDict, inputOrAutoMod, makeDeceisonFlag)
+            features,indexDict,makeDeceisonFlag = NameFeatureExtractor.extractFeaturesFromFileName(output_file_name, indexDict, inputOrAutoMod, makeDeceisonFlag, printFeaturesFlag)
+        holdFeaturesLen = numberOfSlices
         
-        
-        file_id_index = indexDict["file_id_index"]
-        inner_id_right_side_index = indexDict["inner_id_right_side_index"]
-        inner_id_left_side_index = indexDict["inner_id_left_side_index"]
-        learnType_index = indexDict["learnType_index"]
-
-        file_name_withoutExtension = features["file_name_withoutExtension"]
         inner_id_right_side = features["inner_id_right_side"]
         inner_id_left_side = features["inner_id_left_side"]
         extension = features["extension"]
         learnType = features["learnType"]
         file_id = features["file_id"]
 
-        holdFeaturesLen = numberOfSlices
-        
-        # This part is important for the output folder structure
-        # In this part, you can change the output folder structure according to your needs
-        if learnType == False:
-            output_folder = './' + dbName + '_FOLDERED/' + file_id + '/'
-        else:
-            output_folder = './' + dbName + '_FOLDERED/' + learnType + '/' + file_id + '/'
+        #If the fileID or inner_id_left_side is different than the previous one, we should detect the frontal face of the previous folder
+        if ( holdID != file_id or holdLeftInnerID != inner_id_left_side ) and firstFlag == False:
+            os.makedirs(output_folder + "frontal/", exist_ok=True);os.makedirs(output_folder, exist_ok=True)
             
+            confidence,image_cv2 = detectFrontelImageFromTxt.run(output_folder)
+            FrontalFaceFunctions.showFrontalFaces(image_cv2, confidence, frontalCount,showFrontalFaceExamples)
+            
+            if image_cv2 == False:
+                Common.writeLog( logFolderPath +'/logNoFrontalFace.txt', output_file_name)
+            else:
+                if len(os.listdir(output_folder+'frontal/')) > 0:
+                    print("Frontal Image Already Exists!")
+                else:
+                    bestImageFilePath = output_folder + image_cv2 + ".jpg"
+                    frontalCount += 1
+                    Common.copyFile(bestImageFilePath, output_folder + "frontal/" + image_cv2 + ".jpg")
+                    os.makedirs('./' + upperFolderName + '/' + dbName + '_FOLDERED/Frontal_Faces/', exist_ok=True)
+                    Common.copyFile( bestImageFilePath, "./" + upperFolderName + "/" + dbName + "_FOLDERED/Frontal_Faces/" + image_cv2 + ".jpg")
+                    Common.writeLog( logFolderPath +'/logAddedFrontalImage.txt', bestImageFilePath)
+                         
+        firstFlag = False
+        holdID = file_id
+        holdLeftInnerID = inner_id_left_side
+            
+        
+        # In this part, you can change the output folder structure according to your needs
+        # If learnType is True-> output_folder = f'./{upperFolderName}/{dbName}_FOLDERED/{learnType}/{file_id}/'
+        output_folder = f'./{upperFolderName}/{dbName}_FOLDERED/{learnType + "/" if learnType else ""}{file_id}/'
+
+
+        # Add inner folder when inner_id_left_side is different than False and inner_id_left_side is a number
         if inner_id_left_side != False and inner_id_left_side.isdigit() == True:
             output_folder = output_folder + inner_id_left_side + '/'
-
+        else:
+            output_folder = output_folder + '0' + '/'
 
         # Create folders if they don't exist / COPY PROCESS
-        # If len of files in output folder is less than 10, copy the file
-        if copyFlag == False:
-            try:
-                if len(os.listdir(output_folder)) < 10 or copyFlag == True:
-                    copyFlag = True
-            # If folder does not exist, create folder and copy the file
-            except:
-                copyFlag = True
-                print("Folder does not exist, creating folder: " + output_folder)     
+        # Replace the images with same name
+        os.makedirs(output_folder, exist_ok=True)
+        output_file_path = output_folder + output_file_name
+
+        if imgTxtDBs == True:
+            input_file_path = file
         else:
-            os.makedirs(output_folder, exist_ok=True)
-            output_file_path = output_folder + out_file_name
-            
-            if imgTxtDBs == True:
-                input_file_path = file
-                #print("Input File Path: " + input_file_path)
-            else:
-                input_file_path = './' + dbName + '/' + out_file_name
+            input_file_path = './' + upperFolderName + '/' + dbName + '/' + output_file_name
 
+        #Here we copy the jpg file to the output folder
+        Common.copyFile(input_file_path, output_file_path)
 
-            #print("Output File Path: " + output_file_path)
-            #copy input filepath to output filepath
-            #print("Copying: " + input_file_path + " to " + output_file_path)
-            shutil.copy(input_file_path, output_file_path)
-
-            logString = "Added Image: " + out_file_name
-            Common.writeLog(logFolderPath+'/logAddedImage.txt', logString)
+        logString = "Added Image: " + output_file_name
+        Common.writeLog(logFolderPath+'/logAddedImage.txt', logString)
         
         #Frontal detection
         if extension == 'jpg':
-            if ( holdID != file_id or holdLeftInnerID == inner_id_left_side ) and firstFlag == False:
-                confidence,image_cv2 = detectFrontelImageFromTxt.run(output_folder)
-
-                if confidence == False and image_cv2 == False:
-                    print("No frontal face detected!")
-                    Common.writeLog( logFolderPath +'/logNoFrontalFace.txt', out_file_name)
-                
-                if len(os.listdir(output_folder+'frontal/')) > 0:
-                    print("Frontal Image Already Exists!")
-                    Common.writeLog( logFolderPath +'/logFrontalExists.txt', out_file_name)
-                    continue
-
-                bestImageFilePath = output_folder + image_cv2 + ".jpg"
-                print("Best Image File Path: " + bestImageFilePath)
-                os.makedirs(output_folder + "frontal/", exist_ok=True)
-                shutil.copy(bestImageFilePath, output_folder + "frontal/" + image_cv2 + ".jpg")
-                
-                for conf in confidenceArray:    
-                    print("Confidence: " + str(conf['confidence']))
-                print("Best Confidence: " + str(confidence))
-                
-                confidenceArray.clear()
-                frontalCount += 1
-
-                if  confidence != False:    
-                    FrontalFaceFunctions.showFrontalFaces(image_cv2, confidence, frontalCount,showFrontalFaceExamples)
-                    #Our frontal image is ready
-                    #create a folder that named frontal, and copy this into
-                    FrontalFaceFunctions.writeFrontalFaceToFolder(confidence, frontalCount, output_folder, 
-                                                                file_name_withoutExtension, extension, file_id, logFolderPath, 
-                                                                out_file_name, imgTxtDBs, dbName, file)
-            
-            firstFlag = False
-            holdID = file_id
-            holdLeftInnerID = inner_id_left_side
+            # If all of the images was processed, in a folder:
             
             if imgTxtDBs == True:
                 input_file_path = file    
             else:
-                input_file_path = './' + dbName + '/' + out_file_name
+                input_file_path = './' + upperFolderName + '/' + dbName + '/' + output_file_name
             
+            #Read the image
             image_cv2 = cv2.imread(input_file_path)
-            
-
-            confidenceArray = FrontalFaceFunctions.FaceRecogFrontalHandle(image_cv2,input_file_path,confidenceArray,output_folder,out_file_name)#remove output_folder 
-            #print("Length of confidence array: " + str(len(confidenceArray)))
-            
+        
+            #Calculate the landmarks of the frontal face and write them to the txt file
+            response = FrontalFaceFunctions.writeRetinaFaceLandmarks(image_cv2,input_file_path,output_folder,output_file_name,  logFolderPath)#remove output_folder 
+            if response != "Txt already exists!":
+                Common.writeLog(logFolderPath+'/logAddedTxt.txt', response)
+            else:
+                Common.writeLog(logFolderPath+'/logTxtExists.txt', output_folder)
 
 if __name__ == "__main__":
     main('YoutubeFace', 'UMUT', False, False, False)

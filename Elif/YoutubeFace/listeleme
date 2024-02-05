@@ -1,10 +1,10 @@
 import os
 
 # Veri setinin bulunduğu dizin
-dataset_path = "./Elif/YoutubeFace/aligned_images_DB"
+dataset_path = "./Elif/YoutubeFace/New_YotubeFace"
 
 # Çıktı dosyasının adı
-output_file = './Elif/YoutubeFace/output_allimg.txt'
+output_file = './Elif/YoutubeFace/output_NewYoutube.txt'
 
 counter = 0
 #print(os.listdir("./Elif/YoutubeFace/aligned_images_DB2"))

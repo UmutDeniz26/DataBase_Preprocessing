@@ -2,20 +2,22 @@ import os
 import re
 
 #This function is for see the features
-def printFeatures( output_dict ):
-    print(f"\n\nout_file_name: {output_dict['out_file_name']}\n"
-          f"file_name_withoutExtension: {output_dict['file_name_withoutExtension']}\n"
-          f"extension: {output_dict['extension']}\n"
-          f"learnType: {output_dict['learnType']}\n"
-          f"file_id: {output_dict['file_id']}\n"
-          f"inner_id_right_side: {output_dict['inner_id_right_side']}\n"
-          f"inner_id_left_side: {output_dict['inner_id_left_side']}"
-    )
+def printFeatures( output_dict,printFeaturesFlag=False ):
+    if printFeaturesFlag:
+        print(f"\n\nout_file_name: {output_dict['out_file_name']}\n"
+            f"file_name_withoutExtension: {output_dict['file_name_withoutExtension']}\n"
+            f"extension: {output_dict['extension']}\n"
+            f"learnType: {output_dict['learnType']}\n"
+            f"file_id: {output_dict['file_id']}\n"
+            f"inner_id_right_side: {output_dict['inner_id_right_side']}\n"
+            f"inner_id_left_side: {output_dict['inner_id_left_side']}"
+        )
 
 #Dynamic feature extraction
 #This function will run only once, when the number of slices changed
 def decideWhichElementsWhichFeatures( file_name_split,out_file_name ):
     file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_index = 0, 0, 0, 0
+    
     for element in file_name_split:
         os.system('cls')
         print("File Name: " + out_file_name)
@@ -87,7 +89,7 @@ def autoDetermineAccordingToFeatureCount( file_name_split, indexDict, isThereTra
     return file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_index
 
 #This function will extract features from file name
-def extractFeaturesFromFileName(out_file_name, indexDict, inputOrAutoMod=False, makeDeceisonFlag=True):
+def extractFeaturesFromFileName(out_file_name, indexDict, inputOrAutoMod=False, makeDeceisonFlag=True, printFeaturesFlag=False):
     file_id_index = indexDict["file_id_index"];inner_id_right_side_index = indexDict["inner_id_right_side_index"]
     inner_id_left_side_index = indexDict["inner_id_left_side_index"];learnType_index = indexDict["learnType_index"]
 
@@ -114,8 +116,7 @@ def extractFeaturesFromFileName(out_file_name, indexDict, inputOrAutoMod=False, 
         "learnType_index": learnType_index
     }   
 
-    file_id = file_name_split[file_id_index]
-    inner_id_right_side = file_name_split[inner_id_right_side_index]
+    file_id = file_name_split[file_id_index];inner_id_right_side = file_name_split[inner_id_right_side_index]
     inner_id_left_side = file_name_split[inner_id_left_side_index]
     
     # train or test only for LFPW Dataset
@@ -125,13 +126,12 @@ def extractFeaturesFromFileName(out_file_name, indexDict, inputOrAutoMod=False, 
 
     #Only for imgTxtDBs
     output_dict = {
-            "out_file_name": out_file_name,                   "file_name_withoutExtension": file_name_withoutExtension, 
+            "out_file_name": out_file_name,           "file_name_withoutExtension": file_name_withoutExtension, 
             "extension": extension,                   "inner_id_right_side": inner_id_right_side, 
             "learnType": learnType,                   "file_id": file_id, 
             "inner_id_left_side": inner_id_left_side, "numberOfSlices": numberOfSlices
         }
     
     #Uncomment this to see the features
-    printFeatures(output_dict)
+    printFeatures(output_dict, printFeaturesFlag)
     return output_dict, indexDict, makeDeceisonFlag
-
