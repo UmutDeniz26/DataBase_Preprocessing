@@ -45,10 +45,10 @@ def klasor_benzerlik_kontrolu(klasor_yolu, output_file): #,file
 
 def main():
         # Veri setinin bulunduğu dizin
-        dataset_path = './Elif/YoutubeFace/aligned_images_DB'
-        output_file = './Elif/YoutubeFace/benzerlik_oranları.txt'
+        dataset_path = './Elif/YoutubeFace/New_YoutubeFace'
+        output_file = './Elif/YoutubeFace/new_benzerlik_oranları.txt'
         
-        file = open('./Elif/YoutubeFace/benzerlik_oranları.txt', "a")
+        file = open('./Elif/YoutubeFace/new_benzerlik_oranları.txt', "a")
         #with open(output_file, 'w') as file:
         #file.write("Benzerlik Oranlari\n\n")
 
@@ -60,7 +60,7 @@ def main():
                     #file.write(subfolder_path )
                     #file.close()
                     print(subfolder_path)
-                    file.write(subfolder_path)
+                    #file.write(subfolder_path)
                     if os.path.isdir(subfolder_path):
                         
                         #print(image_file)
