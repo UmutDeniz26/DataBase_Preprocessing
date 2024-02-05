@@ -97,14 +97,16 @@ def main(dbName, upperFolderName, showFrontalFaceExamples, inputOrAutoMod, print
             else:
                 if len(os.listdir(output_folder+'frontal/')) > 0:
                     print("Frontal Image Already Exists!")
-                else:
-                    bestImageFilePath = output_folder + image_cv2 + ".jpg"
-                    frontalCount += 1
-                    Common.copyFile(bestImageFilePath, output_folder + "frontal/" + image_cv2 + ".jpg")
-                    os.makedirs('./' + upperFolderName + '/' + dbName + '_FOLDERED/Frontal_Faces/', exist_ok=True)
-                    Common.copyFile( bestImageFilePath, "./" + upperFolderName + "/" + dbName + "_FOLDERED/Frontal_Faces/" + image_cv2 + ".jpg")
-                    Common.writeLog( logFolderPath +'/logAddedFrontalImage.txt', bestImageFilePath)
-                         
+                    #clear all files in output_folder+frontal/
+                    Common.clearFolder(output_folder + "frontal/")
+            
+                bestImageFilePath = output_folder + image_cv2 + ".jpg"
+                frontalCount += 1
+                Common.copyFile(bestImageFilePath, output_folder + "frontal/" + image_cv2 + ".jpg")
+                os.makedirs('./' + upperFolderName + '/' + dbName + '_FOLDERED/Frontal_Faces/', exist_ok=True)
+                Common.copyFile( bestImageFilePath, "./" + upperFolderName + "/" + dbName + "_FOLDERED/Frontal_Faces/" + image_cv2 + ".jpg")
+                Common.writeLog( logFolderPath +'/logAddedFrontalImage.txt', bestImageFilePath)
+                        
         firstFlag = False
         holdID = file_id
         holdLeftInnerID = inner_id_left_side
