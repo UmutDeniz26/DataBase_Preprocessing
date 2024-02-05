@@ -1,0 +1,1 @@
+Initialized txt: ./Elif/New_YoutubeFace_FOLDERED/New_YoutubeFace_Info.txt successfully!
