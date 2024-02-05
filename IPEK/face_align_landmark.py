@@ -1,7 +1,8 @@
 import numpy as np
-from skimage import transform  #pip install scikit-image
+from skimage import transform  
+#pip install scikit-image
 import cv2
-
+from skimage import transform as tform
 def face_align_landmark(img, landmark,image_size=(128,128),method ="similar"):
     tform= transform.AffineTransform() if method == "affine" else transform.SimilarityTransform()
     src=np.array(
