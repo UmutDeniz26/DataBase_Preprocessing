@@ -1,5 +1,5 @@
 import numpy as np
-from skimage import transform
+from skimage import transform  #pip install scikit-image
 import cv2
 
 def face_align_landmark(img, landmark,image_size=(128,128),method ="similar"):
