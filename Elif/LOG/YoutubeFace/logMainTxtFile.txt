@@ -1,0 +1,22 @@
+Initialized txt: ./Elif/YoutubeFace_FOLDERED/YoutubeFace_Info.txt successfully!
+Added txt line to main Txt: ./Elif/YoutubeFace_FOLDERED/00000/0/00000_0_555 successfully!
+Added txt line to main Txt: ./Elif/YoutubeFace_FOLDERED/00000/0/00000_0_556 successfully!
+Added txt line to main Txt: ./Elif/YoutubeFace_FOLDERED/00000/0/00000_0_557 successfully!
+Added txt line to main Txt: ./Elif/YoutubeFace_FOLDERED/00000/0/00000_0_558 successfully!
+Added txt line to main Txt: ./Elif/YoutubeFace_FOLDERED/00000/0/00000_0_559 successfully!
+Added txt line to main Txt: ./Elif/YoutubeFace_FOLDERED/00000/0/00000_0_560 successfully!
+Added txt line to main Txt: ./Elif/YoutubeFace_FOLDERED/00000/0/00000_0_561 successfully!
+Added txt line to main Txt: ./Elif/YoutubeFace_FOLDERED/00000/0/00000_0_562 successfully!
+Added txt line to main Txt: ./Elif/YoutubeFace_FOLDERED/00000/0/00000_0_563 successfully!
+Added txt line to main Txt: ./Elif/YoutubeFace_FOLDERED/00000/0/00000_0_564 successfully!
+Added txt line to main Txt: ./Elif/YoutubeFace_FOLDERED/00000/0/00000_0_565 successfully!
+Added txt line to main Txt: ./Elif/YoutubeFace_FOLDERED/00000/0/00000_0_566 successfully!
+Added txt line to main Txt: ./Elif/YoutubeFace_FOLDERED/00000/0/00000_0_567 successfully!
+Added txt line to main Txt: ./Elif/YoutubeFace_FOLDERED/00000/0/00000_0_568 successfully!
+Added txt line to main Txt: ./Elif/YoutubeFace_FOLDERED/00000/0/00000_0_569 successfully!
+Added txt line to main Txt: ./Elif/YoutubeFace_FOLDERED/00000/0/00000_0_570 successfully!
+Added txt line to main Txt: ./Elif/YoutubeFace_FOLDERED/00000/0/00000_0_571 successfully!
+Added txt line to main Txt: ./Elif/YoutubeFace_FOLDERED/00000/0/00000_0_572 successfully!
+Added txt line to main Txt: ./Elif/YoutubeFace_FOLDERED/00000/0/00000_0_573 successfully!
+Added txt line to main Txt: ./Elif/YoutubeFace_FOLDERED/00000/0/00000_0_574 successfully!
+Added txt line to main Txt: ./Elif/YoutubeFace_FOLDERED/00000/0/00000_0_575 successfully!

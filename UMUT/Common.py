@@ -22,3 +22,10 @@ def clearLogs(logFolderPath):
 def copyFile(input_file_path, output_file_path):
     print("Copying: " + input_file_path + " to " + output_file_path)
     shutil.copy(input_file_path, output_file_path)
+
+def clearFolder(folderPath):
+    if os.path.exists(folderPath):
+        shutil.rmtree(folderPath)
+        os.makedirs(folderPath, exist_ok=True)
+    else:
+        os.makedirs(folderPath, exist_ok=True)

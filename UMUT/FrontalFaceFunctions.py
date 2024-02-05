@@ -4,7 +4,7 @@ sys.path.insert(0, './UMUT')
 import cv2
 import os
 import Common
-import writeToTxt
+import txtFileOperations
 import matplotlib.pyplot as plt
 import detect_distences_of_sides
 
@@ -17,10 +17,14 @@ def writeRetinaFaceLandmarks(image_cv2, img_path, txt_path, txt_name, logFolderP
     txt_path = txt_path + '.txt'
 
     if os.path.exists(txt_path):
+        resp = txtFileOperations.readJsonDictFromFile(txt_path)
+        txtFileOperations.writeFileMainTxt(txt_path, resp)
         return "Txt already exists!"
     
+    
     resp = detect_distences_of_sides.detect_best_frontal_face(img_path)
-    print(writeToTxt.run(txt_path, resp, logFolderPath))
+    print(txtFileOperations.writeFileMainTxt(txt_path, resp))
+    print(txtFileOperations.run(txt_path, resp))
     return "Added txt: " + txt_path + " successfully!"
 
 def showFrontalFaces(image, confidence, frontalCount,showFrontalFaceExamples):
