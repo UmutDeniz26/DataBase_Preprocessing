@@ -3,7 +3,7 @@ import numpy as np
 
 import Common
 
-abs_space = 700 # This is the absolute space for each column in the main txt file
+abs_space = 1 # This is the absolute space for each column in the main txt file
 def run(txt_path, resp):
     if type(resp) is not dict:
         txt_path = txt_path.replace(".txt", "_FaceNotFound.txt")
@@ -41,13 +41,12 @@ def initMainTxtFile(dbName,upperFolderName,columns):
     os.makedirs(os.path.dirname(txt_path), exist_ok=True)
     #prepare a string with colums, all colum should be seperated with "|" and should be in the middle of the string and taking 6 space from the left and right
     with open(txt_path , 'w') as file:
-        file.write("|")
         for column in columns:
             space_count = np.floor(abs_space/len(columns)).astype(int)
             if column == columns[-1]:
-                file.write(f"{column:^{space_count}}|")
+                file.write(f"{column:^{space_count}}")
             else:
-                file.write(f"{column:^{space_count}}|")
+                file.write(f"{column:^{space_count}},")
     
     os.makedirs(f'./{upperFolderName}/LOG/{dbName}', exist_ok=True)
     Common.writeLog(f'./{upperFolderName}/LOG/{dbName}/logMainTxtFile.txt', "Initialized txt: " + txt_path + " successfully!")
@@ -81,12 +80,16 @@ def writeFileMainTxt(txt_path, resp, inter, intra):
     
     space_count = np.floor(abs_space/len(colums)).astype(int)
     with open(txt_path , 'a') as file:
-        file.write("\n|")
+        file.write("\n")
         for column in colums:
             if column == colums[-1]:
-                file.write(f"{str(column):^{space_count}}|")
+                file.write(f"{str(column):^{space_count}}")
+            elif column == colums[0]:
+                file.write("\"")
+                file.write(f"{str(column):^{space_count}}\",")
             else:
-                file.write(f"{str(column):^{space_count}}|")
+                file.write(f"{str(column):^{space_count}},")
+    
     Common.writeLog(f'./{upperFolderName}/LOG/{dbName}/logMainTxtFile.txt', "Added txt line to main Txt: " + file_path + " successfully!")
     return "Added txt line to main Txt: " + file_path + " successfully!"   
 

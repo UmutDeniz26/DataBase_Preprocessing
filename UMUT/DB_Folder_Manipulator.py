@@ -19,7 +19,9 @@ import txtFileOperations
 intra = 0
 inter = 0
 
-def main(dbName, upperFolderName, showFrontalFaceExamples, inputOrAutoMod, printFeaturesFlag):    
+def main(dbName, upperFolderName, showFrontalFaceExamples, inputOrAutoMod, printFeaturesFlag, selectFirstImageAsFrontal):
+
+
     #This is the folder path of the logs
     logFolderPath = f'./{upperFolderName}/LOG/{dbName}'
     os.makedirs(logFolderPath, exist_ok=True)
@@ -96,7 +98,14 @@ def main(dbName, upperFolderName, showFrontalFaceExamples, inputOrAutoMod, print
             
             confidence,image_cv2 = detectFrontelImageFromTxt.run(output_folder)
             FrontalFaceFunctions.showFrontalFaces(image_cv2, confidence, frontalCount,showFrontalFaceExamples)
+    
+            # If selectFirstImageAsFrontal is True, then the first image will be selected as the frontal image
+            if selectFirstImageAsFrontal == True:
+                image_cv2_split = image_cv2.split("_")
+                image_cv2_split[-1] = "0"
+                image_cv2 = "_".join(image_cv2_split)
             
+    
             if image_cv2 == False:
                 Common.writeLog( logFolderPath +'/logNoFrontalFace.txt', output_file_name)
             else:
@@ -169,4 +178,6 @@ def main(dbName, upperFolderName, showFrontalFaceExamples, inputOrAutoMod, print
                 Common.writeLog(logFolderPath+'/logTxtExists.txt', output_folder)
 
 if __name__ == "__main__":
-    main('AFW', 'UMUT', False, False, False)
+    main(dbName='AFW', upperFolderName='UMUT', 
+         showFrontalFaceExamples=False, inputOrAutoMod=False, 
+        printFeaturesFlag=False, selectFirstImageAsFrontal=True)
