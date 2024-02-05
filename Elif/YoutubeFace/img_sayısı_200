@@ -1,3 +1,5 @@
+# her klasörde max 200 img olacak şekilde veri seti New_YoutubeFace adında güncellendi.
+
 import os
 import shutil
 import random
