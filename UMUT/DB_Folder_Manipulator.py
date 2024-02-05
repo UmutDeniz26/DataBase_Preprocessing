@@ -16,6 +16,9 @@ import DBsWithTxtInfo
 import FrontalFaceFunctions
 import txtFileOperations
 
+intra = 0
+inter = 0
+
 def main(dbName, upperFolderName, showFrontalFaceExamples, inputOrAutoMod, printFeaturesFlag):    
     #This is the folder path of the logs
     logFolderPath = f'./{upperFolderName}/LOG/{dbName}'
@@ -27,7 +30,7 @@ def main(dbName, upperFolderName, showFrontalFaceExamples, inputOrAutoMod, print
     txtInfoPath = f'./{upperFolderName}/{dbName}.txt' 
     
     print(txtFileOperations.initMainTxtFile(dbName,upperFolderName,
-                                            ["file_path","left_eye","right_eye","nose","mouth_left","mouth_right","facial_area"]))
+                                            ["file_path","inter","intra","left_eye","right_eye","nose","mouth_left","mouth_right","facial_area"]))
     
     #These variables will be automatically changed according to the number of features
     file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_index = 0, 0, 0, 0 
@@ -87,6 +90,8 @@ def main(dbName, upperFolderName, showFrontalFaceExamples, inputOrAutoMod, print
 
         #If the fileID or inner_id_left_side is different than the previous one, we should detect the frontal face of the previous folder
         if ( holdID != file_id or holdLeftInnerID != inner_id_left_side ) and firstFlag == False:
+            global inter
+            inter+=1
             os.makedirs(output_folder + "frontal/", exist_ok=True);os.makedirs(output_folder, exist_ok=True)
             
             confidence,image_cv2 = detectFrontelImageFromTxt.run(output_folder)
@@ -134,7 +139,8 @@ def main(dbName, upperFolderName, showFrontalFaceExamples, inputOrAutoMod, print
             input_file_path = './' + upperFolderName + '/' + dbName + '/' + output_file_name
 
         #Here we copy the jpg file to the output folder
-        Common.copyFile(input_file_path, output_file_path)
+        if extension != 'mat':
+            Common.copyFile(input_file_path, output_file_path)
 
         logString = "Added Image: " + output_file_name
         Common.writeLog(logFolderPath+'/logAddedImage.txt', logString)
@@ -151,12 +157,16 @@ def main(dbName, upperFolderName, showFrontalFaceExamples, inputOrAutoMod, print
             #Read the image
             image_cv2 = cv2.imread(input_file_path)
         
+            global intra
             #Calculate the landmarks of the frontal face and write them to the txt file
-            response = FrontalFaceFunctions.writeRetinaFaceLandmarks(image_cv2,input_file_path,output_folder,output_file_name,  logFolderPath)#remove output_folder 
+            response = FrontalFaceFunctions.writeRetinaFaceLandmarks(image_cv2,input_file_path,output_folder,output_file_name,  logFolderPath, inter, intra)#remove output_folder 
+            
+            intra+=1
+            
             if response != "Txt already exists!":
                 Common.writeLog(logFolderPath+'/logAddedTxt.txt', response)
             else:
                 Common.writeLog(logFolderPath+'/logTxtExists.txt', output_folder)
 
 if __name__ == "__main__":
-    main('YoutubeFace', 'UMUT', False, False, False)
+    main('AFW', 'UMUT', False, False, False)
