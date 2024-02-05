@@ -3,7 +3,7 @@ import numpy as np
 
 import Common
 
-abs_space = 500 # This is the absolute space for each column in the main txt file
+abs_space = 700 # This is the absolute space for each column in the main txt file
 def run(txt_path, resp):
     if type(resp) is not dict:
         txt_path = txt_path.replace(".txt", "_FaceNotFound.txt")
@@ -53,7 +53,7 @@ def initMainTxtFile(dbName,upperFolderName,columns):
     Common.writeLog(f'./{upperFolderName}/LOG/{dbName}/logMainTxtFile.txt', "Initialized txt: " + txt_path + " successfully!")
     return "Initialized txt: " + txt_path + " successfully!"
 
-def writeFileMainTxt(txt_path, resp):
+def writeFileMainTxt(txt_path, resp, inter, intra):
     if resp == False:
         resp = {"left_eye": "FaceNotFound"}
 
@@ -77,7 +77,7 @@ def writeFileMainTxt(txt_path, resp):
 
     file_path = txt_path.replace(".txt", "")
     txt_path = f'./{upperFolderName}/{dbName}_FOLDERED/{dbName}_Info.txt'
-    colums = [ file_path + ".jpg" ] + list(resp.values())
+    colums = [ file_path + ".jpg" ] + [inter] + [intra] + list(resp.values())
     
     space_count = np.floor(abs_space/len(colums)).astype(int)
     with open(txt_path , 'a') as file:
