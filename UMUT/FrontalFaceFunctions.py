@@ -22,13 +22,12 @@ def writeRetinaFaceLandmarks(image_cv2, img_path, txt_path, txt_name, logFolderP
     txt_path = txt_path+txt_name
     txt_path = os.path.splitext(txt_path)[0]# it gives extensionless path
     txt_path = txt_path + '.txt'
-
+    print(txt_path)
     if os.path.exists(txt_path):
         resp = txtFileOperations.readJsonDictFromFile(txt_path)
         txtFileOperations.writeFileMainTxt(txt_path, resp,inter,intra)
-    
         #This part is for testing the face alignment
-        if intra%50 == 0 and 0<=imgCounter<11:    
+        if intra%5 == 0 and 0<=imgCounter<21:    
             imgCounter+=1
             # Don't use last element of the landmarks which is 'facial_area'
             # Convert dictionary values to np.array
@@ -36,10 +35,10 @@ def writeRetinaFaceLandmarks(image_cv2, img_path, txt_path, txt_name, logFolderP
 
             # Test face alignment
             image = face_align_landmark(image_cv2, landmarks)
-            plt.subplot(2,5, imgCounter);plt.imshow(image);plt.title(imgCounter)
+            plt.subplot(4,5, imgCounter);plt.imshow(image);plt.title(imgCounter)
             plt.axis('off')
         print(imgCounter)
-        if imgCounter == 10:
+        if imgCounter == 20:
             imgCounter = -1
             plt.show()
             
@@ -62,7 +61,7 @@ def showFrontalFaces(image, confidence, frontalCount,showFrontalFaceExamples):
         plt.show()    
 
 
-def face_align_landmark(img, landmark,image_size=(128,128),method ="similar"):
+def face_align_landmark(img, landmark,image_size=(512,512),method ="similar"):
     tform= transform.AffineTransform() if method == "affine" else transform.SimilarityTransform()
     src=np.array(
         [[38.2946,51.6963],[73.5318,51.5014],[56.0252,71.7366],[41.5493,92.3655],[70.729904,92.2041]],dtype=np.float32
@@ -79,4 +78,6 @@ def face_align_landmark(img, landmark,image_size=(128,128),method ="similar"):
         ndimage = np.stack([ndimage ,ndimage, ndimage],-1)
     else:
         ndimage=cv2.cvtColor(ndimage,cv2.COLOR_BGR2GRAY)
+    print(ndimage.shape)
+    #exit()
     return ndimage

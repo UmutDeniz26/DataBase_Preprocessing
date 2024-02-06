@@ -184,4 +184,4 @@ def main(dbName, upperFolderName, showFrontalFaceExamples, inputOrAutoMod, print
 if __name__ == "__main__":
     main(dbName='YoutubeFace', upperFolderName='UMUT', 
          showFrontalFaceExamples=False, inputOrAutoMod=False, 
-        printFeaturesFlag=False, selectFirstImageAsFrontal=False, showAlignedImages=False)
+        printFeaturesFlag=False, selectFirstImageAsFrontal=False, showAlignedImages=True)
