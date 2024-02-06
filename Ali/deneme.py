@@ -7,7 +7,7 @@ abs_space = 1
 def run(folder_path):
     max_abs_image= ""
     max_abs_value = sys.maxsize
-    for filename in (os.listdir(folder_path)):
+    for filename in sorted(os.listdir(folder_path)):
         image_path = folder_path + "/" + filename
         
         if filename.endswith(('.txt')):
