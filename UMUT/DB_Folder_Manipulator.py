@@ -18,6 +18,7 @@ import txtFileOperations
 
 intra = 0
 inter = 0
+plotimageCounter=0
 
 def main(dbName, upperFolderName, showFrontalFaceExamples, inputOrAutoMod, printFeaturesFlag, selectFirstImageAsFrontal):
 
@@ -166,9 +167,9 @@ def main(dbName, upperFolderName, showFrontalFaceExamples, inputOrAutoMod, print
             #Read the image
             image_cv2 = cv2.imread(input_file_path)
         
-            global intra
+            global intra,plotimageCounter
             #Calculate the landmarks of the frontal face and write them to the txt file
-            response = FrontalFaceFunctions.writeRetinaFaceLandmarks(image_cv2,input_file_path,output_folder,output_file_name,  logFolderPath, inter, intra)#remove output_folder 
+            response,plotimageCounter = FrontalFaceFunctions.writeRetinaFaceLandmarks(image_cv2,input_file_path,output_folder,output_file_name,  logFolderPath, inter, intra,plotimageCounter)#remove output_folder 
             
             intra+=1
             
@@ -178,6 +179,6 @@ def main(dbName, upperFolderName, showFrontalFaceExamples, inputOrAutoMod, print
                 Common.writeLog(logFolderPath+'/logTxtExists.txt', output_folder)
 
 if __name__ == "__main__":
-    main(dbName='AFW', upperFolderName='UMUT', 
+    main(dbName='YoutubeFace', upperFolderName='UMUT', 
          showFrontalFaceExamples=False, inputOrAutoMod=False, 
-        printFeaturesFlag=False, selectFirstImageAsFrontal=True)
+        printFeaturesFlag=False, selectFirstImageAsFrontal=False)
