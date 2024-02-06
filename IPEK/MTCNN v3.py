@@ -6,7 +6,7 @@ import os
 detector = MTCNN()
 
 # define the folder path containing images
-folder_path = r'./IPEK/LFW/Aaron_Peirsol'
+folder_path = "C:/Users/ipekb/Desktop/staj lwf/DataBase_Preprocessing/IPEK/LFW/Aaron_Peirsol"
 
 # Output file to record the most confident face per image
 output_file = 'most_confident_faces.txt'
@@ -60,9 +60,9 @@ with open(output_file, 'a') as f_out:
                 extracted_face = image[y:y+h, x:x+w]
 
                 # display the extracted face
-                # cv2.imshow(image_name, extracted_face)
-                # cv2.waitKey(0)  # wait for any key press
-                # cv2.destroyAllWindows()  # close the window after any key press
+                cv2.imshow(image_name, extracted_face)
+                cv2.waitKey(0)  # wait for any key press
+                cv2.destroyAllWindows()  # close the window after any key press
         
         print("Most frontal face in", image_name, " its confidence: ", str(best_confidence))
         best_confidence = 0
