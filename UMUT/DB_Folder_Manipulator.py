@@ -16,10 +16,12 @@ import DBsWithTxtInfo
 import FrontalFaceFunctions
 import txtFileOperations
 
+from retinaface import RetinaFace
+
 intra = 0
 inter = 0
 
-def main(dbName, upperFolderName, showFrontalFaceExamples, inputOrAutoMod, printFeaturesFlag, selectFirstImageAsFrontal, showAlignedImages):
+def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirstImageAsFrontal, showAlignedImages, alignImagesFlag, resetImagesFlag):
 
     #------------------------------------------------------- Initialization -------------------------------------------------------#
     #This is the folder path of the logs
@@ -102,8 +104,7 @@ def main(dbName, upperFolderName, showFrontalFaceExamples, inputOrAutoMod, print
             os.makedirs(output_folder + "frontal/", exist_ok=True);os.makedirs(output_folder, exist_ok=True)
             
             confidence,image_cv2 = detectFrontelImageFromTxt.run(output_folder)
-            FrontalFaceFunctions.showFrontalFaces(image_cv2, confidence, frontalCount,showFrontalFaceExamples)
-    
+            
             # If selectFirstImageAsFrontal is True, then the first image will be selected as the frontal image
             if selectFirstImageAsFrontal == True:
                 image_cv2_split = image_cv2.split("_")
@@ -154,7 +155,21 @@ def main(dbName, upperFolderName, showFrontalFaceExamples, inputOrAutoMod, print
 
         #Here we copy the jpg file to the output folder
         if extension != 'mat':
-            Common.copyFile(input_file_path, output_file_path)
+            #aligned_file_path = input_file_path.replace("UMUT", "UMUT/"+dbName+"_aligned")
+
+            if resetImagesFlag == True:
+                #Expand face area is a parameter for the retinaface, it is used to expand the face area 
+                #It is used to include the hair and the ears in the face area !!!
+                if alignImagesFlag == True:
+                    faces = RetinaFace.extract_faces(input_file_path,align=True,expand_face_area=10)
+                    if len(faces) ==0:
+                        Common.writeLog(logFolderPath+'/logNoFace.txt', output_file_name)
+                        Common.copyFile(input_file_path, output_file_path)
+                    else:
+                        cv2.imwrite(output_file_path, cv2.cvtColor(faces[0], cv2.COLOR_BGR2RGB))
+                        #Common.copyFile(aligned_file_path, output_file_path)
+                else:
+                    Common.copyFile(input_file_path, output_file_path)
 
         logString = "Added Image: " + output_file_name
         Common.writeLog(logFolderPath+'/logAddedImage.txt', logString)
@@ -183,5 +198,6 @@ def main(dbName, upperFolderName, showFrontalFaceExamples, inputOrAutoMod, print
 
 if __name__ == "__main__":
     main(dbName='YoutubeFace', upperFolderName='UMUT', 
-         showFrontalFaceExamples=False, inputOrAutoMod=False, 
-        printFeaturesFlag=False, selectFirstImageAsFrontal=False, showAlignedImages=True)
+        inputOrAutoMod=False, printFeaturesFlag=False,
+          selectFirstImageAsFrontal=False, showAlignedImages=False, 
+          alignImagesFlag=True, resetImagesFlag=False) #if resetImagesFlag is True, then the images will be recreated 
