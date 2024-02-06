@@ -6,7 +6,7 @@ import os
 detector = MTCNN()
 
 # define the folder path containing images
-folder_path = r'./IPEK/lfw-deepfunneled'
+folder_path = r'./IPEK/LFW'
 
 files = os.listdir(folder_path)
 
@@ -53,9 +53,8 @@ for file in files:
             extracted_face = image[y:y+h, x:x+w]
 
             # display the extracted face
-            #cv2.imshow(filename, extracted_face)
-            #cv2.waitKey(0)  # wait for any key press
-            #cv2.destroyAllWindows()  # close the window after any key press
-    
+            cv2.imshow(extracted_face)
+            cv2.waitKey(0)  # wait for any key press
+            cv2.destroyAllWindows() 
     print("Most frontal face in", image_name," its confidence: ", str(best_confidence))
     best_confidence = 0
