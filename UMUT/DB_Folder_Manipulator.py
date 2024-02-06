@@ -18,11 +18,10 @@ import txtFileOperations
 
 intra = 0
 inter = 0
-plotimageCounter=0
 
-def main(dbName, upperFolderName, showFrontalFaceExamples, inputOrAutoMod, printFeaturesFlag, selectFirstImageAsFrontal):
+def main(dbName, upperFolderName, showFrontalFaceExamples, inputOrAutoMod, printFeaturesFlag, selectFirstImageAsFrontal, showAlignedImages):
 
-
+    #------------------------------------------------------- Initialization -------------------------------------------------------#
     #This is the folder path of the logs
     logFolderPath = f'./{upperFolderName}/LOG/{dbName}'
     os.makedirs(logFolderPath, exist_ok=True)
@@ -41,6 +40,11 @@ def main(dbName, upperFolderName, showFrontalFaceExamples, inputOrAutoMod, print
     imgTxtDBs = False
     if dbName == 'YoutubeFace' or dbName == 'LFW':
         imgTxtDBs = True
+
+    if showAlignedImages == True:
+        plotimageCounter=0
+    else:
+        plotimageCounter=-1
     #------------------------------------------------------- Main Part -------------------------------------------------------#
     
     files = os.scandir('./'+ upperFolderName +'/'+ dbName)
@@ -167,10 +171,9 @@ def main(dbName, upperFolderName, showFrontalFaceExamples, inputOrAutoMod, print
             #Read the image
             image_cv2 = cv2.imread(input_file_path)
         
-            global intra,plotimageCounter
+            global intra
             #Calculate the landmarks of the frontal face and write them to the txt file
             response,plotimageCounter = FrontalFaceFunctions.writeRetinaFaceLandmarks(image_cv2,input_file_path,output_folder,output_file_name,  logFolderPath, inter, intra,plotimageCounter)#remove output_folder 
-            
             intra+=1
             
             if response != "Txt already exists!":
@@ -181,4 +184,4 @@ def main(dbName, upperFolderName, showFrontalFaceExamples, inputOrAutoMod, print
 if __name__ == "__main__":
     main(dbName='YoutubeFace', upperFolderName='UMUT', 
          showFrontalFaceExamples=False, inputOrAutoMod=False, 
-        printFeaturesFlag=False, selectFirstImageAsFrontal=False)
+        printFeaturesFlag=False, selectFirstImageAsFrontal=False, showAlignedImages=False)
