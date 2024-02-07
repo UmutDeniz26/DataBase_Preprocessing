@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 img_path = "img1.jpg"
 
-img = RetinaFace.detect_faces(img_path)
+img = RetinaFace.extract_faces(img_path,align=True)
 
 #find index of max eleement in a array
 array = [1,2,3] 
