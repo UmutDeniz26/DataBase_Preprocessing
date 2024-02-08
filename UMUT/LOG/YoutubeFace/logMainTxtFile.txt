@@ -6,8 +6,3 @@ Added txt line to main Txt: ./UMUT/YoutubeFace_FOLDERED/00000/0/00000_0_000003 s
 Added txt line to main Txt: ./UMUT/YoutubeFace_FOLDERED/00000/0/00000_0_000004 successfully!
 Added txt line to main Txt: ./UMUT/YoutubeFace_FOLDERED/00000/0/00000_0_000005 successfully!
 Added txt line to main Txt: ./UMUT/YoutubeFace_FOLDERED/00000/0/00000_0_000006 successfully!
-Added txt line to main Txt: ./UMUT/YoutubeFace_FOLDERED/00000/0/00000_0_000007 successfully!
-Added txt line to main Txt: ./UMUT/YoutubeFace_FOLDERED/00000/0/00000_0_000008 successfully!
-Added txt line to main Txt: ./UMUT/YoutubeFace_FOLDERED/00000/0/00000_0_000009 successfully!
-Added txt line to main Txt: ./UMUT/YoutubeFace_FOLDERED/00000/0/00000_0_000010 successfully!
-Added txt line to main Txt: ./UMUT/YoutubeFace_FOLDERED/00000/0/00000_0_000011 successfully!
