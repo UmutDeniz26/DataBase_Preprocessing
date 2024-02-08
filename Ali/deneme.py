@@ -3,13 +3,17 @@ import json
 import math
 import sys
 import numpy as np
+
+y = 0
 abs_space = 1
-def run(folder_path):
+def run(folder_path,i):
     max_abs_image= ""
     max_abs_value = sys.maxsize
+    
+    global y
     for filename in sorted(os.listdir(folder_path)):
         image_path = folder_path + "/" + filename
-        
+
         if filename.endswith(('.txt')):
 
             try:
@@ -31,7 +35,9 @@ def run(folder_path):
 
             file_path = image_path.replace(".txt", "")
             file_path = file_path.replace("/home/ali/Desktop/github/DataBase_Preprocessing/Ali","")
-            colums = [ file_path + ".jpg" ] + [0] + [0] + list(content.values())
+            colums = [ file_path + ".jpg" ] + [i] + [y] + list(content.values())
+
+            y += 1
             space_count = np.floor(abs_space/len(colums)).astype(int)
             with open(txt_path , 'a') as file:
                 file.write("\n")
@@ -54,10 +60,12 @@ def run(folder_path):
         return False, False
     return max_abs_value,max_abs_image
 source_folder = "/home/ali/Desktop/github/DataBase_Preprocessing/Ali/CASIA-FaceV5(BMP)/Face"
+i = 0
 for filename in os.listdir(source_folder):
 
     image_path = os.path.join(source_folder, filename)
-    run(image_path)
+    run(image_path,filename)
+
 
 
 def runn(txt_path):
@@ -71,3 +79,4 @@ def runn(txt_path):
             else:
                 file.write(f"{column:^{space_count}},")
 
+# runn('/home/ali/Desktop/github/DataBase_Preprocessing/Ali/Info.txt')
