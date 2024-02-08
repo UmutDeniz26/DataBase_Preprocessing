@@ -4,6 +4,8 @@ import cv2
 import shutil
 import matplotlib.pyplot as plt
 import sys
+import logging
+import warnings
 
 sys.path.insert(0, './Ali')
 import detect_distences_of_sides
@@ -22,6 +24,9 @@ intra = 0
 inter = 0
 
 def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirstImageAsFrontal, showAlignedImages, alignImagesFlag, resetImagesFlag):
+        
+    logging.basicConfig(level=logging.WARNING)
+    logger = logging.getLogger(__name__)
 
     #------------------------------------------------------- Initialization -------------------------------------------------------#
     #This is the folder path of the logs
@@ -161,7 +166,21 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
                 #Expand face area is a parameter for the retinaface, it is used to expand the face area 
                 #It is used to include the hair and the ears in the face area !!!
                 if alignImagesFlag == True:
-                    faces = RetinaFace.extract_faces(input_file_path,align=True,align_first=True)
+                    try:                    
+                        with warnings.catch_warnings(record=True) as w:
+                            # Run your code that generates the warning here
+                            # The warning will be captured in the list `w`
+                            faces = RetinaFace.extract_faces(input_file_path, align=True, align_first=True)
+                            
+                            # Check if there were any warnings
+                            if w:
+                                # Iterate over the captured warnings
+                                for warning in w:
+                                    # Print or handle the warning as needed     
+                                   Common.writeLog(logFolderPath+'/logWarnings.txt', str(warning))    
+
+                    except:
+                        faces = []
                     if len(faces) ==0:
                         Common.writeLog(logFolderPath+'/logNoFace.txt', output_file_name)
                         Common.copyFile(input_file_path, output_file_path)
