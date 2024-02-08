@@ -7,17 +7,18 @@ from skimage import transform
 import torch
 
 
-
 class Torch_model_interf:
     def __init__(self, model_file, image_size=(112, 112)):
         import torch
         self.torch = torch
         cvd = os.environ.get("CUDA_VISIBLE_DEVICES", "").strip()
         device_name = "cuda:0" if len(cvd) > 0 and int(cvd) != -1 else "cpu"
+        
         self.device = self.torch.device(device_name)
         
         try:
-            self.model = self.torch.jit.load(os.path.join(os.getcwd(), model_file), map_location=device_name)
+
+            self.model = self.torch.jit.load("UMUT/ms1m_v3_arcface_r100_fp16.pth", map_location=device_name)
         except:
             print("Error: %s is weights only, please load and save the entire model by `torch.jit.save`" % model_file)
             self.model = None
@@ -31,7 +32,7 @@ class Torch_model_interf:
         print(imgs.shape)
         
         output = self.model(self.torch.from_numpy(imgs).to(self.device).float())#Burası çalışmıyor
-        exit()
+        #exit()
         return output.cpu().detach().numpy()
 
 
@@ -72,13 +73,14 @@ def get_embeddings(model_interf, img_names, landmarks, batch_size=5, flip=True):
 model_file= "ms1m_v3_arcface_r100_fp16.pth"
 interf_func = Torch_model_interf(model_file)
 
-images_folder = "YoutubeFace_FOLDERED"
+images_folder = "UMUT/YoutubeFace_FOLDERED"
 img_names = []
 landmarks = []
 
 import txtFileOperations
 
 counter=0
+
 for file in os.scandir(images_folder):
     for subfile in os.scandir(file.path):
         for subsubfile in os.scandir(subfile.path):
@@ -101,6 +103,7 @@ img_names = [img_names] + [img_names]
 
 for img_name, landmark in zip(img_names, landmarks):
     embs, embs_f = get_embeddings(interf_func, img_name, landmark, batch_size=5, flip=True)
+    break
     print(embs)
 
 
