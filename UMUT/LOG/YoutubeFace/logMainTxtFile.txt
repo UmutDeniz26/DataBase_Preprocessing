@@ -1,4 +1,6 @@
 Initialized txt: ./UMUT/YoutubeFace_FOLDERED/YoutubeFace_Info.txt successfully!
+<<<<<<< HEAD
+=======
 Added txt line to main Txt: ./UMUT/YoutubeFace_FOLDERED/00000/0/00000_0_000000 successfully!
 Added txt line to main Txt: ./UMUT/YoutubeFace_FOLDERED/00000/0/00000_0_000001 successfully!
 Added txt line to main Txt: ./UMUT/YoutubeFace_FOLDERED/00000/0/00000_0_000002 successfully!
@@ -11,3 +13,4 @@ Added txt line to main Txt: ./UMUT/YoutubeFace_FOLDERED/00000/0/00000_0_000008 s
 Added txt line to main Txt: ./UMUT/YoutubeFace_FOLDERED/00000/0/00000_0_000009 successfully!
 Added txt line to main Txt: ./UMUT/YoutubeFace_FOLDERED/00000/0/00000_0_000010 successfully!
 Added txt line to main Txt: ./UMUT/YoutubeFace_FOLDERED/00000/0/00000_0_000011 successfully!
+>>>>>>> 3d972357ff3ee1a827a68f1abfa0b2e4ae6c9a49

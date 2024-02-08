@@ -16,6 +16,10 @@ import DBsWithTxtInfo
 import FrontalFaceFunctions
 import txtFileOperations
 
+
+import logging
+import warnings
+
 from retinaface import RetinaFace
 
 intra = 0
@@ -28,6 +32,25 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
     logFolderPath = f'./{upperFolderName}/LOG/{dbName}'
     os.makedirs(logFolderPath, exist_ok=True)
     Common.clearLogs(logFolderPath)
+
+
+    from logging.handlers import RotatingFileHandler
+
+    logger_file_handler = RotatingFileHandler(u'test.log')
+    logger_file_handler.setLevel(logging.DEBUG)
+
+    logging.captureWarnings(True)
+
+    logger = logging.getLogger(__name__)
+    warnings_logger = logging.getLogger("py.warnings")
+
+    logger.addHandler(logger_file_handler)
+    logger.setLevel(logging.DEBUG)
+    warnings_logger.addHandler(logger_file_handler)
+
+    logger.info(u'Test')
+    warnings.warn(u'Warning test')
+    
 
     # This is very important for the txt operations. 
     #The txt file should be in the same folder with the images and the name of the txt file should be the same with the name of the folder
@@ -161,12 +184,29 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
                 #Expand face area is a parameter for the retinaface, it is used to expand the face area 
                 #It is used to include the hair and the ears in the face area !!!
                 if alignImagesFlag == True:
+<<<<<<< HEAD
+                    try:                    
+                        with warnings.catch_warnings(record=True) as w:
+                            # Set the filter to catch all warnings
+                            #warnings.simplefilter("always")
+
+                            # Call the function that generates warnings
+                            faces = RetinaFace.extract_faces(input_file_path, align=True, align_first=True)
+
+                            # Check if there are any warnings
+                            if w:
+                                # Handle warnings here
+                                for warning in w:
+                                    # Depending on the warning type and content, you can take appropriate actions
+                                    Common.writeLog(logFolderPath+'/logWarnings.txt', str(warning))    
+=======
                     try:
                         
                         faces = RetinaFace.extract_faces(input_file_path,align=True,align_first=True)
                         
                         logger = RetinaFace.get_logger()
                         logger.info(f'Extracted {len(faces)} faces from {input_file_path}')
+>>>>>>> 3d972357ff3ee1a827a68f1abfa0b2e4ae6c9a49
 
                     except:
                         faces = []
