@@ -1,10 +1,10 @@
 import os
 
 # Veri setinin bulunduğu dizin
-dataset_path = "./Elif/YoutubeFace/YoutubeFace"
+dataset_path = "./Elif/YoutubeFace/New_YotubeFace"
 
 # Çıktı dosyasının adı
-output_file = './Elif/YoutubeFace/output_img_sayisi.txt'
+output_file = './Elif/YoutubeFace/güncel_Sayi.txt'
 
 counter = 0
 a=0
@@ -23,7 +23,7 @@ with open(output_file, 'w') as file:
 
                 if os.path.isdir(subfolder_path):
                     total_img = len(os.listdir(subfolder_path))
-                    if total_img >= 200:
+                    if total_img >= 202:
                         a+=1
                         person_images.append(f'{person_name}_{subfolder_name}_{total_img}_{a}')
                     else:
