@@ -161,7 +161,10 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
                 #Expand face area is a parameter for the retinaface, it is used to expand the face area 
                 #It is used to include the hair and the ears in the face area !!!
                 if alignImagesFlag == True:
-                    faces = RetinaFace.extract_faces(input_file_path,align=True,align_first=True)
+                    try:
+                        faces = RetinaFace.extract_faces(input_file_path,align=True,align_first=True)
+                    except:
+                        faces = []
                     if len(faces) ==0:
                         Common.writeLog(logFolderPath+'/logNoFace.txt', output_file_name)
                         Common.copyFile(input_file_path, output_file_path)
