@@ -157,7 +157,7 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
         if extension != 'mat':
             #aligned_file_path = input_file_path.replace("UMUT", "UMUT/"+dbName+"_aligned")
 
-            if resetImagesFlag == True:
+            if resetImagesFlag == True or not os.path.exists(output_file_path):
                 #Expand face area is a parameter for the retinaface, it is used to expand the face area 
                 #It is used to include the hair and the ears in the face area !!!
                 if alignImagesFlag == True:
