@@ -52,7 +52,7 @@ def plot_aligned_faces(image_cv2, resp,intra,imgCounter):
         plt.show()
 
     return imgCounter
-        
+
 
 def face_align_landmark(img, landmark,image_size=(112,112),method ="similar"):
     tform= transform.AffineTransform() if method == "affine" else transform.SimilarityTransform()

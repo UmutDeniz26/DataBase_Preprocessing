@@ -47,14 +47,13 @@ for file in files:
         # if a frontal face is found, display it
         if best_face:
             # print the filename associated with the most frontal face
-            print(best_face)
+            
             x, y, w, h = best_face
          
             extracted_face = image[y:y+h, x:x+w]
 
             # display the extracted face
-            cv2.imshow('Extracted Face', extracted_face)
-
+            cv2.imshow(best_face)
             cv2.waitKey(0)  # wait for any key press
             cv2.destroyAllWindows() 
     print("Most frontal face in", image_name," its confidence: ", str(best_confidence))
