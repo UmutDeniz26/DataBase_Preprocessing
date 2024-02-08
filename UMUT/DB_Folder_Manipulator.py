@@ -17,6 +17,10 @@ import DBsWithTxtInfo
 import FrontalFaceFunctions
 import txtFileOperations
 
+
+import logging
+import warnings
+
 from retinaface import RetinaFace
 
 intra = 0
@@ -29,6 +33,25 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
     logFolderPath = f'./{upperFolderName}/LOG/{dbName}'
     os.makedirs(logFolderPath, exist_ok=True)
     Common.clearLogs(logFolderPath)
+
+
+    from logging.handlers import RotatingFileHandler
+
+    logger_file_handler = RotatingFileHandler(u'test.log')
+    logger_file_handler.setLevel(logging.DEBUG)
+
+    logging.captureWarnings(True)
+
+    logger = logging.getLogger(__name__)
+    warnings_logger = logging.getLogger("py.warnings")
+
+    logger.addHandler(logger_file_handler)
+    logger.setLevel(logging.DEBUG)
+    warnings_logger.addHandler(logger_file_handler)
+
+    logger.info(u'Test')
+    warnings.warn(u'Warning test')
+    
 
     # This is very important for the txt operations. 
     #The txt file should be in the same folder with the images and the name of the txt file should be the same with the name of the folder
@@ -165,7 +188,7 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
                     try:                    
                         with warnings.catch_warnings(record=True) as w:
                             # Set the filter to catch all warnings
-                            warnings.simplefilter("always")
+                            #warnings.simplefilter("always")
 
                             # Call the function that generates warnings
                             faces = RetinaFace.extract_faces(input_file_path, align=True, align_first=True)
