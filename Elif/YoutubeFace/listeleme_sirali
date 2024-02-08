@@ -1,7 +1,7 @@
 import os
 
 # Veri setinin bulunduğu dizin
-dataset_path = "./Elif/YoutubeFace/new"
+dataset_path = "./Elif/YoutubeFace/YoutubeFace"
 
 # Çıktı dosyasının adı
 output_file = './Elif/YoutubeFace/new.txt'
