@@ -5,7 +5,7 @@ sys.path.insert(0,"./UMUT")
 import DB_Folder_Manipulator
 
 DB_Folder_Manipulator.main(dbName='YoutubeFace', upperFolderName='Elif', 
-         showFrontalFaceExamples=False, inputOrAutoMod=False, 
-        printFeaturesFlag=False, selectFirstImageAsFrontal=False)
-
+        inputOrAutoMod=False, printFeaturesFlag=True,
+          selectFirstImageAsFrontal=False, showAlignedImages=False, 
+          alignImagesFlag=True, resetImagesFlag=True) #if resetImagesFlag is True, then the images will be recreated 
 

@@ -8,6 +8,7 @@ import sys
 sys.path.insert(0, './Ali')
 import detect_distences_of_sides
 import detectFrontelImageFromTxt
+import DetectUpperCase
 
 sys.path.insert(0, './UMUT')
 import Common
@@ -15,10 +16,6 @@ import NameFeatureExtractor
 import DBsWithTxtInfo
 import FrontalFaceFunctions
 import txtFileOperations
-
-
-import logging
-import warnings
 
 from retinaface import RetinaFace
 
@@ -33,25 +30,6 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
     os.makedirs(logFolderPath, exist_ok=True)
     Common.clearLogs(logFolderPath)
 
-
-    from logging.handlers import RotatingFileHandler
-
-    logger_file_handler = RotatingFileHandler(u'test.log')
-    logger_file_handler.setLevel(logging.DEBUG)
-
-    logging.captureWarnings(True)
-
-    logger = logging.getLogger(__name__)
-    warnings_logger = logging.getLogger("py.warnings")
-
-    logger.addHandler(logger_file_handler)
-    logger.setLevel(logging.DEBUG)
-    warnings_logger.addHandler(logger_file_handler)
-
-    logger.info(u'Test')
-    warnings.warn(u'Warning test')
-    
-
     # This is very important for the txt operations. 
     #The txt file should be in the same folder with the images and the name of the txt file should be the same with the name of the folder
     txtInfoPath = f'./{upperFolderName}/{dbName}.txt' 
@@ -63,7 +41,7 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
     file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_index = 0, 0, 0, 0 
 
     imgTxtDBs = False
-    if dbName == 'YoutubeFace' or dbName == 'LFW':
+    if dbName == 'YoutubeFace' or dbName == 'LFW' or 'CASIA-FaceV5(BMP)':
         imgTxtDBs = True
 
     if showAlignedImages == True:
@@ -71,8 +49,16 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
     else:
         plotimageCounter=-1
     #------------------------------------------------------- Main Part -------------------------------------------------------#
-    
-    files = os.scandir('./'+ upperFolderName +'/'+ dbName)
+    dbFolderPath = './'+ upperFolderName +'/'+ dbName 
+    if dbName == 'YoutubeFace':
+        dbFolderPath = dbFolderPath +'/'+ dbName 
+    files = os.scandir(dbFolderPath)
+
+    if DetectUpperCase.save_second_letter_upper(dbFolderPath,"uppercase_files.txt") >0:
+        print("There are some folders that has two upper case.")
+        DetectUpperCase.rename_second_letter_lowercase(dbFolderPath)
+        exit()
+
     firstFlag = True;makeDeceisonFlag = True
 
     holdID = 0;holdLeftInnerID = 0;holdFeaturesLen = 0;frontalCount = 0;
@@ -92,6 +78,7 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
         "inner_id_left_side_index": inner_id_left_side_index,
         "learnType_index": learnType_index
     }
+    files.sort()
 
     #Iterate through the files
     for index,file in enumerate(files):
@@ -186,16 +173,13 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
                 if alignImagesFlag == True:
                     try:
                         faces = RetinaFace.extract_faces(input_file_path,align=True,align_first=True)
-                        
-                        logger = RetinaFace.get_logger()
-                        logger.info(f'Extracted {len(faces)} faces from {input_file_path}')
-
                     except:
                         faces = []
                     if len(faces) ==0:
                         Common.writeLog(logFolderPath+'/logNoFace.txt', output_file_name)
                         Common.copyFile(input_file_path, output_file_path)
                     else:
+                        print("Copying " + input_file_path + " to " + output_file_path)
                         cv2.imwrite(output_file_path, cv2.cvtColor(faces[0], cv2.COLOR_BGR2RGB))
                         #Common.copyFile(aligned_file_path, output_file_path)
                 else:
@@ -230,4 +214,4 @@ if __name__ == "__main__":
     main(dbName='YoutubeFace', upperFolderName='UMUT', 
         inputOrAutoMod=False, printFeaturesFlag=True,
           selectFirstImageAsFrontal=False, showAlignedImages=False, 
-          alignImagesFlag=True, resetImagesFlag=True) #if resetImagesFlag is True, then the images will be recreated 
+          alignImagesFlag=True, resetImagesFlag=False) #if resetImagesFlag is True, then the images will be recreated 

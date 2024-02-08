@@ -29,7 +29,9 @@ def writeRetinaFaceLandmarks(image_cv2, img_path, txt_path, txt_name, logFolderP
         #This part is for testing the face alignment
         imgCounter = plot_aligned_faces(image_cv2, resp,intra,imgCounter)
         return "Txt already exists!", imgCounter
-    resp = detect_distences_of_sides.detect_best_frontal_face(img_path)
+    
+    #insert resp from extract faces
+    #resp = detect_distences_of_sides.detect_best_frontal_face(img_path)
 
     print(txtFileOperations.writeFileMainTxt(txt_path, resp,inter,intra))
     print(txtFileOperations.run(txt_path, resp))
@@ -53,20 +55,3 @@ def plot_aligned_faces(image_cv2, resp,intra,imgCounter):
 
     return imgCounter
 
-
-def face_align_landmark(img, landmark,image_size=(112,112),method ="similar"):
-    tform= transform.AffineTransform() if method == "affine" else transform.SimilarityTransform()
-    src=np.array(
-        [[38.2946,51.6963],[73.5318,51.5014],[56.0252,71.7366],[41.5493,92.3655],[70.729904,92.2041]],dtype=np.float32
-    )
-    tform.estimate(landmark,src)
-    #ndimage = transform.warp(img, tform.inverse,output_shape=image_size)
-    #ndimage =(ndimage * 255).astype(np.uint8)
-    M=tform.params[0:2,:]
-    ndimage = cv2.warpAffine(img, M ,image_size,borderValue=0.0)
-    if len (ndimage.shape) == 2:
-        ndimage = np.stack([ndimage ,ndimage, ndimage],-1)
-    else:
-        ndimage=cv2.cvtColor(ndimage,cv2.COLOR_BGR2GRAY)
-
-    return ndimage

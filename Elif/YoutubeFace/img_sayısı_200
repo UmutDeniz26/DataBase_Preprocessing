@@ -62,10 +62,10 @@ def imgReduction(subfolder_path,N=201):
     return selected_images
     
 # Veri setinin bulunduğu dizin
-dataset_path = "./Elif/YoutubeFace/YoutubeFace"
+dataset_path = "./Elif/YoutubeFace/200fazla"
 
 # Yeni klasör adı
-new_dataset_name = "./Elif/YoutubeFace/New_YotubeFace"
+new_dataset_name = "./Elif/YoutubeFace/200"
 
 from collections import Counter
 
