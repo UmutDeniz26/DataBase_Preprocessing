@@ -16,10 +16,6 @@ import DBsWithTxtInfo
 import FrontalFaceFunctions
 import txtFileOperations
 
-
-import logging
-import warnings
-
 from retinaface import RetinaFace
 
 intra = 0
@@ -32,25 +28,6 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
     logFolderPath = f'./{upperFolderName}/LOG/{dbName}'
     os.makedirs(logFolderPath, exist_ok=True)
     Common.clearLogs(logFolderPath)
-
-
-    from logging.handlers import RotatingFileHandler
-
-    logger_file_handler = RotatingFileHandler(u'test.log')
-    logger_file_handler.setLevel(logging.DEBUG)
-
-    logging.captureWarnings(True)
-
-    logger = logging.getLogger(__name__)
-    warnings_logger = logging.getLogger("py.warnings")
-
-    logger.addHandler(logger_file_handler)
-    logger.setLevel(logging.DEBUG)
-    warnings_logger.addHandler(logger_file_handler)
-
-    logger.info(u'Test')
-    warnings.warn(u'Warning test')
-    
 
     # This is very important for the txt operations. 
     #The txt file should be in the same folder with the images and the name of the txt file should be the same with the name of the folder
@@ -180,16 +157,12 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
         if extension != 'mat':
             #aligned_file_path = input_file_path.replace("UMUT", "UMUT/"+dbName+"_aligned")
 
-            if resetImagesFlag == True or not os.path.exists(output_file_path):
+            if resetImagesFlag == True:
                 #Expand face area is a parameter for the retinaface, it is used to expand the face area 
                 #It is used to include the hair and the ears in the face area !!!
                 if alignImagesFlag == True:
                     try:
                         faces = RetinaFace.extract_faces(input_file_path,align=True,align_first=True)
-                        
-                        logger = RetinaFace.get_logger()
-                        logger.info(f'Extracted {len(faces)} faces from {input_file_path}')
-
                     except:
                         faces = []
                     if len(faces) ==0:
