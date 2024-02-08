@@ -4,6 +4,7 @@ import cv2
 import shutil
 import matplotlib.pyplot as plt
 import sys
+import logging
 import warnings
 
 sys.path.insert(0, './Ali')
@@ -23,6 +24,9 @@ intra = 0
 inter = 0
 
 def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirstImageAsFrontal, showAlignedImages, alignImagesFlag, resetImagesFlag):
+        
+    logging.basicConfig(level=logging.WARNING)
+    logger = logging.getLogger(__name__)
 
     #------------------------------------------------------- Initialization -------------------------------------------------------#
     #This is the folder path of the logs
@@ -164,18 +168,16 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
                 if alignImagesFlag == True:
                     try:                    
                         with warnings.catch_warnings(record=True) as w:
-                            # Set the filter to catch all warnings
-                            warnings.simplefilter("always")
-
-                            # Call the function that generates warnings
+                            # Run your code that generates the warning here
+                            # The warning will be captured in the list `w`
                             faces = RetinaFace.extract_faces(input_file_path, align=True, align_first=True)
-
-                            # Check if there are any warnings
+                            
+                            # Check if there were any warnings
                             if w:
-                                # Handle warnings here
+                                # Iterate over the captured warnings
                                 for warning in w:
-                                    # Depending on the warning type and content, you can take appropriate actions
-                                    Common.writeLog(logFolderPath+'/logWarnings.txt', str(warning))    
+                                    # Print or handle the warning as needed     
+                                   Common.writeLog(logFolderPath+'/logWarnings.txt', str(warning))    
 
                     except:
                         faces = []
