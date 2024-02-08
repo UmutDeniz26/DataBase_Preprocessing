@@ -4,7 +4,6 @@ import cv2
 import shutil
 import matplotlib.pyplot as plt
 import sys
-import warnings
 
 sys.path.insert(0, './Ali')
 import detect_distences_of_sides
@@ -185,6 +184,7 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
                 #Expand face area is a parameter for the retinaface, it is used to expand the face area 
                 #It is used to include the hair and the ears in the face area !!!
                 if alignImagesFlag == True:
+<<<<<<< HEAD
                     try:                    
                         with warnings.catch_warnings(record=True) as w:
                             # Set the filter to catch all warnings
@@ -199,6 +199,14 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
                                 for warning in w:
                                     # Depending on the warning type and content, you can take appropriate actions
                                     Common.writeLog(logFolderPath+'/logWarnings.txt', str(warning))    
+=======
+                    try:
+                        
+                        faces = RetinaFace.extract_faces(input_file_path,align=True,align_first=True)
+                        
+                        logger = RetinaFace.get_logger()
+                        logger.info(f'Extracted {len(faces)} faces from {input_file_path}')
+>>>>>>> 3d972357ff3ee1a827a68f1abfa0b2e4ae6c9a49
 
                     except:
                         faces = []
