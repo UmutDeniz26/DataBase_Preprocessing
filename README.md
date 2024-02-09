@@ -19,6 +19,7 @@ To use this script, you need to provide the following parameters:
 
 The script expects the following file structure:
 
+```
 FOLDER
 ├── dbName.txt
 └── dbName
@@ -31,6 +32,7 @@ FOLDER
         ├── inter.jpg
         └── ...
 
+```
 ```
 dbName.txt should contain a list of filenames, each representing an image in the database. These filenames should follow a specific format:
 "personID_intra_inter"
