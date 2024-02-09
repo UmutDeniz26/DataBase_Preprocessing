@@ -190,7 +190,7 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
                 else:
                     resp = []
                     Common.copyFile(input_file_path, output_file_path)
-
+            
         logString = "Added Image: " + output_file_name
         Common.writeLog(logFolderPath+'/logAddedImage.txt', logString)
         
@@ -210,7 +210,7 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
             #Calculate the landmarks of the frontal face and write them to the txt file
             response,plotimageCounter = FrontalFaceFunctions.writeRetinaFaceLandmarks(image_cv2,input_file_path,output_folder,output_file_name,  logFolderPath, inter, intra,plotimageCounter, resp)#remove output_folder 
             intra+=1
-            
+
             if response != "Txt already exists!":
                 Common.writeLog(logFolderPath+'/logAddedTxt.txt', response)
             else:
