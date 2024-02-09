@@ -7,4 +7,4 @@ import DB_Folder_Manipulator
 DB_Folder_Manipulator.main(dbName='LFW', upperFolderName='IPEK', 
         inputOrAutoMod=False, printFeaturesFlag=True,
           selectFirstImageAsFrontal=False, showAlignedImages=False, 
-          alignImagesFlag=True, resetImagesFlag=True)
+          alignImagesFlag=True, resetImagesFlag=False)
