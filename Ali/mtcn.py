@@ -28,7 +28,7 @@ with open(output_file, 'w') as file:
                     image_path = os.path.join(person_path, image_file)
 
                     # Dosya adını yazdır
-                    file.write(f'{folder_number:05d}_{counter:05d}\n')  # Klasör numarası + sayacı formatla
+                    file.write(f'{folder_number:03d}_{counter:0d}\n')  # Klasör numarası + sayacı formatla
                     counter += 1  # Sayacı bir artır
             folder_number += 1  # Klasör numarasını bir artır
 

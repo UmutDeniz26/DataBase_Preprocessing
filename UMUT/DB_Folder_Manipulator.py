@@ -40,7 +40,7 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
     file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_index = 0, 0, 0, 0 
 
     imgTxtDBs = False
-    if dbName == 'YoutubeFace' or dbName == 'LFW':
+    if dbName == 'YoutubeFace' or dbName == 'LFW' or 'CASIA-FaceV5(BMP)':
         imgTxtDBs = True
 
     if showAlignedImages == True:
@@ -157,7 +157,7 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
         if extension != 'mat':
             #aligned_file_path = input_file_path.replace("UMUT", "UMUT/"+dbName+"_aligned")
 
-            if resetImagesFlag == True:
+            if resetImagesFlag == True or not os.path.exists(output_file_path):
                 #Expand face area is a parameter for the retinaface, it is used to expand the face area 
                 #It is used to include the hair and the ears in the face area !!!
                 if alignImagesFlag == True:
