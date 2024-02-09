@@ -3,3 +3,6 @@ Added txt line to main Txt: ./Elif/YoutubeFace_FOLDERED/00000/0/00000_0_555 succ
 Added txt line to main Txt: ./Elif/YoutubeFace_FOLDERED/00000/0/00000_0_556 successfully!
 Added txt line to main Txt: ./Elif/YoutubeFace_FOLDERED/00000/0/00000_0_557 successfully!
 Added txt line to main Txt: ./Elif/YoutubeFace_FOLDERED/00000/0/00000_0_558 successfully!
+Added txt line to main Txt: ./Elif/YoutubeFace_FOLDERED/00000/0/00000_0_559 successfully!
+Added txt line to main Txt: ./Elif/YoutubeFace_FOLDERED/00000/0/00000_0_560 successfully!
+Added txt line to main Txt: ./Elif/YoutubeFace_FOLDERED/00000/0/00000_0_561 successfully!

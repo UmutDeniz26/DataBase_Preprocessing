@@ -175,7 +175,8 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
                 if alignImagesFlag == True:
                     try:
                         faces,score,resp,twoPeopleFlag = Retina.extract_faces(input_file_path,align=True,align_first=True)
-                    
+                        if twoPeopleFlag == True:
+                            Common.writeLog(logFolderPath+'/twoPeopleFace.txt', output_file_path)
                     except:
                         faces = [];resp = {};twoPeopleFlag = False;score = 0
 
