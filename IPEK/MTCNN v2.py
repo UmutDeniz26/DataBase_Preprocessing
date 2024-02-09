@@ -53,7 +53,7 @@ for file in files:
             extracted_face = image[y:y+h, x:x+w]
 
             # display the extracted face
-            cv2.imshow(extracted_face)
+            cv2.imshow(best_face)
             cv2.waitKey(0)  # wait for any key press
             cv2.destroyAllWindows() 
     print("Most frontal face in", image_name," its confidence: ", str(best_confidence))

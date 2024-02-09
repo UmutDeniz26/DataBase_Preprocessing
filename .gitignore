@@ -31,6 +31,7 @@
 /Elif/YoutubeFace/aligned_images_DB2
 /Elif/YoutubeFace/alignedimages
 /Elif/YoutubeFace/YoutubeFace
+/Elif/YoutubeFace/New_YotubeFace
 /Elif/YoutubeFace_FOLDERED
 /IPEK/LFW
 /Ali/CASIA-FaceV5(BMP)
@@ -39,4 +40,15 @@
 /IPEK/_pycache_
 /IPEK/frontal
 /IPEK/LFW_FOLDERED
+/IPEK/LFW_FOLDERED_V1
+/IPEK/LFW_FOLDERED_V2
 /IPEK/LOG
+/IPEK/LFW_BestFaces
+/UMUT/ms1m_v3_arcface_r100_fp16_constants.pth
+/UMUT/ms1m_v3_arcface_r100_fp16.pth
+/Ali/CASIA-FaceV5(BMP)_FOLDERED
+/Elif/YoutubeFace/200fazla
+/Elif/YoutubeFace/200
+/UMUT/LOG
+/Elif/LOG
+/Ali/LOG

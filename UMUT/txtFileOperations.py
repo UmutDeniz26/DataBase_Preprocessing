@@ -68,6 +68,7 @@ def writeFileMainTxt(txt_path, resp, inter, intra):
     featureSelectFlag = False
     resp_holder = resp.copy()
     resp.clear()
+    #print(resp_holder)
     for key, value in resp_holder.items():
         if key == "left_eye" or key == "right_eye" or key == "nose" or key == "mouth" or key == "face":
             featureSelectFlag = True
