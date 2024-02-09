@@ -192,8 +192,8 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
                     Common.copyFile(input_file_path, output_file_path)
             else:
                 Common.writeLog(logFolderPath+'/logExists.txt', output_file_path)
-                if extension == 'txt':
-                    resp = txtFileOperations.readTxtFile(output_file_path, logFolderPath, resp)
+                if extension == 'jpg':
+                    resp = txtFileOperations.readJsonDictFromFile(output_file_path.replace('jpg','txt'))
                 
         logString = "Added Image: " + output_file_name
         Common.writeLog(logFolderPath+'/logAddedImage.txt', logString)
