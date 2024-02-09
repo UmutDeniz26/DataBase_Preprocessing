@@ -1,6 +1,7 @@
 import os
 
 def save_second_letter_upper(directory, output_file):
+    counterTwoLetter = 0
     # Belirtilen dizindeki dosya listesini al
     file_list = os.listdir(directory)
 
@@ -15,21 +16,17 @@ def save_second_letter_upper(directory, output_file):
 
             # Eğer ikinci harf büyükse, dosyayı listeye ekle
             if second_letter.isupper():
+                counterTwoLetter+=1
                 uppercase_files.append(filename)
 
     # Büyük harf içeren dosyaları belirtilen metin dosyasına yaz
     with open(output_file, 'w') as file:
         for filename in uppercase_files:
             file.write(filename + '\n')
-
-# Kullanım örneği:
-directory_path = "/path/to/your/directory"
-output_file_path = "uppercase_files.txt"
-save_second_letter_upper(directory_path, output_file_path)
-
-
+    return counterTwoLetter
 
 def rename_second_letter_lowercase(directory):
+    counterTwoLetter = 0
     # Belirtilen dizindeki dosya listesini al
     file_list = os.listdir(directory)
 
@@ -42,12 +39,10 @@ def rename_second_letter_lowercase(directory):
             # Eğer ikinci harf büyükse, dosya adını güncelle
             if second_letter.isupper():
                 new_filename = filename[0] + second_letter.lower() + filename[2:]
-
+                counterTwoLetter+=1
                 # Dosya adını değiştir
                 old_path = os.path.join(directory, filename)
                 new_path = os.path.join(directory, new_filename)
                 os.rename(old_path, new_path)
 
-# Kullanım örneği:
-directory_path = "/path/to/your/directory"
-rename_second_letter_lowercase(directory_path)
+    return counterTwoLetter
