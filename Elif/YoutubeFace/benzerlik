@@ -45,7 +45,7 @@ def klasor_benzerlik_kontrolu(klasor_yolu, output_file): #,file
 
 def main():
         # Veri setinin bulunduğu dizin
-        dataset_path = './Elif/YoutubeFace/New_YoutubeFace'
+        dataset_path = './Elif/YoutubeFace/YoutubeFace'
         output_file = './Elif/YoutubeFace/new_benzerlik_oranları.txt'
         
         file = open('./Elif/YoutubeFace/new_benzerlik_oranları.txt', "a")
