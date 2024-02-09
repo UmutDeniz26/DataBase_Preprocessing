@@ -8,6 +8,7 @@ import sys
 sys.path.insert(0, './Ali')
 import detect_distences_of_sides
 import detectFrontelImageFromTxt
+import DetectUpperCase
 
 sys.path.insert(0, './UMUT')
 import Common
@@ -48,8 +49,15 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
     else:
         plotimageCounter=-1
     #------------------------------------------------------- Main Part -------------------------------------------------------#
-    
-    files = os.scandir('./'+ upperFolderName +'/'+ dbName)
+    dbFolderPath = './'+ upperFolderName +'/'+ dbName 
+    if dbName == 'YoutubeFace':
+        dbFolderPath = dbFolderPath +'/'+ dbName 
+    files = os.scandir(dbFolderPath)
+
+    if DetectUpperCase.save_second_letter_upper(dbFolderPath,"uppercase_files.txt") >0:
+        print("There are some folders that has two upper case.")
+        DetectUpperCase.rename_second_letter_lowercase(dbFolderPath)
+        exit()
 
     firstFlag = True;makeDeceisonFlag = True
 
