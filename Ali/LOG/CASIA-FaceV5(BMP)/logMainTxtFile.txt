@@ -1866,3 +1866,6 @@ Added txt line to main Txt: ./Ali/CASIA-FaceV5(BMP)_FOLDERED/372/372/372_3 succe
 Added txt line to main Txt: ./Ali/CASIA-FaceV5(BMP)_FOLDERED/372/372/372_4 successfully!
 Added txt line to main Txt: ./Ali/CASIA-FaceV5(BMP)_FOLDERED/373/373/373_0 successfully!
 Added txt line to main Txt: ./Ali/CASIA-FaceV5(BMP)_FOLDERED/373/373/373_1 successfully!
+Added txt line to main Txt: ./Ali/CASIA-FaceV5(BMP)_FOLDERED/373/373/373_2 successfully!
+Added txt line to main Txt: ./Ali/CASIA-FaceV5(BMP)_FOLDERED/373/373/373_3 successfully!
+Added txt line to main Txt: ./Ali/CASIA-FaceV5(BMP)_FOLDERED/373/373/373_4 successfully!
