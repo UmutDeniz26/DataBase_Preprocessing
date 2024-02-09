@@ -71,7 +71,7 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
         "learnType_index": learnType_index
     }
     files.sort()
-    
+
     #Iterate through the files
     for index,file in enumerate(files):
         if imgTxtDBs == True:
