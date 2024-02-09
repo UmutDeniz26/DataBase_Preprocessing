@@ -9,6 +9,7 @@ sys.path.insert(0, './Ali')
 import detect_distences_of_sides
 import detectFrontelImageFromTxt
 import DetectUpperCase
+import Retina
 
 sys.path.insert(0, './UMUT')
 import Common
@@ -17,7 +18,7 @@ import DBsWithTxtInfo
 import FrontalFaceFunctions
 import txtFileOperations
 
-from retinaface import RetinaFace
+#from retinaface import RetinaFace
 
 intra = 0
 inter = 0
@@ -39,6 +40,7 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
     
     #These variables will be automatically changed according to the number of features
     file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_index = 0, 0, 0, 0 
+    resp = []
 
     imgTxtDBs = False
     if dbName == 'YoutubeFace' or dbName == 'LFW' or 'CASIA-FaceV5(BMP)':
@@ -163,18 +165,20 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
         else:
             input_file_path = './' + upperFolderName + '/' + dbName + '/' + output_file_name
 
+        print(output_file_path)
         #Here we copy the jpg file to the output folder
         if extension != 'mat':
             #aligned_file_path = input_file_path.replace("UMUT", "UMUT/"+dbName+"_aligned")
-
             if resetImagesFlag == True or not os.path.exists(output_file_path):
                 #Expand face area is a parameter for the retinaface, it is used to expand the face area 
                 #It is used to include the hair and the ears in the face area !!!
                 if alignImagesFlag == True:
                     try:
-                        faces = RetinaFace.extract_faces(input_file_path,align=True,align_first=True)
+                        faces,score,resp,twoPeopleFlag = Retina.extract_faces(input_file_path,align=True,align_first=True)
+                    
                     except:
-                        faces = []
+                        faces = [];resp = {};twoPeopleFlag = False;score = 0
+
                     if len(faces) ==0:
                         Common.writeLog(logFolderPath+'/logNoFace.txt', output_file_name)
                         Common.copyFile(input_file_path, output_file_path)
@@ -183,6 +187,7 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
                         cv2.imwrite(output_file_path, cv2.cvtColor(faces[0], cv2.COLOR_BGR2RGB))
                         #Common.copyFile(aligned_file_path, output_file_path)
                 else:
+                    resp = []
                     Common.copyFile(input_file_path, output_file_path)
 
         logString = "Added Image: " + output_file_name
@@ -202,7 +207,7 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
         
             global intra
             #Calculate the landmarks of the frontal face and write them to the txt file
-            response,plotimageCounter = FrontalFaceFunctions.writeRetinaFaceLandmarks(image_cv2,input_file_path,output_folder,output_file_name,  logFolderPath, inter, intra,plotimageCounter)#remove output_folder 
+            response,plotimageCounter = FrontalFaceFunctions.writeRetinaFaceLandmarks(image_cv2,input_file_path,output_folder,output_file_name,  logFolderPath, inter, intra,plotimageCounter, resp)#remove output_folder 
             intra+=1
             
             if response != "Txt already exists!":

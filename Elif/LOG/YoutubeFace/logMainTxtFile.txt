@@ -1,1 +1,5 @@
 Initialized txt: ./Elif/YoutubeFace_FOLDERED/YoutubeFace_Info.txt successfully!
+Added txt line to main Txt: ./Elif/YoutubeFace_FOLDERED/00000/0/00000_0_555 successfully!
+Added txt line to main Txt: ./Elif/YoutubeFace_FOLDERED/00000/0/00000_0_556 successfully!
+Added txt line to main Txt: ./Elif/YoutubeFace_FOLDERED/00000/0/00000_0_557 successfully!
+Added txt line to main Txt: ./Elif/YoutubeFace_FOLDERED/00000/0/00000_0_558 successfully!

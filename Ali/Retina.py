@@ -242,14 +242,15 @@ def extract_faces(
         two_people_flag = True
     else:
         two_people_flag = False
-
+    
+    landmark_copy={}
     if isinstance(obj, dict):
         for _, identity in obj.items():
             facial_area = identity["facial_area"]
 
-            nose_point = identity['nose']
-            left_eye_point = identity['left_eye']
-            right_eye_point = identity['right_eye']
+            nose_point = identity['landmarks']['nose']
+            left_eye_point = identity['landmarks']['left_eye']
+            right_eye_point = identity['landmarks']['right_eye']
 
             
             x = facial_area[0]
@@ -278,19 +279,23 @@ def extract_faces(
                 facial_img = postprocess.alignment_procedure(facial_img, right_eye, left_eye, nose)
 
             if align_first is True and len(obj) == 1:
-                facial_img = extract_faces(
+                resp,difference_between_le_re,landmark_copy,two_people_flag = extract_faces(
                     img_path=facial_img,
                     threshold=threshold,
                     model=model,
                     allow_upscaling=allow_upscaling,
                     expand_face_area=expand_face_area,
                     align=False,
-                    align_first=False,
-                )[0][:, :, ::-1]
+                    align_first=False
+                )#[0][:, :, ::-1]
             distance_nose_left_eye = math.sqrt((left_eye_point[0] - nose_point[0])**2 + (left_eye_point[1] - nose_point[1])**2)
             distance_nose_right_eye = math.sqrt((right_eye_point[0] - nose_point[0])**2 + (right_eye_point[1] - nose_point[1])**2)
             difference_between_le_re = abs(distance_nose_left_eye-distance_nose_right_eye)
             resp.append(facial_img[:, :, ::-1])
-            return resp,difference_between_le_re,identity
+            
+            landmark_copy = identity['landmarks'].copy()
+            landmark_copy.update({'facial_area':facial_area})
+            
+            return resp,difference_between_le_re,landmark_copy,two_people_flag
 
-    return resp
+    return resp,difference_between_le_re,landmark_copy,two_people_flag

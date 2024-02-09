@@ -18,13 +18,15 @@ import numpy as np
 
 #This function will write the landmarks of the frontal face to the txt file
 #It will also return the modified confidenceArray
-def writeRetinaFaceLandmarks(image_cv2, img_path, txt_path, txt_name, logFolderPath,inter,intra,imgCounter):
+def writeRetinaFaceLandmarks(image_cv2, img_path, txt_path, txt_name, logFolderPath,inter,intra,imgCounter,resp):
     txt_path = txt_path+txt_name
     txt_path = os.path.splitext(txt_path)[0]# it gives extensionless path
     txt_path = txt_path + '.txt'
 
     if os.path.exists(txt_path):
-        resp = txtFileOperations.readJsonDictFromFile(txt_path)
+        txt_resp = txtFileOperations.readJsonDictFromFile(txt_path)
+        if len(txt_resp) > 0:
+            resp = txtFileOperations.readJsonDictFromFile(txt_path)
         txtFileOperations.writeFileMainTxt(txt_path, resp,inter,intra)
         #This part is for testing the face alignment
         imgCounter = plot_aligned_faces(image_cv2, resp,intra,imgCounter)
@@ -37,6 +39,7 @@ def writeRetinaFaceLandmarks(image_cv2, img_path, txt_path, txt_name, logFolderP
     print(txtFileOperations.run(txt_path, resp))
     return "Added txt: " + txt_path + " successfully!", imgCounter
 
+
 def plot_aligned_faces(image_cv2, resp,intra,imgCounter):
     if intra%5 == 0 and 0<=imgCounter<21:    
         imgCounter+=1
@@ -45,9 +48,9 @@ def plot_aligned_faces(image_cv2, resp,intra,imgCounter):
         landmarks = list(resp.values());landmarks = landmarks[0:-1];landmarks = np.array(landmarks)
 
         # Test face alignment
-        image = face_align_landmark(image_cv2, landmarks)
-        plt.subplot(4,5, imgCounter);plt.imshow(image);plt.title(imgCounter)
-        plt.axis('off')
+        #image = face_align_landmark(image_cv2, landmarks)
+        #plt.subplot(4,5, imgCounter);plt.imshow(image);plt.title(imgCounter)
+        #plt.axis('off')
     
     if imgCounter == 20:
         imgCounter = -1
