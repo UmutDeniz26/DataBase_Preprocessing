@@ -50,6 +50,7 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
     #------------------------------------------------------- Main Part -------------------------------------------------------#
     
     files = os.scandir('./'+ upperFolderName +'/'+ dbName)
+
     firstFlag = True;makeDeceisonFlag = True
 
     holdID = 0;holdLeftInnerID = 0;holdFeaturesLen = 0;frontalCount = 0;
@@ -69,7 +70,8 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
         "inner_id_left_side_index": inner_id_left_side_index,
         "learnType_index": learnType_index
     }
-
+    files.sort()
+    
     #Iterate through the files
     for index,file in enumerate(files):
         if imgTxtDBs == True:
@@ -169,6 +171,7 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
                         Common.writeLog(logFolderPath+'/logNoFace.txt', output_file_name)
                         Common.copyFile(input_file_path, output_file_path)
                     else:
+                        print("Copying " + input_file_path + " to " + output_file_path)
                         cv2.imwrite(output_file_path, cv2.cvtColor(faces[0], cv2.COLOR_BGR2RGB))
                         #Common.copyFile(aligned_file_path, output_file_path)
                 else:
@@ -203,4 +206,4 @@ if __name__ == "__main__":
     main(dbName='YoutubeFace', upperFolderName='UMUT', 
         inputOrAutoMod=False, printFeaturesFlag=True,
           selectFirstImageAsFrontal=False, showAlignedImages=False, 
-          alignImagesFlag=True, resetImagesFlag=True) #if resetImagesFlag is True, then the images will be recreated 
+          alignImagesFlag=True, resetImagesFlag=False) #if resetImagesFlag is True, then the images will be recreated 
