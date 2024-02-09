@@ -949,3 +949,8 @@ Added txt: ./Ali/CASIA-FaceV5(BMP)_FOLDERED/373/373/373_1.txt successfully!
 Added txt: ./Ali/CASIA-FaceV5(BMP)_FOLDERED/373/373/373_2.txt successfully!
 Added txt: ./Ali/CASIA-FaceV5(BMP)_FOLDERED/373/373/373_3.txt successfully!
 Added txt: ./Ali/CASIA-FaceV5(BMP)_FOLDERED/373/373/373_4.txt successfully!
+Added txt: ./Ali/CASIA-FaceV5(BMP)_FOLDERED/374/374/374_0.txt successfully!
+Added txt: ./Ali/CASIA-FaceV5(BMP)_FOLDERED/374/374/374_1.txt successfully!
+Added txt: ./Ali/CASIA-FaceV5(BMP)_FOLDERED/374/374/374_2.txt successfully!
+Added txt: ./Ali/CASIA-FaceV5(BMP)_FOLDERED/374/374/374_3.txt successfully!
+Added txt: ./Ali/CASIA-FaceV5(BMP)_FOLDERED/374/374/374_4.txt successfully!
