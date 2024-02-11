@@ -55,10 +55,11 @@ def writeFileMainTxt(txt_path, landmarks, inter, intra):
 
     # in elements, is there _FOLDERED, if there is, then split it with "_" then take the first element
     # This part is weaking, it should be changed, because it is connected to the folder name notation (_FOLDERED)
-    for index,element in enumerate(txt_path.split("/")):
+    # os.path.normpath(txt_path).split(os.sep) => It splits the path with the os.sep, which is the seperator of the path ( "/" )
+    for index,element in enumerate(os.path.normpath(txt_path).split(os.sep)):
         if "_FOLDERED" in element:
             dbName = element.split("_")[0]
-            upperFolderName = txt_path.split("/")[index-1]
+            upperFolderName = os.path.normpath(txt_path).split(os.sep)[index-1]
             break
 
     file_path = txt_path.replace(".txt", "")
