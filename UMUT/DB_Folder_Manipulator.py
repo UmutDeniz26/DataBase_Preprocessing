@@ -57,7 +57,7 @@ def main(
     txt_info_path = os.path.join(upper_folder_name, data_base_name + '.txt')
 
     print(txtFileOperations.initMainTxtFile(data_base_name,upper_folder_name,
-        ["file_path","inter","intra","left_eye","right_eye","nose","mouth_left","mouth_right","facial_area"]))
+        ["file_path","inter","intra","right_eye","left_eye","nose","mouth_right","mouth_left"]))
 
     #These variables will be automatically changed according to the number of features
     hold_id, hold_left_inner_id, hold_features_count, frontal_count = 0, 0, 0, 0
@@ -79,7 +79,6 @@ def main(
         exit()
 
     first_iteration = True;make_deceison_flag = True
-    plt.figure(figsize=(20,10))
 
     #Txt operations for YoutubeFace and LFW
     if images_with_txt_file_format ==True:
