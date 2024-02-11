@@ -20,23 +20,22 @@ plt.figure(figsize=(20, 20))
 
 #This function will write the landmarks of the frontal face to the txt file
 #It will also return the modified confidenceArray
-def writeRetinaFaceLandmarks(image_cv2, output_file_path ,inter ,intra):
+def writeRetinaFaceLandmarks(image_cv2, output_file_path ,inter ,intra, landmarks_input = {"Response":False}):
 
     # Output file path should be a txt file, this line will change the extension to txt
     output_file_path = os.path.splitext(output_file_path)[0] + '.txt'
+    plot_aligned_faces(image_cv2, intra)
 
     if os.path.exists(output_file_path):
-        landmarks = txtFileOperations.readJsonDictFromFile(output_file_path)
-        txtFileOperations.writeFileMainTxt(output_file_path, landmarks, inter, intra)
+        txtFileOperations.writeFileMainTxt(output_file_path, landmarks_input, inter, intra)
+        txtFileOperations.writeLandmarksTxtFile(output_file_path, landmarks_input)
         #This part is for testing the face alignment
-        plot_aligned_faces(image_cv2, intra)
         return "Txt already exists!"
     else:
         #insert resp from extract faces
         #resp = detect_distences_of_sides.detect_best_frontal_face(img_path)
-        txtFileOperations.writeFileMainTxt(output_file_path, {"Response": False},inter,intra)
-        txtFileOperations.writeLandmarksTxtFile(output_file_path, {"Response": False})
-
+        txtFileOperations.writeFileMainTxt(output_file_path, landmarks_input, inter, intra)
+        txtFileOperations.writeLandmarksTxtFile(output_file_path, landmarks_input)
         return "Txt file successfully written! : " + output_file_path
 
 

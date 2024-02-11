@@ -4,7 +4,6 @@ import cv2
 import sys
 import shutil
 import matplotlib.pyplot as plt
-from retinaface import RetinaFace
 
 # Custom scripts
 import Common
@@ -18,6 +17,11 @@ import DetectUpperCase
 import detectFrontelImageFromTxt
 import detect_distences_of_sides
 
+sys.path.insert(0, './retinaface_custom/main')
+import RetinaFace
+#from retinaface import RetinaFace
+
+print("RetinaFace imported from", RetinaFace.__file__)
 
 intra = 0
 inter = 0
@@ -56,9 +60,7 @@ def main(
         ["file_path","inter","intra","left_eye","right_eye","nose","mouth_left","mouth_right","facial_area"]))
 
     #These variables will be automatically changed according to the number of features
-    file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_index = 0, 0, 0, 0
     hold_id, hold_left_inner_id, hold_features_count, frontal_count = 0, 0, 0, 0
-    resp = []
 
     if data_base_name == 'YoutubeFace' or 'LFW' or 'CASIA-FaceV5(BMP)':
         images_with_txt_file_format = True
@@ -195,7 +197,6 @@ def main(
         os.makedirs(output_folder, exist_ok=True)
         output_file_path = os.path.join(output_folder, output_file_name)
 
-        print(output_file_path)
         #Here we copy the jpg file to the output folder
         if extension != 'mat':
             #aligned_file_path = input_file_path.replace("UMUT", "UMUT/"+data_base_name+"_aligned")
@@ -204,25 +205,27 @@ def main(
                 #It is used to include the hair and the ears in the face area !!!
                 if align_images_flag == True:
                     try:
-                        faces = RetinaFace.extract_faces(input_file_path,align=True,align_first=True)
+                        response_dictionary = RetinaFace.extract_faces(input_file_path,align=True,align_first=True)
+                        cropped_aligned_face = response_dictionary["face_1"]["face"]
+                        landmarks = response_dictionary["face_1"]["landmarks"]
                     except:
-                        faces = [];resp = {}
+                        cropped_aligned_face = [];landmarks = {}
 
-                    if len(faces) ==0:
+                    if len(cropped_aligned_face) ==0:
                         Common.writeLog(log_folder_path+'/logNoFace.txt', output_file_name)
                         Common.copyFile(input_file_path, output_file_path)
                     else:
                         print("Copying " + input_file_path + " to " + output_file_path)
-                        cv2.imwrite(output_file_path, cv2.cvtColor(faces[0], cv2.COLOR_BGR2RGB))
+                        cv2.imwrite(output_file_path, cropped_aligned_face)
                         #Common.copyFile(aligned_file_path, output_file_path)
                 else:
-                    resp = {}
+                    landmarks = RetinaFace.detect_faces(input_file_path)['face_1']['landmarks']
                     Common.copyFile(input_file_path, output_file_path)
             else:
                 Common.writeLog(log_folder_path+'/logExists.txt', output_file_path)
                 if extension == 'jpg':
-                    resp = txtFileOperations.readJsonDictFromFile(output_file_path.replace('jpg','txt'))
-                if len(resp) == 0:
+                    landmarks = txtFileOperations.readJsonDictFromFile(output_file_path.replace('jpg','txt'))
+                if len(landmarks) == 0:
                     Common.writeLog(log_folder_path+'/logNoFace.txt', output_file_path)
 
         logString = "Added Image: " + output_file_name
@@ -244,8 +247,8 @@ def main(
             #Calculate the landmarks of the frontal face and write them to the txt file
             response = FrontalFaceFunctions.writeRetinaFaceLandmarks(
                                             image_cv2, output_file_path,
-                                            inter, intra
-                                        )
+                                            inter, intra, landmarks
+                        )
             intra+=1
 
             if response != "Txt already exists!":
