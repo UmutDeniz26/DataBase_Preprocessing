@@ -41,4 +41,3 @@ folder_path = r"C:\Users\ipekb\Desktop\staj lwf\DataBase_Preprocessing\IPEK\lfw-
 output_folder = r"C:\Users\ipekb\Desktop\staj lwf\DataBase_Preprocessing\IPEK\frontal"
 
 detect_and_save_frontal_faces(folder_path, output_folder)
-

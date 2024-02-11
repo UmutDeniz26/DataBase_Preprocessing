@@ -14,12 +14,12 @@ with open(output_file, 'w') as file:
     # Ana dizindeki klasörleri listele
     for person_name in os.listdir(dataset_path):
         person_path = os.path.join(dataset_path, person_name)
-        
+
         # Eğer bir klasörse devam et
         if os.path.isdir(person_path):
             # Başlangıç sayacı
             counter = 0
-            
+
             # Person'a ait tüm alt klasörlerdeki görselleri listele
             for image_file in os.listdir(person_path):
                 # Dosya uzantısını kontrol et, sadece JPEG dosyalarını işle

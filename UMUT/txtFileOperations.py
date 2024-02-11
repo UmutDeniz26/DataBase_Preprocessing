@@ -11,7 +11,7 @@ def run(txt_path, resp):
         with open(txt_path , 'w') as file:
             file.write("FaceNotFound")
         return "FaceNotFound"
-        
+
     new_dict = {key: value for key, value in resp.items() if key not in ['distance_nose_left_eye', 'distance_nose_right_eye', 'difference_between_le_re']}
     keys = list(new_dict.keys())
 
@@ -32,7 +32,7 @@ def run(txt_path, resp):
                 file.write(f" \"{key}\" : {value}\n")
             else:
                 file.write(f" \"{key}\" : {value},\n")
-        file.write("}") 
+        file.write("}")
     return "Added txt: " + txt_path + " successfully!"
 
 
@@ -47,7 +47,7 @@ def initMainTxtFile(dbName,upperFolderName,columns):
                 file.write(f"{column:^{space_count}}")
             else:
                 file.write(f"{column:^{space_count}},")
-    
+
     os.makedirs(f'./{upperFolderName}/LOG/{dbName}', exist_ok=True)
     Common.writeLog(f'./{upperFolderName}/LOG/{dbName}/logMainTxtFile.txt', "Initialized txt: " + txt_path + " successfully!")
     return "Initialized txt: " + txt_path + " successfully!"
@@ -78,7 +78,7 @@ def writeFileMainTxt(txt_path, resp, inter, intra):
     file_path = txt_path.replace(".txt", "")
     txt_path = f'./{upperFolderName}/{dbName}_FOLDERED/{dbName}_Info.txt'
     colums = [ file_path + ".jpg" ] + [inter] + [intra] + list(resp.values())
-    
+
     space_count = np.floor(abs_space/len(colums)).astype(int)
     with open(txt_path , 'a') as file:
         file.write("\n")
@@ -90,9 +90,9 @@ def writeFileMainTxt(txt_path, resp, inter, intra):
                 file.write(f"{str(column):^{space_count}}\",")
             else:
                 file.write(f"{str(column):^{space_count}},")
-    
+
     Common.writeLog(f'./{upperFolderName}/LOG/{dbName}/logMainTxtFile.txt', "Added txt line to main Txt: " + file_path + " successfully!")
-    return "Added txt line to main Txt: " + file_path + " successfully!"   
+    return "Added txt line to main Txt: " + file_path + " successfully!"
 
 import json
 def readJsonDictFromFile(fileToRead):

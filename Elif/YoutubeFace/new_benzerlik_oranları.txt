@@ -21,4 +21,3 @@
     ./Elif/YoutubeFace/YoutubeFace\Carlos_Iturgaitz\5     Percentage:  0.7
 
     ./Elif/YoutubeFace/YoutubeFace\Carly_Gullickson\1     Percentage:  0.9565217391304348
-

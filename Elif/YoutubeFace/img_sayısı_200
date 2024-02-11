@@ -20,7 +20,7 @@ def newFolder(subfolder_path, new_dataset_name, person_name, subfolder_name,sele
         yeni_gorsel_yolu = os.path.join(yeni_klasor_yolu, secilen_gorsel)
         # Görüntüyü kopyala
         shutil.copy(gorsel_yolu, yeni_gorsel_yolu)
-    
+
     """
     if len(selected_images)>195:
         print(gorsel_yolu,"  to  ", yeni_gorsel_yolu)
@@ -32,7 +32,7 @@ def imgReduction(subfolder_path,N=201):
     print(total_img, subfolder_path)
     if total_img <= N:
         selected_images = os.listdir(subfolder_path)
-       
+
 
     else:
         image_files = os.listdir(subfolder_path)
@@ -51,7 +51,7 @@ def imgReduction(subfolder_path,N=201):
             offset = np.random.randint(interval)
             number = number + offset * (-1) ** (sign)
             new_arr.append(number)
-    
+
         new_arr[0] = 0
         selected_images = [image_files[i % len(image_files)] for i in new_arr]
         #print(len(selected_images))
@@ -60,7 +60,7 @@ def imgReduction(subfolder_path,N=201):
         else:
             print("Error")
     return selected_images
-    
+
 # Veri setinin bulunduğu dizin
 dataset_path = "./Elif/YoutubeFace/200fazla"
 
@@ -79,9 +79,9 @@ for person_name in os.listdir(dataset_path):
             subfolder_path = os.path.join(person_path, subfolder_name)
             print(subfolder_path)
             if os.path.isdir(subfolder_path):
-                selected_images = imgReduction(subfolder_path) 
-                
-                if len(selected_images) >195:    
+                selected_images = imgReduction(subfolder_path)
+
+                if len(selected_images) >195:
                     for selected_image in selected_images:
                         if selected_images.count(selected_image) > 1:
                             selected_images.pop(-1)
@@ -91,10 +91,7 @@ for person_name in os.listdir(dataset_path):
                 print(total_img)
                 if total_img <= 200:
                     newFolder(subfolder_path, new_dataset_name, person_name, subfolder_name,selected_images=None)
-                
+
                 else:
                     selected_images = imgReduction(subfolder_path, N=200)
                     newFolder(subfolder_path, new_dataset_name, person_name, subfolder_name,selected_images)"""
-                    
-
-                       

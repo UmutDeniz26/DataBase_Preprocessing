@@ -34,12 +34,12 @@ with open(output_file, 'w') as file:
     # Ana dizindeki klasörleri listele
     for person_name in os.listdir(dataset_path):
         person_path = os.path.join(dataset_path, person_name)
-        
+
         # Eğer bir klasörse devam et
         if os.path.isdir(person_path):
             best_image_path = None
             best_difference = float('inf')  # Initialize with infinity
-            
+
             # Person'a ait tüm alt klasörlerdeki görselleri listele
             for image_file in os.listdir(person_path):
                 # Dosya uzantısını kontrol et, sadece JPEG dosyalarını işle
@@ -52,7 +52,7 @@ with open(output_file, 'w') as file:
                     if difference < best_difference:
                         best_difference = difference
                         best_image_path = image_path
-                        
+
             if best_image_path:
                 # Dosya adını yazdır
                 file.write(f'{folder_number:05d}_{os.path.basename(best_image_path)}\n')  # Klasör numarası + dosya adı

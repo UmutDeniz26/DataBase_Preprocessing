@@ -7,7 +7,7 @@ img_path = "img1.jpg"
 img = RetinaFace.extract_faces(img_path,align=True)
 
 #find index of max eleement in a array
-array = [1,2,3] 
+array = [1,2,3]
 
 def max_index(array):
     max = array[0]
@@ -30,10 +30,10 @@ for i in range(len(keys)):
 
     print("\n\n Iter: ",i,"   Facial Area: ",facial_area)
     print("Landmarks: ",landmarks)
-    
+
     #save faces to faces folder
     cv2.imwrite("faces/face_"+str(i)+".jpg", face_img)
-    
+
 #cv2.imshow( "Input", cv2.imread(img_path))
 #cv2.imshow( "Output", img_rect)
 

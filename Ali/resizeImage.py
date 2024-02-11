@@ -19,4 +19,3 @@ def resize_and_overwrite_images(root_directory, target_width=120, target_height=
                 cv2.imwrite(file_path, resized_img)
 
     print("Yeniden boyutlandırma ve üzerine yazma tamamlandı.")
-

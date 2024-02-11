@@ -43,4 +43,3 @@ def copy_max_abs_image_to_folder(source_folder, destination_folder):
             print("Kaynak ve hedef dosya yolları aynı, kopyalama işlemi yapılmadı.")
     else:
         print("Görsel bulunamadı.")
-

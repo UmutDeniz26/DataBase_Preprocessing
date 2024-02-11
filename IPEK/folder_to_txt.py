@@ -24,7 +24,7 @@ isThereTrainTest = False #True for LFPW Dataset, False for anothers
 inputOrAutoMod = False #True for auto, False for input, auto mod is only for IBUG Dataset. If you want to use auto mod, you should change the function autoDetermineAccordingToFeatureCount
 
 #Global Variables for decideWhichElementsWhichFeatures
-file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_index= 0, 0, 0, 0 
+file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_index= 0, 0, 0, 0
 
 #This variable will be automatically changed according to the number of features
 copyFlag = False
@@ -54,7 +54,7 @@ def decideWhichElementsWhichFeatures( file_name_split ):
         os.system('cls')
         print("File Name: " + file_name)
         print(file_name_split)
-        inputTemp = input("\nWhat is the feature of '" + element + "' ? \n"+  
+        inputTemp = input("\nWhat is the feature of '" + element + "' ? \n"+
                         " n -> next \n"
                         " f -> file_id \n" +
                         " ir -> inner_id_right_side \n" +
@@ -123,10 +123,10 @@ def extractFeaturesFromFileName(fileName): # this should change according to the
     global file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_index,makeDeceisonFlag  # Declare as global
     #Don't change this part
     file_name_split = fileName.split('_')
-    file_name_withoutExtension = file_name.split('.')[0]    
+    file_name_withoutExtension = file_name.split('.')[0]
     extension = file_name.split('.')[-1] # jpg or mat
-    
-    file_name_split = file_name_split[:-1] + file_name_split[-1].split('.') 
+
+    file_name_split = file_name_split[:-1] + file_name_split[-1].split('.')
     numberOfSlices = len(file_name_split)
 
     #Number of slices changed, we should extract which feature is which
@@ -136,11 +136,11 @@ def extractFeaturesFromFileName(fileName): # this should change according to the
         else:
             file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_index = decideWhichElementsWhichFeatures(file_name_split)
         makeDeceisonFlag = False
-        
+
     file_id = file_name_split[file_id_index]
     inner_id_right_side = file_name_split[inner_id_right_side_index]
     inner_id_left_side = file_name_split[inner_id_left_side_index]
-    
+
     # train or test only for LFPW Dataset
     learnType = file_name_split[learnType_index]
     if learnType != 'train' and learnType != 'test':
@@ -148,12 +148,12 @@ def extractFeaturesFromFileName(fileName): # this should change according to the
 
     #Only for imgTxtDBs
     output_dict = {
-            "file_name": file_name,                   "file_name_withoutExtension": file_name_withoutExtension, 
-            "extension": extension,                   "inner_id_right_side": inner_id_right_side, 
-            "learnType": learnType,                   "file_id": file_id, 
+            "file_name": file_name,                   "file_name_withoutExtension": file_name_withoutExtension,
+            "extension": extension,                   "inner_id_right_side": inner_id_right_side,
+            "learnType": learnType,                   "file_id": file_id,
             "inner_id_left_side": inner_id_left_side, "numberOfSlices": numberOfSlices
         }
-    
+
     #Uncomment this to see the features
     printFeatures(output_dict)
     return output_dict
@@ -166,7 +166,7 @@ def yunetDetectionDNN(img,img_path):
     return detector.detect(img)
 
 def DNNFrontalHandle(faces, image_cv2_yunet):
-    if faces is not None: 
+    if faces is not None:
         for face in faces:
             # confidence
             confidence = face[-1]
@@ -174,12 +174,12 @@ def DNNFrontalHandle(faces, image_cv2_yunet):
     else:
         logString = "No face detected: " + file_name
         writeLog( logFolderPath +'/logNoFace.txt', logString)
-        
+
 def FaceRecogFrontalHandle(image_cv2_yunet,img_path,confidenceArray, copyTextPath):
     txt_path = copyTextPath + ".".join(img_path.split('/')[-1].split('.')[:-1]) + ".txt"
     if os.path.exists(txt_path):
         return confidenceArray
-    
+
     resp = detect_distences_of_sides.detect_best_frontal_face(img_path)
     if resp == False:
         return confidenceArray
@@ -195,25 +195,25 @@ def writeLog(log_file_path, log):
         log_file.write(log + '\n')
 
 def clearLogs():
-    
+
     if os.path.exists(logFolderPath):
         shutil.rmtree(logFolderPath)
         os.makedirs(logFolderPath, exist_ok=True)
-        
-def findMaxFrontalFace(confidenceArr): 
+
+def findMaxFrontalFace(confidenceArr):
     #find max confidence and write it to the folder
     maxConf = 0
     confidence = 0
     if len(confidenceArr) == 0:
         writeLog( logFolderPath +'/logNoFrontalFace.txt', file_name)
         return False, False
-        
+
     for conf in confidenceArr:
         if conf['confidence'] > maxConf:
             maxConf = float(conf['confidence'])
             bestImage = conf['img']
             confidence = conf['confidence']
-    
+
     return bestImage,confidence
 
 def showFrontalFaces(image, confidence, frontalCount):
@@ -223,13 +223,13 @@ def showFrontalFaces(image, confidence, frontalCount):
         plt.title(str(round(float(confidence),2)))
         plt.axis('off')
     elif frontalCount == 40 and showFrontalFaceExamples:
-        plt.show()    
+        plt.show()
 
 #This function will write the frontal face to the folder
-def writeFrontalFaceToFolder(image, confidence, frontalCount, destination):    
+def writeFrontalFaceToFolder(image, confidence, frontalCount, destination):
     os.makedirs( destination + 'frontal/', exist_ok=True)
     output_file_path_frontal = destination + 'frontal/' + file_name_withoutExtension + '.' + extension
-    
+
     if imgTxtDBs == True:
         input_file_path_frontal = file
     else:
@@ -245,7 +245,7 @@ def writeFrontalFaceToFolder(image, confidence, frontalCount, destination):
 
 def youtubeDBFilesConcat(inFiles):
     outFilesPaths = []
-    
+
     for file in inFiles:
         #example ->AFW_815038_1_12.jpg
         file_name = file.name
@@ -260,10 +260,10 @@ def youtubeDBFilesConcat(inFiles):
                     inner_inner_folder = os.scandir('./'+dbName+'/'+file_name+'/'+inner_file.name)
                     for inner_inner_file in inner_inner_folder:
                         folder_flag = len(inner_inner_file.name.split('.')) == 1
-                        if inner_inner_file.name.split('.')[-1] == "jpg":    
+                        if inner_inner_file.name.split('.')[-1] == "jpg":
                             outFilesPaths.append('./'+dbName+'/'+file_name+'/'+inner_file.name+'/'+inner_inner_file.name)
     return outFilesPaths
-    
+
 def replaceEntersAndTabs(array):
     newArray = []
     for element in array:
@@ -272,7 +272,7 @@ def replaceEntersAndTabs(array):
         element = element.replace(' ', '')
         newArray.append(element)
     return newArray
-        
+
 
 ##########################   MAIN   ##########################
 clearLogs()
@@ -291,7 +291,7 @@ if imgTxtDBs ==True:
     imageInformations = imageInformationsTxt.readlines()
     imageInformations = replaceEntersAndTabs(imageInformations)
     files = youtubeDBFilesConcat(files)
-    
+
 #example ->AFW_815038_1_12.jpg
 for file in files:
     if imgTxtDBs == True:
@@ -301,8 +301,8 @@ for file in files:
             print("Image Counter: " + str(imageCounter))
     else:
         file_name = file.name
-    
-    features = extractFeaturesFromFileName(file_name)      
+
+    features = extractFeaturesFromFileName(file_name)
     file_name_withoutExtension = features["file_name_withoutExtension"]
     inner_id_right_side = features["inner_id_right_side"]
     inner_id_left_side = features["inner_id_left_side"]
@@ -319,14 +319,14 @@ for file in files:
         makeDeceisonFlag = True
         features = extractFeaturesFromFileName(file_name)
     holdFeaturesLen = numberOfSlices
-    
+
     # This part is important for the output folder structure
     # In this part, you can change the output folder structure according to your needs
     if learnType == False:
         output_folder = './' + dbName + '_FOLDERED/' + file_id + '/'
     else:
         output_folder = './' + dbName + '_FOLDERED/' + learnType + '/' + file_id + '/'
-        
+
     if inner_id_left_side != False and inner_id_left_side.isdigit() == True:
         output_folder = output_folder + inner_id_left_side + '/'
 
@@ -340,12 +340,12 @@ for file in files:
         # If folder does not exist, create folder and copy the file
         except:
             copyFlag = True
-            print("Folder does not exist, creating folder: " + output_folder)    
-        
+            print("Folder does not exist, creating folder: " + output_folder)
+
     if copyFlag:
         os.makedirs(output_folder, exist_ok=True)
         output_file_path = output_folder + file_name
-        
+
         if imgTxtDBs == True:
             input_file_path = file
             #print("Input File Path: " + input_file_path)
@@ -359,34 +359,32 @@ for file in files:
 
         logString = "Added Image: " + file_name
         writeLog(logFolderPath+'/logAddedImage.txt', logString)
-    
-    
+
+
     #Frontal detection
     if extension == 'jpg':
         if holdID != file_id and firstFlag == False:
             image_cv2_yunet, confidence = findMaxFrontalFace(confidenceArray)
-            
+
             confidenceArray.clear()
             frontalCount += 1
 
-            if  confidence != False:    
+            if  confidence != False:
                 showFrontalFaces(image_cv2_yunet, confidence, frontalCount)
                 #Our frontal image is ready
                 #create a folder that named frontal, and copy this into
                 writeFrontalFaceToFolder(image_cv2_yunet, confidence, frontalCount, output_folder)
-                
+
         firstFlag = False
         holdID = file_id
         if imgTxtDBs == True:
-            input_file_path = file    
+            input_file_path = file
         else:
             input_file_path = './' + dbName + '/' + file_name
-        
+
         image_cv2_yunet = cv2.imread(input_file_path)
-        
-        confidenceArray = FaceRecogFrontalHandle(image_cv2_yunet,input_file_path,confidenceArray,output_folder) #remove output_folder 
+
+        confidenceArray = FaceRecogFrontalHandle(image_cv2_yunet,input_file_path,confidenceArray,output_folder) #remove output_folder
         print("Length of confidence array: " + str(len(confidenceArray)))
         #_, faces = yunetDetectionDNN(image_cv2_yunet,input_file_path)
         #DNNFrontalHandle(faces, image_cv2_yunet)
-
-

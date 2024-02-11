@@ -21,24 +21,24 @@ if not os.path.exists(output_folder):
 for file in files:
     # Dosya yolunu oluştur
     file_path = os.path.join(folder_path, file)
-    
+
     # Dosya bir resim dosyası mı kontrol et
     if os.path.isfile(file_path) and file_path.lower().endswith(('.png', '.jpg', '.jpeg')):
         print(f"Yüzler {file} dosyasında bulunuyor:")
-        
+
         # Dosyayı aç ve işlemleri yap
         img = cv.imread(file_path)
-        
+
         # Gri tonlamaya dönüştür
         gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
-        
+
         # Yüz tespiti yap
         faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
-        
+
         # Yüzleri işaretle
         for (x, y, w, h) in faces:
             cv.rectangle(img, (x, y), (x+w, y+h), (255, 0, 0), 2)
-        
+
         # İşlenmiş resmi ayrı bir klasöre kaydet
         output_file_path = os.path.join(output_folder, file)
         cv.imwrite(output_file_path, img)

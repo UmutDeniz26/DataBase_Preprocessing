@@ -19,27 +19,27 @@ def klasor_benzerlik_kontrolu(klasor_yolu, output_file): #,file
         gorsel2 = cv2.resize(gorsel2, (400, 400))
 
         benzerlik12 = benzerlik_orani_hesapla(gorsel1, gorsel2)
-        
+
         i+=1
-    
+
         #print("File Name: " + str(gorsel_yollar[i]) +"   Score: "+str(benzerlik12))
-            
+
         percentage = highScoreCnt / len(gorsel_yollar)
-        
+
         if benzerlik12 >= 0.9:
             # İki görsel de %90'ın üzerinde benzerlik oranına sahipse bir sonraki çiftle devam et
             highScoreCnt+=1
             True
         else:
             False
-    
+
     #output_file = './Elif/YoutubeFace/benzerlik_oranları.txt'
     #file = open('./Elif/YoutubeFace/benzerlik_oranları.txt', "a")
     if percentage >= 0.7:
         with open(output_file, 'a') as file:
             #file.write( f"    High score nums: {highScoreCnt}    Total length: {len(gorsel_yollar)}      Percentage:  {percentage}\n\n")
             file.write( f"    {klasor_yolu}     Percentage:  {percentage}\n\n")
-  
+
     print("High score nums: " + str(highScoreCnt) + "    Total length: "+ str(len(gorsel_yollar))  +  "    Percentage: "+ str(percentage) )
     return True
 
@@ -47,7 +47,7 @@ def main():
         # Veri setinin bulunduğu dizin
         dataset_path = './Elif/YoutubeFace/YoutubeFace'
         output_file = './Elif/YoutubeFace/new_benzerlik_oranları.txt'
-        
+
         file = open('./Elif/YoutubeFace/new_benzerlik_oranları.txt', "a")
         #with open(output_file, 'w') as file:
         #file.write("Benzerlik Oranlari\n\n")
@@ -62,13 +62,13 @@ def main():
                     print(subfolder_path)
                     #file.write(subfolder_path)
                     if os.path.isdir(subfolder_path):
-                        
+
                         #print(image_file)
                         klasor_benzerlik_kontrolu(subfolder_path, output_file) #, file
-                        
+
                         #if klasor_benzerlik_kontrolu(subfolder_path):
-                        #print(f"{person_name}: Tüm görsellerde benzerlik oranı %90'ın üzerinde.")    
-                            #print("{person_name}_{subfolder_name}: benzerlik_orani")    
+                        #print(f"{person_name}: Tüm görsellerde benzerlik oranı %90'ın üzerinde.")
+                            #print("{person_name}_{subfolder_name}: benzerlik_orani")
 
 
 if __name__ == "__main__":

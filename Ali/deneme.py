@@ -9,7 +9,7 @@ abs_space = 1
 def run(folder_path,i):
     max_abs_image= ""
     max_abs_value = sys.maxsize
-    
+
     global y
     for filename in sorted(os.listdir(folder_path)):
         image_path = folder_path + "/" + filename
@@ -25,7 +25,7 @@ def run(folder_path,i):
                 print("Error: " + image_path + " is not a valid json file!")
                 continue
             txt_path = '/home/ali/Desktop/github/DataBase_Preprocessing/Ali/Info.txt'
-            
+
             resp_holder = content.copy()
             for key, value in resp_holder.items():
                 if key == "left_eye" or key == "right_eye" or key == "nose" or key == "mouth" or key == "face":

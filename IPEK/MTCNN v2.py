@@ -12,14 +12,14 @@ files = os.listdir(folder_path)
 
 # loop through the images in the folder
 for file in files:
-        
-    inner_folder = folder_path+ "/" + file 
+
+    inner_folder = folder_path+ "/" + file
     images_paths = os.listdir(inner_folder)
-    
+
     for image_name in images_paths:
         image_path = inner_folder + "/" + image_name
         print(image_path)
-    
+
         # load the image
         image = cv2.imread(image_path)
 
@@ -38,7 +38,7 @@ for file in files:
             x, y, w, h = face['box']
             confidence = face['confidence']
             print(confidence)
-            
+
             # check if the face is frontal enough (you may need to adjust this threshold)
             if confidence > best_confidence:
                 best_confidence = confidence
@@ -47,14 +47,14 @@ for file in files:
         # if a frontal face is found, display it
         if best_face:
             # print the filename associated with the most frontal face
-            
+
             x, y, w, h = best_face
-         
+
             extracted_face = image[y:y+h, x:x+w]
 
             # display the extracted face
             cv2.imshow(best_face)
             cv2.waitKey(0)  # wait for any key press
-            cv2.destroyAllWindows() 
+            cv2.destroyAllWindows()
     print("Most frontal face in", image_name," its confidence: ", str(best_confidence))
     best_confidence = 0

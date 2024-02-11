@@ -10,7 +10,7 @@ result_lines = []
 for i, line in enumerate(lines):
     # Her bir değişkeni virgül gördükten sonra 0 ile ayır
     variables = line.strip().split(', ')
-    
+
     # Sıralı sayıları ekleyerek yeni bir satır oluştur
     for j, variable in enumerate(variables):
         result_line = f"{j}, {variable}"

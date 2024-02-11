@@ -7,7 +7,7 @@ def detect_best_frontal_face(image_path,resp=False,onlyLandMarksFlag=False):
           resp = RetinaFace.detect_faces(image_path)
      if 'face_1' not in resp:
         return False
-     else:   
+     else:
           landmarks = resp['face_1']['landmarks']
           facial_area = resp["face_1"]["facial_area"]
           nose_point = landmarks['nose']

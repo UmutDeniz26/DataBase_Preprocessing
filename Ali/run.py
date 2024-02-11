@@ -14,7 +14,7 @@ sys.path.insert(0, "./UMUT")
 
 import DB_Folder_Manipulator
 
-DB_Folder_Manipulator.main(dbName='CASIA-FaceV5(BMP)', upperFolderName='Ali', 
+DB_Folder_Manipulator.main(dbName='CASIA-FaceV5(BMP)', upperFolderName='Ali',
     inputOrAutoMod=False, printFeaturesFlag=False,
-        selectFirstImageAsFrontal=False, showAlignedImages=False, 
-        alignImagesFlag=True, resetImagesFlag=False) #if resetImagesFlag is True, then the images will be recreated 
+        selectFirstImageAsFrontal=False, showAlignedImages=False,
+        alignImagesFlag=True, resetImagesFlag=False) #if resetImagesFlag is True, then the images will be recreated

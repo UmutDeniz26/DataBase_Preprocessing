@@ -17,12 +17,12 @@ def printFeatures( output_dict,printFeaturesFlag=False ):
 #This function will run only once, when the number of slices changed
 def decideWhichElementsWhichFeatures( file_name_split,out_file_name ):
     file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_index = 0, 0, 0, 0
-    
+
     for element in file_name_split:
         os.system('cls')
         print("File Name: " + out_file_name)
         print(file_name_split)
-        inputTemp = input("\nWhat is the feature of '" + element + "' ? \n"+  
+        inputTemp = input("\nWhat is the feature of '" + element + "' ? \n"+
                         " n -> next \n"
                         " f -> file_id \n" +
                         " ir -> inner_id_right_side \n" +
@@ -85,7 +85,7 @@ def autoDetermineAccordingToFeatureCount( file_name_split, indexDict, isThereTra
         else:
             print("Wrong Feature Count!")
             exit()
-    
+
     return file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_index
 
 #This function will extract features from file name
@@ -95,10 +95,10 @@ def extractFeaturesFromFileName(out_file_name, indexDict, inputOrAutoMod=False, 
 
     #Don't change this part
     file_name_split = out_file_name.split('_')
-    file_name_withoutExtension = out_file_name.split('.')[0]    
+    file_name_withoutExtension = out_file_name.split('.')[0]
     extension = out_file_name.split('.')[-1] # jpg or mat
-    
-    file_name_split = file_name_split[:-1] + file_name_split[-1].split('.') 
+
+    file_name_split = file_name_split[:-1] + file_name_split[-1].split('.')
     numberOfSlices = len(file_name_split)
 
     #Number of slices changed, we should extract which feature is which
@@ -108,17 +108,17 @@ def extractFeaturesFromFileName(out_file_name, indexDict, inputOrAutoMod=False, 
         else:
             file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_index = decideWhichElementsWhichFeatures(file_name_split, out_file_name)
         makeDeceisonFlag = False
-        
+
     indexDict = {
         "file_id_index": file_id_index,
         "inner_id_right_side_index": inner_id_right_side_index,
         "inner_id_left_side_index": inner_id_left_side_index,
         "learnType_index": learnType_index
-    }   
+    }
 
     file_id = file_name_split[file_id_index];inner_id_right_side = file_name_split[inner_id_right_side_index]
     inner_id_left_side = file_name_split[inner_id_left_side_index]
-    
+
     # train or test only for LFPW Dataset
     learnType = file_name_split[learnType_index]
     if learnType != 'train' and learnType != 'test':
@@ -126,12 +126,12 @@ def extractFeaturesFromFileName(out_file_name, indexDict, inputOrAutoMod=False, 
 
     #Only for imgTxtDBs
     output_dict = {
-            "out_file_name": out_file_name,           "file_name_withoutExtension": file_name_withoutExtension, 
-            "extension": extension,                   "inner_id_right_side": inner_id_right_side, 
-            "learnType": learnType,                   "file_id": file_id, 
+            "out_file_name": out_file_name,           "file_name_withoutExtension": file_name_withoutExtension,
+            "extension": extension,                   "inner_id_right_side": inner_id_right_side,
+            "learnType": learnType,                   "file_id": file_id,
             "inner_id_left_side": inner_id_left_side, "numberOfSlices": numberOfSlices
         }
-    
+
     #Uncomment this to see the features
     printFeatures(output_dict, printFeaturesFlag)
     return output_dict, indexDict, makeDeceisonFlag

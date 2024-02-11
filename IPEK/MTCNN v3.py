@@ -19,14 +19,14 @@ files = os.listdir(folder_path)
 
 # loop through the images in the folder
 for file in files:
-        
-    inner_folder = folder_path + "/" + file 
+
+    inner_folder = folder_path + "/" + file
     images_paths = os.listdir(inner_folder)
-    
+
     for image_name in images_paths:
         image_path = inner_folder + "/" + image_name
         print(image_path)
-    
+
         # load the image
         image = cv2.imread(image_path)
 
@@ -39,13 +39,13 @@ for file in files:
 
         if len(faces) == 0:
             print("Face Not Found!")
-            
+
         # iterate through detected faces
         for face in faces:
             x, y, w, h = face['box']
             confidence = face['confidence']
             print(confidence)
-            
+
             # check if the face is frontal enough (you may need to adjust this threshold)
             if confidence > best_confidence:
                 best_confidence = confidence
