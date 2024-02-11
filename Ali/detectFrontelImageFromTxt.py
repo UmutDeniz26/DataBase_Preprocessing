@@ -6,6 +6,7 @@ import sys
 def run(folder_path):
     max_abs_image= ""
     max_abs_value = sys.maxsize
+
     for filename in os.listdir(folder_path):
         image_path = folder_path + "/" + filename
         if filename.endswith(('.txt')):
@@ -25,7 +26,8 @@ def run(folder_path):
                     max_abs_image = filename.replace(".txt","")
             except:
                 difference_between_le_re = 1000.0
-    #print(max_abs_value,max_abs_image)
+
+    # Split the name with "." then join all the elements except the last one that is the extension, than return the name
     if max_abs_value == -1 or max_abs_image == "":
-        return False, False
+        return 0,  '.'.join( os.listdir(folder_path)[0].split('.')[:-1] )
     return max_abs_value,max_abs_image
