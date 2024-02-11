@@ -131,29 +131,49 @@ def main(
             inter+=1
             os.makedirs(output_folder + "frontal/", exist_ok=True);os.makedirs(output_folder, exist_ok=True)
 
-            confidence_score,image_cv2 = detectFrontelImageFromTxt.run(output_folder)
+            confidence_score, most_frontal_face_name = detectFrontelImageFromTxt.run(output_folder)
 
-            # If select_first_image_as_frontal is True, then the first image will be selected as the frontal image
-            if select_first_image_as_frontal == True:
-                image_cv2_split = image_cv2.split("_")
-                image_cv2_split[-1] = "0"
-                image_cv2 = "_".join(image_cv2_split)
+            if select_first_image_as_frontal:
+                most_frontal_face_name = most_frontal_face_name.split("_")
+                most_frontal_face_name[-1] = "0"
+                most_frontal_face_name = "_".join(most_frontal_face_name)
 
+            if not most_frontal_face_name:
+                #If there is no frontal face, the last image is selected as frontal face
+                Common.writeLog(
+                    os.path.join(log_folder_path, 'logNoFrontalFace.txt'),
+                    output_file_name + ", the first image is selected as frontal face!"
+                )
+            #If there is a frontal face, the image is selected as frontal face
+            frontal_image_folder = os.path.join(output_folder, "frontal")
+            if os.listdir(frontal_image_folder):
+                print("Frontal Image Already Exists!")
+                Common.clearFolder(frontal_image_folder)
 
-            if image_cv2 == False:
-                Common.writeLog( log_folder_path +'/logNoFrontalFace.txt', output_file_name)
-            else:
-                if len(os.listdir(output_folder+'frontal/')) > 0:
-                    print("Frontal Image Already Exists!")
-                    #clear all files in output_folder+frontal/
-                    Common.clearFolder(output_folder + "frontal/")
+            frontal_image_path = os.path.join(output_folder, most_frontal_face_name + ".jpg")
+            frontal_count += 1
 
-                frontal_image_path = output_folder + image_cv2 + ".jpg"
-                frontal_count += 1
-                Common.copyFile(frontal_image_path, output_folder + "frontal/" + image_cv2 + ".jpg")
-                os.makedirs('./' + upper_folder_name + '/' + data_base_name + '_FOLDERED/Frontal_Faces/', exist_ok=True)
-                Common.copyFile( frontal_image_path, "./" + upper_folder_name + "/" + data_base_name + "_FOLDERED/Frontal_Faces/" + image_cv2 + ".jpg")
-                Common.writeLog( log_folder_path +'/logAddedFrontalImage.txt', frontal_image_path)
+            # Copy the frontal image to the frontal folder
+            Common.copyFile(
+                frontal_image_path, # from
+                os.path.join(frontal_image_folder, most_frontal_face_name + ".jpg") # to
+            )
+            os.makedirs(
+                os.path.join('./', upper_folder_name, data_base_name + '_FOLDERED', 'Frontal_Faces'), exist_ok=True
+            )
+
+            # Copy the frontal image to the frontal faces folder
+            Common.copyFile(
+                frontal_image_path, # from
+                os.path.join(
+                    "./", upper_folder_name, data_base_name + "_FOLDERED", "Frontal_Faces", most_frontal_face_name + ".jpg") # to
+            )
+
+            # Write the frontal image to the log file
+            Common.writeLog(
+                os.path.join(log_folder_path, 'logAddedFrontalImage.txt'), frontal_image_path
+            )
+
 
         first_iteration = False
         hold_id = file_id
@@ -162,19 +182,18 @@ def main(
 
         # In this part, you can change the output folder structure according to your needs
         # If learnType is True-> output_folder = f'./{upper_folder_name}/{data_base_name}_FOLDERED/{learnType}/{file_id}/'
-        output_folder = f'./{upper_folder_name}/{data_base_name}_FOLDERED/{learnType + "/" if learnType else ""}{file_id}/'
-
+        output_folder = os.path.join(upper_folder_name, data_base_name + "_FOLDERED", learnType + "/" if learnType else "", file_id + "/")
 
         # Add inner folder when inner_id_left_side is different than False and inner_id_left_side is a number
         if inner_id_left_side != False and inner_id_left_side.isdigit() == True:
-            output_folder = output_folder + inner_id_left_side + '/'
+            output_folder = os.path.join(output_folder, inner_id_left_side + "/")
         else:
-            output_folder = output_folder + '0' + '/'
+            output_folder = os.path.join(output_folder, "0" + "/")
 
         # Create folders if they don't exist / COPY PROCESS
         # Replace the images with same name
         os.makedirs(output_folder, exist_ok=True)
-        output_file_path = output_folder + output_file_name
+        output_file_path = os.path.join(output_folder, output_file_name)
 
         print(output_file_path)
         #Here we copy the jpg file to the output folder
@@ -238,6 +257,6 @@ if __name__ == "__main__":
     main(
         data_base_name='YoutubeFace', upper_folder_name='UMUT',
         align_images_flag=True, reset_images_flag=True,
-        auto_feature_select=False, print_features_flag=True,
+        auto_feature_select=False, print_features_flag=False,
         select_first_image_as_frontal=False, show_aligned_images=False
     )
