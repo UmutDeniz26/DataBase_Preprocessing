@@ -1,40 +1,44 @@
 import os
 import re
 import cv2
+import sys
 import shutil
 import matplotlib.pyplot as plt
-import sys
+from retinaface import RetinaFace
+
+# Custom scripts
+import Common
+import DBsWithTxtInfo
+import txtFileOperations
+import NameFeatureExtractor
+import FrontalFaceFunctions
 
 sys.path.insert(0, './Ali')
-import detect_distences_of_sides
-import detectFrontelImageFromTxt
 import DetectUpperCase
+import detectFrontelImageFromTxt
+import detect_distences_of_sides
 
-sys.path.insert(0, './UMUT')
-import Common
-import NameFeatureExtractor
-import DBsWithTxtInfo
-import FrontalFaceFunctions
-import txtFileOperations
-
-from retinaface import RetinaFace
 
 intra = 0
 inter = 0
 
-def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirstImageAsFrontal, showAlignedImages, alignImagesFlag, resetImagesFlag):
+def main(
+        data_base_name, upper_folder_name, align_images_flag, reset_images_flag,
+        auto_feature_select=False, print_features_flag=True,
+        select_first_image_as_frontal=False,show_aligned_images=False
+    ):
 
     #------------------------------------------------------- Initialization -------------------------------------------------------#
     #This is the folder path of the logs
-    logFolderPath = f'./{upperFolderName}/LOG/{dbName}'
-    os.makedirs(logFolderPath, exist_ok=True)
-    Common.clearLogs(logFolderPath)
+    log_folder_path = f'./{upper_folder_name}/LOG/{data_base_name}'
+    os.makedirs(log_folder_path, exist_ok=True)
+    Common.clearLogs(log_folder_path)
 
     # This is very important for the txt operations.
     #The txt file should be in the same folder with the images and the name of the txt file should be the same with the name of the folder
-    txtInfoPath = f'./{upperFolderName}/{dbName}.txt'
+    txtInfoPath = f'./{upper_folder_name}/{data_base_name}.txt'
 
-    print(txtFileOperations.initMainTxtFile(dbName,upperFolderName,
+    print(txtFileOperations.initMainTxtFile(data_base_name,upper_folder_name,
                                             ["file_path","inter","intra","left_eye","right_eye","nose","mouth_left","mouth_right","facial_area"]))
 
     #These variables will be automatically changed according to the number of features
@@ -42,26 +46,26 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
     resp = []
 
     imgTxtDBs = False
-    if dbName == 'YoutubeFace' or dbName == 'LFW' or 'CASIA-FaceV5(BMP)':
+    if data_base_name == 'YoutubeFace' or data_base_name == 'LFW' or 'CASIA-FaceV5(BMP)':
         imgTxtDBs = True
 
-    if showAlignedImages == True:
+    if show_aligned_images == True:
         plotimageCounter=0
     else:
         plotimageCounter=-1
     #------------------------------------------------------- Main Part -------------------------------------------------------#
-    dbFolderPath = './'+ upperFolderName +'/'+ dbName
+    data_base_folder_path = './'+ upper_folder_name +'/'+ data_base_name
 
-    files = os.scandir(dbFolderPath)
+    files = os.scandir(data_base_folder_path)
 
-    if DetectUpperCase.save_second_letter_upper(dbFolderPath,"uppercase_files.txt") >0:
+    if DetectUpperCase.save_second_letter_upper(data_base_folder_path,"uppercase_files.txt") >0:
         print("There are some folders that has two upper case.")
-        DetectUpperCase.rename_second_letter_lowercase(dbFolderPath)
+        DetectUpperCase.rename_second_letter_lowercase(data_base_folder_path)
         exit()
 
-    firstFlag = True;makeDeceisonFlag = True
+    first_iteration = True;make_deceison_flag = True
 
-    holdID = 0;holdLeftInnerID = 0;holdFeaturesLen = 0;frontalCount = 0;
+    hold_id = 0;hold_left_inner_id = 0;holdFeaturesLen = 0;frontalCount = 0
 
     plt.figure(figsize=(20,10))
 
@@ -72,7 +76,7 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
         imageInformations = Common.replaceEntersAndTabs(imageInformations)
         files = DBsWithTxtInfo.imgTxtDBsFilesConcat(files)
 
-    indexDict = {
+    index_dictionary = {
         "file_id_index": file_id_index,
         "inner_id_right_side_index": inner_id_right_side_index,
         "inner_id_left_side_index": inner_id_left_side_index,
@@ -84,21 +88,22 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
     for index,file in enumerate(files):
         if imgTxtDBs == True:
             output_file_name = imageInformations[index]+'.jpg'
-            if index%1000 == 0:
-                print("Image Counter: " + str(index))
+            input_file_path = file
         else:
             output_file_name = file.name
+            input_file_path = './' + upper_folder_name + '/' + data_base_name + '/' + output_file_name
+
 
         #Extract features from file name
-        features,indexDict,makeDeceisonFlag = NameFeatureExtractor.extractFeaturesFromFileName(output_file_name, indexDict, inputOrAutoMod, makeDeceisonFlag, printFeaturesFlag)
+        features,index_dictionary,make_deceison_flag = NameFeatureExtractor.extractFeaturesFromFileName(output_file_name, index_dictionary, auto_feature_select, make_deceison_flag, print_features_flag)
         numberOfSlices = features["numberOfSlices"]
         #When number of slices changed, we should extract features again
-        if numberOfSlices != holdFeaturesLen and firstFlag == False:
+        if numberOfSlices != holdFeaturesLen and first_iteration == False:
             print("Number of features changed! Please check the features!")
-            if inputOrAutoMod == False:
+            if auto_feature_select == False:
                 input("Press Enter to continue...")
-            makeDeceisonFlag = True
-            features,indexDict,makeDeceisonFlag = NameFeatureExtractor.extractFeaturesFromFileName(output_file_name, indexDict, inputOrAutoMod, makeDeceisonFlag, printFeaturesFlag)
+            make_deceison_flag = True
+            features,index_dictionary,make_deceison_flag = NameFeatureExtractor.extractFeaturesFromFileName(output_file_name, index_dictionary, auto_feature_select, make_deceison_flag, print_features_flag)
         holdFeaturesLen = numberOfSlices
 
         inner_id_right_side = features["inner_id_right_side"]
@@ -108,43 +113,43 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
         file_id = features["file_id"]
 
         #If the fileID or inner_id_left_side is different than the previous one, we should detect the frontal face of the previous folder
-        if ( holdID != file_id or holdLeftInnerID != inner_id_left_side ) and firstFlag == False:
+        if ( hold_id != file_id or hold_left_inner_id != inner_id_left_side ) and first_iteration == False:
             global inter
             inter+=1
             os.makedirs(output_folder + "frontal/", exist_ok=True);os.makedirs(output_folder, exist_ok=True)
 
-            confidence,image_cv2 = detectFrontelImageFromTxt.run(output_folder)
+            confidence_score,image_cv2 = detectFrontelImageFromTxt.run(output_folder)
 
-            # If selectFirstImageAsFrontal is True, then the first image will be selected as the frontal image
-            if selectFirstImageAsFrontal == True:
+            # If select_first_image_as_frontal is True, then the first image will be selected as the frontal image
+            if select_first_image_as_frontal == True:
                 image_cv2_split = image_cv2.split("_")
                 image_cv2_split[-1] = "0"
                 image_cv2 = "_".join(image_cv2_split)
 
 
             if image_cv2 == False:
-                Common.writeLog( logFolderPath +'/logNoFrontalFace.txt', output_file_name)
+                Common.writeLog( log_folder_path +'/logNoFrontalFace.txt', output_file_name)
             else:
                 if len(os.listdir(output_folder+'frontal/')) > 0:
                     print("Frontal Image Already Exists!")
                     #clear all files in output_folder+frontal/
                     Common.clearFolder(output_folder + "frontal/")
 
-                bestImageFilePath = output_folder + image_cv2 + ".jpg"
+                frontal_image_path = output_folder + image_cv2 + ".jpg"
                 frontalCount += 1
-                Common.copyFile(bestImageFilePath, output_folder + "frontal/" + image_cv2 + ".jpg")
-                os.makedirs('./' + upperFolderName + '/' + dbName + '_FOLDERED/Frontal_Faces/', exist_ok=True)
-                Common.copyFile( bestImageFilePath, "./" + upperFolderName + "/" + dbName + "_FOLDERED/Frontal_Faces/" + image_cv2 + ".jpg")
-                Common.writeLog( logFolderPath +'/logAddedFrontalImage.txt', bestImageFilePath)
+                Common.copyFile(frontal_image_path, output_folder + "frontal/" + image_cv2 + ".jpg")
+                os.makedirs('./' + upper_folder_name + '/' + data_base_name + '_FOLDERED/Frontal_Faces/', exist_ok=True)
+                Common.copyFile( frontal_image_path, "./" + upper_folder_name + "/" + data_base_name + "_FOLDERED/Frontal_Faces/" + image_cv2 + ".jpg")
+                Common.writeLog( log_folder_path +'/logAddedFrontalImage.txt', frontal_image_path)
 
-        firstFlag = False
-        holdID = file_id
-        holdLeftInnerID = inner_id_left_side
+        first_iteration = False
+        hold_id = file_id
+        hold_left_inner_id = inner_id_left_side
 
 
         # In this part, you can change the output folder structure according to your needs
-        # If learnType is True-> output_folder = f'./{upperFolderName}/{dbName}_FOLDERED/{learnType}/{file_id}/'
-        output_folder = f'./{upperFolderName}/{dbName}_FOLDERED/{learnType + "/" if learnType else ""}{file_id}/'
+        # If learnType is True-> output_folder = f'./{upper_folder_name}/{data_base_name}_FOLDERED/{learnType}/{file_id}/'
+        output_folder = f'./{upper_folder_name}/{data_base_name}_FOLDERED/{learnType + "/" if learnType else ""}{file_id}/'
 
 
         # Add inner folder when inner_id_left_side is different than False and inner_id_left_side is a number
@@ -158,26 +163,21 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
         os.makedirs(output_folder, exist_ok=True)
         output_file_path = output_folder + output_file_name
 
-        if imgTxtDBs == True:
-            input_file_path = file
-        else:
-            input_file_path = './' + upperFolderName + '/' + dbName + '/' + output_file_name
-
         print(output_file_path)
         #Here we copy the jpg file to the output folder
         if extension != 'mat':
-            #aligned_file_path = input_file_path.replace("UMUT", "UMUT/"+dbName+"_aligned")
-            if resetImagesFlag == True or not os.path.exists(output_file_path):
+            #aligned_file_path = input_file_path.replace("UMUT", "UMUT/"+data_base_name+"_aligned")
+            if reset_images_flag == True or not os.path.exists(output_file_path):
                 #Expand face area is a parameter for the retinaface, it is used to expand the face area
                 #It is used to include the hair and the ears in the face area !!!
-                if alignImagesFlag == True:
+                if align_images_flag == True:
                     try:
                         faces = RetinaFace.extract_faces(input_file_path,align=True,align_first=True)
                     except:
                         faces = [];resp = {}
 
                     if len(faces) ==0:
-                        Common.writeLog(logFolderPath+'/logNoFace.txt', output_file_name)
+                        Common.writeLog(log_folder_path+'/logNoFace.txt', output_file_name)
                         Common.copyFile(input_file_path, output_file_path)
                     else:
                         print("Copying " + input_file_path + " to " + output_file_path)
@@ -187,14 +187,14 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
                     resp = {}
                     Common.copyFile(input_file_path, output_file_path)
             else:
-                Common.writeLog(logFolderPath+'/logExists.txt', output_file_path)
+                Common.writeLog(log_folder_path+'/logExists.txt', output_file_path)
                 if extension == 'jpg':
                     resp = txtFileOperations.readJsonDictFromFile(output_file_path.replace('jpg','txt'))
                 if len(resp) == 0:
-                    Common.writeLog(logFolderPath+'/logNoFace.txt', output_file_path)
+                    Common.writeLog(log_folder_path+'/logNoFace.txt', output_file_path)
 
         logString = "Added Image: " + output_file_name
-        Common.writeLog(logFolderPath+'/logAddedImage.txt', logString)
+        Common.writeLog(log_folder_path+'/logAddedImage.txt', logString)
 
         #Frontal detection
         if extension == 'jpg':
@@ -203,23 +203,28 @@ def main(dbName, upperFolderName, inputOrAutoMod, printFeaturesFlag, selectFirst
             if imgTxtDBs == True:
                 input_file_path = file
             else:
-                input_file_path = './' + upperFolderName + '/' + dbName + '/' + output_file_name
+                input_file_path = './' + upper_folder_name + '/' + data_base_name + '/' + output_file_name
 
             #Read the image
             image_cv2 = cv2.imread(input_file_path)
 
             global intra
             #Calculate the landmarks of the frontal face and write them to the txt file
-            response,plotimageCounter = FrontalFaceFunctions.writeRetinaFaceLandmarks(image_cv2,input_file_path,output_folder,output_file_name,  logFolderPath, inter, intra,plotimageCounter, resp)#remove output_folder
+            response = FrontalFaceFunctions.writeRetinaFaceLandmarks(
+                                            image_cv2, output_file_path,
+                                            inter, intra
+                                        )
             intra+=1
 
             if response != "Txt already exists!":
-                Common.writeLog(logFolderPath+'/logAddedTxt.txt', response)
+                Common.writeLog(log_folder_path+'/logAddedTxt.txt', response)
             else:
-                Common.writeLog(logFolderPath+'/logTxtExists.txt', output_folder)
+                Common.writeLog(log_folder_path+'/logTxtExists.txt', output_folder)
 
 if __name__ == "__main__":
-    main(dbName='YoutubeFace', upperFolderName='UMUT',
-        inputOrAutoMod=False, printFeaturesFlag=True,
-          selectFirstImageAsFrontal=False, showAlignedImages=False,
-          alignImagesFlag=True, resetImagesFlag=True) #if resetImagesFlag is True, then the images will be recreated
+    main(
+        data_base_name='YoutubeFace', upper_folder_name='UMUT',
+        align_images_flag=True, reset_images_flag=True,
+        auto_feature_select=False, print_features_flag=True,
+        select_first_image_as_frontal=False, show_aligned_images=False
+    )

@@ -39,14 +39,11 @@ def run(txt_path, resp):
 def initMainTxtFile(dbName,upperFolderName,columns):
     txt_path = f'./{upperFolderName}/{dbName}_FOLDERED/{dbName}_Info.txt'
     os.makedirs(os.path.dirname(txt_path), exist_ok=True)
-    #prepare a string with colums, all colum should be seperated with "|" and should be in the middle of the string and taking 6 space from the left and right
+    #prepare a string with columns, all colum should be seperated with "|" and should be in the middle of the string and taking 6 space from the left and right
     with open(txt_path , 'w') as file:
         for column in columns:
             space_count = np.floor(abs_space/len(columns)).astype(int)
-            if column == columns[-1]:
-                file.write(f"{column:^{space_count}}")
-            else:
-                file.write(f"{column:^{space_count}},")
+            file.write(f"{column:^{space_count}},")
 
     os.makedirs(f'./{upperFolderName}/LOG/{dbName}', exist_ok=True)
     Common.writeLog(f'./{upperFolderName}/LOG/{dbName}/logMainTxtFile.txt', "Initialized txt: " + txt_path + " successfully!")
@@ -64,28 +61,17 @@ def writeFileMainTxt(txt_path, resp, inter, intra):
             upperFolderName = txt_path.split("/")[index-1]
             break
 
-    # This part is also weaking, because it needs a dictionary with exact keys
-    featureSelectFlag = False
-    resp_holder = resp.copy()
-    resp.clear()
-    #print(resp_holder)
-    for key, value in resp_holder.items():
-        if key == "left_eye" or key == "right_eye" or key == "nose" or key == "mouth" or key == "face":
-            featureSelectFlag = True
-        if featureSelectFlag:
-            resp.update({key: value})
-
     file_path = txt_path.replace(".txt", "")
     txt_path = f'./{upperFolderName}/{dbName}_FOLDERED/{dbName}_Info.txt'
-    colums = [ file_path + ".jpg" ] + [inter] + [intra] + list(resp.values())
 
-    space_count = np.floor(abs_space/len(colums)).astype(int)
+    #   prepare a string with columns, all colum should be seperated with "|" and should be in the middle of the string and taking 6 space from the left and right
+    columns = [ file_path + ".jpg" ] + [inter] + [intra] + list(resp.values())
+
+    space_count = np.floor(abs_space/len(columns)).astype(int)
     with open(txt_path , 'a') as file:
         file.write("\n")
-        for column in colums:
-            if column == colums[-1]:
-                file.write(f"{str(column):^{space_count}}")
-            elif column == colums[0]:
+        for column in columns:
+            if column == columns[0]:
                 file.write("\"")
                 file.write(f"{str(column):^{space_count}}\",")
             else:

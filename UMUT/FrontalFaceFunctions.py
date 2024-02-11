@@ -15,40 +15,39 @@ from skimage import transform as tform
 from skimage import transform
 import numpy as np
 
+number_of_plot_images = 20
+plt.figure(figsize=(20, 20))
 
 #This function will write the landmarks of the frontal face to the txt file
 #It will also return the modified confidenceArray
-def writeRetinaFaceLandmarks(image_cv2, img_path, txt_path, txt_name, logFolderPath,inter,intra,imgCounter,resp):
-    txt_path = txt_path+txt_name
-    txt_path = os.path.splitext(txt_path)[0]# it gives extensionless path
-    txt_path = txt_path + '.txt'
+def writeRetinaFaceLandmarks(image_cv2, output_file_path ,inter ,intra):
 
-    if os.path.exists(txt_path):
-        txt_resp = txtFileOperations.readJsonDictFromFile(txt_path)
-        if len(txt_resp) > 0:
-            resp = txtFileOperations.readJsonDictFromFile(txt_path)
-        txtFileOperations.writeFileMainTxt(txt_path, resp,inter,intra)
+    # Output file path should be a txt file, this line will change the extension to txt
+    output_file_path = os.path.splitext(output_file_path)[0] + '.txt'
+
+
+    if os.path.exists(output_file_path):
+        landmarks = txtFileOperations.readJsonDictFromFile(output_file_path)
+        txtFileOperations.writeFileMainTxt(output_file_path, landmarks, inter, intra)
         #This part is for testing the face alignment
-        imgCounter = plot_aligned_faces(image_cv2, resp,intra,imgCounter)
-        return "Txt already exists!", imgCounter
+        plot_aligned_faces(image_cv2, intra)
+        return "Txt already exists!"
+    else:
+        #insert resp from extract faces
+        #resp = detect_distences_of_sides.detect_best_frontal_face(img_path)
+        print(txtFileOperations.writeFileMainTxt(output_file_path, {"left_eye": "FaceNotFound"},inter,intra))
+        print(txtFileOperations.run(output_file_path, {"left_eye": "FaceNotFound"}, inter, intra))
+        return "Added txt: " + output_file_path + " successfully!"
 
-    #insert resp from extract faces
-    #resp = detect_distences_of_sides.detect_best_frontal_face(img_path)
 
-    print(txtFileOperations.writeFileMainTxt(txt_path, resp,inter,intra))
-    print(txtFileOperations.run(txt_path, resp))
-    return "Added txt: " + txt_path + " successfully!", imgCounter
-
-
-def plot_aligned_faces(image_cv2, resp,intra,imgCounter):
-    if intra%5 == 0 and 0<=imgCounter<21:
-        imgCounter+=1
-        # Don't use last element of the landmarks which is 'facial_area'
-        # Convert dictionary values to np.array
-        landmarks = list(resp.values());landmarks = landmarks[0:-1];landmarks = np.array(landmarks)
-
-    if imgCounter == 20:
-        imgCounter = -1
+def plot_aligned_faces(image_cv2 ,intra):
+    global number_of_plot_images
+    if intra%5 == 0 and 0 < number_of_plot_images:
+        number_of_plot_images-=1
+        plt.subplot( 5, 4, number_of_plot_images )
+        plt.imshow(image_cv2)
+        plt.title('intra: ' + str(intra))
+        plt.axis('off')
+    if number_of_plot_images == 0:
+        number_of_plot_images -= 1
         plt.show()
-
-    return imgCounter
