@@ -1,1 +1,1 @@
-Initialized txt: ./UMUT/YoutubeFace_FOLDERED/YoutubeFace_Info.txt successfully!
+Initialized txt: UMUT\YoutubeFace_FOLDERED\YoutubeFace_Info.txt successfully!

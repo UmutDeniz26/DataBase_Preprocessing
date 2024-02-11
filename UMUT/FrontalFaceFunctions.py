@@ -25,7 +25,6 @@ def writeRetinaFaceLandmarks(image_cv2, output_file_path ,inter ,intra):
     # Output file path should be a txt file, this line will change the extension to txt
     output_file_path = os.path.splitext(output_file_path)[0] + '.txt'
 
-
     if os.path.exists(output_file_path):
         landmarks = txtFileOperations.readJsonDictFromFile(output_file_path)
         txtFileOperations.writeFileMainTxt(output_file_path, landmarks, inter, intra)
@@ -35,9 +34,10 @@ def writeRetinaFaceLandmarks(image_cv2, output_file_path ,inter ,intra):
     else:
         #insert resp from extract faces
         #resp = detect_distences_of_sides.detect_best_frontal_face(img_path)
-        print(txtFileOperations.writeFileMainTxt(output_file_path, {"left_eye": "FaceNotFound"},inter,intra))
-        print(txtFileOperations.run(output_file_path, {"left_eye": "FaceNotFound"}, inter, intra))
-        return "Added txt: " + output_file_path + " successfully!"
+        txtFileOperations.writeFileMainTxt(output_file_path, {"Response": False},inter,intra)
+        txtFileOperations.writeLandmarksTxtFile(output_file_path, {"Response": False})
+
+        return "Txt file successfully written! : " + output_file_path
 
 
 def plot_aligned_faces(image_cv2 ,intra):

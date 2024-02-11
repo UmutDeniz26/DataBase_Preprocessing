@@ -23,38 +23,51 @@ intra = 0
 inter = 0
 
 def main(
-        data_base_name, upper_folder_name, align_images_flag, reset_images_flag,
-        auto_feature_select=False, print_features_flag=True,
-        select_first_image_as_frontal=False,show_aligned_images=False
-    ):
+        data_base_name: str, upper_folder_name: str,
+        align_images_flag: bool, reset_images_flag: bool,
+        auto_feature_select: bool = False, print_features_flag: bool = True,
+        select_first_image_as_frontal: bool = False, show_aligned_images: bool = False
+    )->list:
+    """
+    This function will create a new folder structure for the dataset.
+    Args:
+        data_base_name (str): The name of the dataset.
+        upper_folder_name (str): The name of the upper folder.
+        align_images_flag (bool): If True, the images will be aligned.
+        reset_images_flag (bool): If True, the images will be reset.
+        auto_feature_select (bool): If True, the features will be selected automatically.
+        print_features_flag (bool): If True, the features will be printed.
+        select_first_image_as_frontal (bool): If True, the first image will be selected as the frontal image.
+        show_aligned_images (bool): If True, the aligned images will be shown.
+    """
 
     #------------------------------------------------------- Initialization -------------------------------------------------------#
     #This is the folder path of the logs
-    log_folder_path = f'./{upper_folder_name}/LOG/{data_base_name}'
+    log_folder_path = os.path.join(upper_folder_name, 'LOG', data_base_name)
+
     os.makedirs(log_folder_path, exist_ok=True)
     Common.clearLogs(log_folder_path)
 
     # This is very important for the txt operations.
     #The txt file should be in the same folder with the images and the name of the txt file should be the same with the name of the folder
-    txtInfoPath = f'./{upper_folder_name}/{data_base_name}.txt'
+    txt_info_path = os.path.join(upper_folder_name, data_base_name + '.txt')
 
     print(txtFileOperations.initMainTxtFile(data_base_name,upper_folder_name,
-                                            ["file_path","inter","intra","left_eye","right_eye","nose","mouth_left","mouth_right","facial_area"]))
+        ["file_path","inter","intra","left_eye","right_eye","nose","mouth_left","mouth_right","facial_area"]))
 
     #These variables will be automatically changed according to the number of features
     file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_index = 0, 0, 0, 0
+    hold_id, hold_left_inner_id, hold_features_count, frontal_count = 0, 0, 0, 0
     resp = []
 
-    imgTxtDBs = False
-    if data_base_name == 'YoutubeFace' or data_base_name == 'LFW' or 'CASIA-FaceV5(BMP)':
-        imgTxtDBs = True
-
-    if show_aligned_images == True:
-        plotimageCounter=0
+    if data_base_name == 'YoutubeFace' or 'LFW' or 'CASIA-FaceV5(BMP)':
+        images_with_txt_file_format = True
     else:
-        plotimageCounter=-1
+        images_with_txt_file_format = False
+
     #------------------------------------------------------- Main Part -------------------------------------------------------#
-    data_base_folder_path = './'+ upper_folder_name +'/'+ data_base_name
+
+    data_base_folder_path = os.path.join(upper_folder_name, data_base_name)
 
     files = os.scandir(data_base_folder_path)
 
@@ -64,30 +77,30 @@ def main(
         exit()
 
     first_iteration = True;make_deceison_flag = True
-
-    hold_id = 0;hold_left_inner_id = 0;holdFeaturesLen = 0;frontalCount = 0
-
     plt.figure(figsize=(20,10))
 
     #Txt operations for YoutubeFace and LFW
-    if imgTxtDBs ==True:
-        imageInformationsTxt = open(txtInfoPath, 'r') # change this
-        imageInformations = imageInformationsTxt.readlines()
-        imageInformations = Common.replaceEntersAndTabs(imageInformations)
+    if images_with_txt_file_format ==True:
+        image_informations_txt = open(txt_info_path, 'r') # change this
+        image_informations = image_informations_txt.readlines()
+        image_informations = Common.replaceEntersAndTabs(image_informations)
         files = DBsWithTxtInfo.imgTxtDBsFilesConcat(files)
 
-    index_dictionary = {
-        "file_id_index": file_id_index,
-        "inner_id_right_side_index": inner_id_right_side_index,
-        "inner_id_left_side_index": inner_id_left_side_index,
-        "learnType_index": learnType_index
-    }
     files.sort()
 
     #Iterate through the files
     for index,file in enumerate(files):
-        if imgTxtDBs == True:
-            output_file_name = imageInformations[index]+'.jpg'
+        if images_with_txt_file_format == True:
+            # Warning about the number of txt file lines and the number of images
+            if len(image_informations) != len(files) and index == 0:
+                print("The number of txt file lines and the number of images are not equal!",
+                    "\nThe number of txt file lines: " + str(len(image_informations)) +
+                    "\nThe number of images: " + str(len(files)),
+                    "\nThis can cause a problem!")
+
+                input("Press Enter to continue...")
+
+            output_file_name = image_informations[index]+'.jpg'
             input_file_path = file
         else:
             output_file_name = file.name
@@ -95,16 +108,16 @@ def main(
 
 
         #Extract features from file name
-        features,index_dictionary,make_deceison_flag = NameFeatureExtractor.extractFeaturesFromFileName(output_file_name, index_dictionary, auto_feature_select, make_deceison_flag, print_features_flag)
+        features,make_deceison_flag = NameFeatureExtractor.extractFeaturesFromFileName(output_file_name, auto_feature_select, make_deceison_flag, print_features_flag)
         numberOfSlices = features["numberOfSlices"]
         #When number of slices changed, we should extract features again
-        if numberOfSlices != holdFeaturesLen and first_iteration == False:
+        if numberOfSlices != hold_features_count and first_iteration == False:
             print("Number of features changed! Please check the features!")
             if auto_feature_select == False:
                 input("Press Enter to continue...")
             make_deceison_flag = True
-            features,index_dictionary,make_deceison_flag = NameFeatureExtractor.extractFeaturesFromFileName(output_file_name, index_dictionary, auto_feature_select, make_deceison_flag, print_features_flag)
-        holdFeaturesLen = numberOfSlices
+            features,make_deceison_flag = NameFeatureExtractor.extractFeaturesFromFileName(output_file_name, auto_feature_select, make_deceison_flag, print_features_flag)
+        hold_features_count = numberOfSlices
 
         inner_id_right_side = features["inner_id_right_side"]
         inner_id_left_side = features["inner_id_left_side"]
@@ -136,7 +149,7 @@ def main(
                     Common.clearFolder(output_folder + "frontal/")
 
                 frontal_image_path = output_folder + image_cv2 + ".jpg"
-                frontalCount += 1
+                frontal_count += 1
                 Common.copyFile(frontal_image_path, output_folder + "frontal/" + image_cv2 + ".jpg")
                 os.makedirs('./' + upper_folder_name + '/' + data_base_name + '_FOLDERED/Frontal_Faces/', exist_ok=True)
                 Common.copyFile( frontal_image_path, "./" + upper_folder_name + "/" + data_base_name + "_FOLDERED/Frontal_Faces/" + image_cv2 + ".jpg")
@@ -200,7 +213,7 @@ def main(
         if extension == 'jpg':
             # If all of the images was processed, in a folder:
 
-            if imgTxtDBs == True:
+            if images_with_txt_file_format == True:
                 input_file_path = file
             else:
                 input_file_path = './' + upper_folder_name + '/' + data_base_name + '/' + output_file_name

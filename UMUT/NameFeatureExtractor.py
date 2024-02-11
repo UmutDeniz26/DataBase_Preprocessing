@@ -50,9 +50,9 @@ def decideWhichElementsWhichFeatures( file_name_split,out_file_name ):
 
 #You should change this function according to your dataset,if you want to use auto mod !!!!!!!
 #Adjusted for IBUG Dataset
-def autoDetermineAccordingToFeatureCount( file_name_split, indexDict, isThereTrainTest = False):
-    file_id_index = indexDict["file_id_index"];inner_id_right_side_index = indexDict["inner_id_right_side_index"]
-    inner_id_left_side_index = indexDict["inner_id_left_side_index"];learnType_index = indexDict["learnType_index"]
+def autoDetermineAccordingToFeatureCount( file_name_split, index_dictionary, isThereTrainTest = False):
+    file_id_index = index_dictionary["file_id_index"];inner_id_right_side_index = index_dictionary["inner_id_right_side_index"]
+    inner_id_left_side_index = index_dictionary["inner_id_left_side_index"];learnType_index = index_dictionary["learnType_index"]
 
     integerFeatureSliceCount = 0
     #calculate feature count but only numbers
@@ -88,10 +88,15 @@ def autoDetermineAccordingToFeatureCount( file_name_split, indexDict, isThereTra
 
     return file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_index
 
+
+# Global variable for index dictionary
+index_dictionary = {"file_id_index": 0, "inner_id_right_side_index": 0, "inner_id_left_side_index": 0, "learnType_index": 0}
+
 #This function will extract features from file name
-def extractFeaturesFromFileName(out_file_name, indexDict, inputOrAutoMod=False, makeDeceisonFlag=True, printFeaturesFlag=False):
-    file_id_index = indexDict["file_id_index"];inner_id_right_side_index = indexDict["inner_id_right_side_index"]
-    inner_id_left_side_index = indexDict["inner_id_left_side_index"];learnType_index = indexDict["learnType_index"]
+def extractFeaturesFromFileName(out_file_name, inputOrAutoMod=False, makeDeceisonFlag=True, printFeaturesFlag=False):
+    global index_dictionary
+    file_id_index = index_dictionary["file_id_index"];inner_id_right_side_index = index_dictionary["inner_id_right_side_index"]
+    inner_id_left_side_index = index_dictionary["inner_id_left_side_index"];learnType_index = index_dictionary["learnType_index"]
 
     #Don't change this part
     file_name_split = out_file_name.split('_')
@@ -104,12 +109,12 @@ def extractFeaturesFromFileName(out_file_name, indexDict, inputOrAutoMod=False, 
     #Number of slices changed, we should extract which feature is which
     if makeDeceisonFlag == True:
         if inputOrAutoMod:
-            file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_index = autoDetermineAccordingToFeatureCount(file_name_split,indexDict)
+            file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_index = autoDetermineAccordingToFeatureCount(file_name_split,index_dictionary)
         else:
             file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_index = decideWhichElementsWhichFeatures(file_name_split, out_file_name)
         makeDeceisonFlag = False
 
-    indexDict = {
+    index_dictionary = {
         "file_id_index": file_id_index,
         "inner_id_right_side_index": inner_id_right_side_index,
         "inner_id_left_side_index": inner_id_left_side_index,
@@ -134,4 +139,4 @@ def extractFeaturesFromFileName(out_file_name, indexDict, inputOrAutoMod=False, 
 
     #Uncomment this to see the features
     printFeatures(output_dict, printFeaturesFlag)
-    return output_dict, indexDict, makeDeceisonFlag
+    return output_dict, makeDeceisonFlag
