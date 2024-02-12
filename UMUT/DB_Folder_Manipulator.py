@@ -252,7 +252,7 @@ def main(
             #Calculate the landmarks of the frontal face and write them to the txt file
             response = FrontalFaceFunctions.writeRetinaFaceLandmarks(
                                             image_cv2, output_file_path,
-                                            inter, intra, landmarks
+                                            inter, intra,show_aligned_images, landmarks
                         )
             intra+=1
 
