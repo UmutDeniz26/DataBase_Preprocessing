@@ -4,7 +4,9 @@ sys.path.insert(0,"./UMUT")
 
 import DB_Folder_Manipulator
 
-DB_Folder_Manipulator.main(dbName='LFW', upperFolderName='IPEK',
-        inputOrAutoMod=False, printFeaturesFlag=True,
-          selectFirstImageAsFrontal=False, showAlignedImages=False,
-          alignImagesFlag=True, resetImagesFlag=False)
+DB_Folder_Manipulator.main(
+        data_base_name='LFW', upper_folder_name='IPEK',
+        align_images_flag=True, reset_images_flag=True,
+        auto_feature_select=False, print_features_flag=False,
+        select_first_image_as_frontal=False, show_aligned_images=False
+    )
