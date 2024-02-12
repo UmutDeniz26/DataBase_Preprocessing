@@ -210,6 +210,12 @@ def main(
                     except:
                         cropped_aligned_face = [];landmarks = {}
 
+                    try:
+                        if response_dictionary["TwoPeopleDetected"] == True:
+                            Common.writeLog( log_folder_path+"/logTwoFace", output_file_path)
+                    except:
+                        True
+
                     if len(cropped_aligned_face) ==0:
                         Common.writeLog(log_folder_path+'/logNoFace.txt', output_file_name)
                         Common.copyFile(input_file_path, output_file_path)

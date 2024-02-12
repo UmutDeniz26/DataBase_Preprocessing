@@ -45,7 +45,7 @@ def plot_aligned_faces(image_cv2 ,intra):
     if number_of_plot_images == 0:
         number_of_plot_images -= 1
         plt.show()
-    elif intra%1 == 0 and 0 < number_of_plot_images:
+    elif intra%20 == 0 and 0 < number_of_plot_images:
         plt.subplot( 5, 4, number_of_plot_images )
         plt.imshow(cv2.cvtColor(image_cv2, cv2.COLOR_BGR2RGB))
         plt.title('intra: ' + str(intra))
