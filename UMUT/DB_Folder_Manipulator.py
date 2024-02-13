@@ -236,7 +236,7 @@ def main(
                     else:
 
                         os.system('cls')
-                        print(f"Processed: {index+1:04d} / {len(files):04d} ({(index+1)/len(files)*100:3.2f}%)", end="\r")
+                        print(f"Processed: {index+1:08d} / {len(files):08d} ({(index+1)/len(files)*100:3.3f}%)")
                         print("Copying " + input_file_path + " to " + output_file_path)
                         cv2.imwrite(output_file_path, cropped_aligned_face)
                         #Common.copyFile(aligned_file_path, output_file_path)
