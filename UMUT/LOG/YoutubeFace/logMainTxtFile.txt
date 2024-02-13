@@ -1,1 +1,12 @@
 Initialized txt: UMUT\YoutubeFace_FOLDERED\YoutubeFace_Info.txt successfully!
+Text line successfully added to main text! : UMUT\YoutubeFace_FOLDERED\00000/0/00000_0_000000
+Text line successfully added to main text! : UMUT\YoutubeFace_FOLDERED\00000/0/00000_0_000001
+Text line successfully added to main text! : UMUT\YoutubeFace_FOLDERED\00000/0/00000_0_000002
+Text line successfully added to main text! : UMUT\YoutubeFace_FOLDERED\00000/0/00000_0_000003
+Text line successfully added to main text! : UMUT\YoutubeFace_FOLDERED\00000/1/00000_1_000085
+Text line successfully added to main text! : UMUT\YoutubeFace_FOLDERED\00000/1/00000_1_000086
+Text line successfully added to main text! : UMUT\YoutubeFace_FOLDERED\00000/1/00000_1_000087
+Text line successfully added to main text! : UMUT\YoutubeFace_FOLDERED\00000/1/00000_1_000088
+Text line successfully added to main text! : UMUT\YoutubeFace_FOLDERED\00000/1/00000_1_000089
+Text line successfully added to main text! : UMUT\YoutubeFace_FOLDERED\00000/1/00000_1_000090
+Text line successfully added to main text! : UMUT\YoutubeFace_FOLDERED\00000/1/00000_1_000091

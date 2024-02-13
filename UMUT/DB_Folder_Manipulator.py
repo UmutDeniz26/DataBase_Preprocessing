@@ -3,7 +3,6 @@ import re
 import cv2
 import sys
 import shutil
-import matplotlib.pyplot as plt
 
 # Custom scripts
 import Common
