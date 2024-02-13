@@ -7,21 +7,7 @@ def validate_database_folder_txt(database_folder, txt_file):
     print("Database folder: ", database_folder)
     print("Txt file: ", txt_file)
 
-    # Check if the database folder exists
-    if os.path.exists(database_folder):
-        True
-    else:
-        print('Database folder does not exist')
-        exit()
-
-    # Check if the txt file exists
-    if os.path.exists(txt_file):
-        True
-    else:
-        print('Txt file does not exist')
-        exit()
-
-    persons = os.scandir(database_folder)
+    persons = sorted(os.scandir(database_folder), key=lambda entry: entry.name)
 
     txt_informations = []
     with open(txt_file, 'r') as file:
@@ -31,10 +17,10 @@ def validate_database_folder_txt(database_folder, txt_file):
     all_images = []
     for person in persons:
         if person.is_dir():
-            intras = os.scandir(person)
+            intras = sorted(os.scandir(person), key=lambda entry: entry.name)
             for intra in intras:
                 if intra.is_dir():
-                    inters = os.scandir(intra)
+                    inters = sorted(os.scandir(intra), key=lambda entry: entry.name)
                     for inter in inters:
                         if inter.is_file():
                             all_images.append(inter.path)
@@ -49,7 +35,7 @@ def validate_database_folder_txt(database_folder, txt_file):
             exit()
 
 
-    persons = os.scandir(database_folder)
+    persons = sorted(os.scandir(database_folder), key=lambda entry: entry.name)
     counter_intra = 0
     counter_inter = 0
 
@@ -73,7 +59,6 @@ def validate_database_folder_txt(database_folder, txt_file):
                             if txt_dict['person'] != index_p or txt_dict['intra'] != counter_intra or txt_dict['inter'] != counter_inter:
                                 print("Error in txt file\n", "txt: ",txt_dict," path:",inter.path) 
                                 print("Person: ", index_p, "Intra: ", counter_intra, "Inter: ", counter_inter)
-
 
                                 files_to_investigate = all_images[counter_inter-5:counter_inter+5]
                                 print("files: ")
