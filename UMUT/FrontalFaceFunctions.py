@@ -9,7 +9,6 @@ import Common
 import txtFileOperations
 import matplotlib.pyplot as plt
 import detect_distences_of_sides
-from retinaface import RetinaFace
 
 from skimage import transform as tform
 from skimage import transform
