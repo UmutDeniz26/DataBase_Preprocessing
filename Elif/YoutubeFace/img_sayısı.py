@@ -4,7 +4,7 @@ import os
 dataset_path = "./Elif/YoutubeFace/YoutubeFace"
 
 # Çıktı dosyasının adı
-output_file = './Elif/YoutubeFace/enyeni.txt'
+output_file = './Elif/YoutubeFace/deneme.txt'
 
 counter = 0
 a=0
