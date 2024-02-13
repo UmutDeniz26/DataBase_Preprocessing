@@ -61,37 +61,40 @@ def imgReduction(subfolder_path,N=201):
             print("Error")
     return selected_images
 
-# Veri setinin bulunduğu dizin
-dataset_path = "./Elif/YoutubeFace/200fazla"
+def main(dataset_path, new_dataset_name):
+    # Veri setinin bulunduğu dizin -> dataset_path
+    # Yeni klasör adı               -> new_dataset_name
 
-# Yeni klasör adı
-new_dataset_name = "./Elif/YoutubeFace/200"
 
-from collections import Counter
+    from collections import Counter
 
-for person_name in os.listdir(dataset_path):
-    person_path = os.path.join(dataset_path, person_name)
+    for person_name in os.listdir(dataset_path):
+        person_path = os.path.join(dataset_path, person_name)
 
-    if os.path.isdir(person_path):
-        person_images = []
+        if os.path.isdir(person_path):
+            person_images = []
 
-        for subfolder_name in os.listdir(person_path):
-            subfolder_path = os.path.join(person_path, subfolder_name)
-            print(subfolder_path)
-            if os.path.isdir(subfolder_path):
-                selected_images = imgReduction(subfolder_path)
+            for subfolder_name in os.listdir(person_path):
+                subfolder_path = os.path.join(person_path, subfolder_name)
+                print(subfolder_path)
+                if os.path.isdir(subfolder_path):
+                    selected_images = imgReduction(subfolder_path)
 
-                if len(selected_images) >195:
-                    for selected_image in selected_images:
-                        if selected_images.count(selected_image) > 1:
-                            selected_images.pop(-1)
+                    if len(selected_images) >195:
+                        for selected_image in selected_images:
+                            if selected_images.count(selected_image) > 1:
+                                selected_images.pop(-1)
 
-                newFolder(subfolder_path, new_dataset_name, person_name, subfolder_name,selected_images)
-                """total_img = len(os.listdir(subfolder_path))
-                print(total_img)
-                if total_img <= 200:
-                    newFolder(subfolder_path, new_dataset_name, person_name, subfolder_name,selected_images=None)
+                    newFolder(subfolder_path, new_dataset_name, person_name, subfolder_name,selected_images)
+                    """total_img = len(os.listdir(subfolder_path))
+                    print(total_img)
+                    if total_img <= 200:
+                        newFolder(subfolder_path, new_dataset_name, person_name, subfolder_name,selected_images=None)
 
-                else:
-                    selected_images = imgReduction(subfolder_path, N=200)
-                    newFolder(subfolder_path, new_dataset_name, person_name, subfolder_name,selected_images)"""
+                    else:
+                        selected_images = imgReduction(subfolder_path, N=200)
+                        newFolder(subfolder_path, new_dataset_name, person_name, subfolder_name,selected_images)"""
+
+if __name__ == "__main__":
+    main( dataset_path="./Elif/YoutubeFace/YoutubeFace",
+          new_dataset_name='./Elif/YoutubeFace/200')
