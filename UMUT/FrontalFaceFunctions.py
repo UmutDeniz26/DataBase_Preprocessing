@@ -1,14 +1,10 @@
 import sys
-sys.path.insert(0, './Ali')
-sys.path.insert(0, './UMUT')
-
 
 import cv2
 import os
 import Common
 import txtFileOperations
 #import matplotlib.pyplot as plt
-import detect_distences_of_sides
 
 from skimage import transform as tform
 from skimage import transform

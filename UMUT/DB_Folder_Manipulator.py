@@ -11,16 +11,27 @@ import txtFileOperations
 import NameFeatureExtractor
 import FrontalFaceFunctions
 
-sys.path.insert(0, './Ali')
+root_dir_path = os.path.dirname(os.path.abspath(__file__))
+root_dir_without_current_folder_name = root_dir_path.split('\\')[:-1]
+root_dir_without_current_folder_name = '\\'.join(root_dir_without_current_folder_name)
+
+os.chdir(root_dir_without_current_folder_name)
+
+sys.path.insert(0, root_dir_without_current_folder_name + '\\UMUT')
+sys.path.insert(0, root_dir_without_current_folder_name + '\\Ali')
+
+
 import DetectUpperCase
 import detectFrontelImageFromTxt
-import detect_distences_of_sides
 
-sys.path.insert(0, './retinaface_custom/main')
+
+sys.path.insert(0, root_dir_without_current_folder_name+'\\retinaface_custom/main')
+
 import RetinaFace
 #from retinaface import RetinaFace
 
 print("RetinaFace imported from", RetinaFace.__file__)
+input("Press Enter to continue...")
 
 intra = 0
 inter = 0
@@ -69,6 +80,11 @@ def main(
     #------------------------------------------------------- Main Part -------------------------------------------------------#
 
     data_base_folder_path = os.path.join(upper_folder_name, data_base_name)
+    """
+    data_base_folder_path = os.path.join(root_dir_without_current_folder_name, data_base_folder_path)
+    txt_info_path = os.path.join(root_dir_without_current_folder_name, txt_info_path)
+    log_folder_path = os.path.join(root_dir_without_current_folder_name, log_folder_path)
+    """
 
     files = os.scandir(data_base_folder_path)
 
