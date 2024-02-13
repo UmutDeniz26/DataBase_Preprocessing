@@ -3,6 +3,7 @@ import re
 import cv2
 import sys
 import shutil
+import time
 
 # Custom scripts
 import Common
@@ -55,6 +56,10 @@ def main(
     """
 
     #------------------------------------------------------- Initialization -------------------------------------------------------#
+    #Start timer
+    start = time.time()
+
+
     #This is the folder path of the logs
     log_folder_path = os.path.join(upper_folder_name, 'LOG', data_base_name)
 
@@ -237,7 +242,9 @@ def main(
 
                         os.system('cls')
                         print(f"Processed: {index+1:08d} / {len(files):08d} ({(index+1)/len(files)*100:3.3f}%)")
-                        print("Copying " + input_file_path + " to " + output_file_path)
+                        print(f"Elapsed time (hh:mm:ss): {time.strftime('%H:%M:%S', time.gmtime(time.time()-start))}")
+                        print(f"Remaining time (hh:mm:ss): {time.strftime('%H:%M:%S', time.gmtime((time.time()-start)*(len(files)-index)/(index+1)))}")
+                        print("Copying: \n" + input_file_path + " to " + output_file_path)
                         cv2.imwrite(output_file_path, cropped_aligned_face)
                         #Common.copyFile(aligned_file_path, output_file_path)
                 else:
