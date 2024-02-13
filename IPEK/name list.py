@@ -1,36 +1,43 @@
 import os
 
 # Veri setinin bulunduğu dizin
-dataset_path = r"C:\Users\ipekb\Desktop\staj lwf\DataBase_Preprocessing\IPEK\lfw-deepfunneled"
+dataset_path = r"C:\Users\ipekb\Desktop\staj lwf\DataBase_Preprocessing\IPEK\LFW"
 
-# Çıktı dosyasının adı
-output_file = 'outputlast.txt'
+# Çıktı dosyasının adı ve kaydedileceği dizin
+output_directory = r"C:\Users\ipekb\Desktop\staj lwf\DataBase_Preprocessing\IPEK"
+output_file = 'LFW.txt'
 
-# Başlangıç klasör numarası
-folder_number = 0
+# Tam yol oluştur
+output_path = os.path.join(output_directory, output_file)
 
-# Dosya açma işlemi
-with open(output_file, 'w') as file:
-    # Ana dizindeki klasörleri listele
-    for person_name in os.listdir(dataset_path):
-        person_path = os.path.join(dataset_path, person_name)
+try:
+    with open(output_path, 'w') as file:
+        # Dizin içindeki her bir kişiyi işle
+        for person_number, person_name in enumerate(os.listdir(dataset_path)):
+            person_path = os.path.join(dataset_path, person_name)
 
-        # Eğer bir klasörse devam et
-        if os.path.isdir(person_path):
-            # Başlangıç sayacı
-            counter = 0
+            # Eğer bir klasörse işlem yap
+            if os.path.isdir(person_path):
+                # Kişinin fotoğraflarını sayacak bir sayaç
+                image_counter = 0
 
-            # Person'a ait tüm alt klasörlerdeki görselleri listele
-            for image_file in os.listdir(person_path):
-                # Dosya uzantısını kontrol et, sadece JPEG dosyalarını işle
-                if image_file.lower().endswith('.jpg'):
-                    # Dosya adını ve yolunu oluştur
-                    image_path = os.path.join(person_path, image_file)
+                # Kişinin fotoğraflarını işle
+                for image_file in os.listdir(person_path):
+                    # Dosya bir JPEG dosyasıysa işle
+                    if image_file.lower().endswith('.jpg'):
+                        image_path = os.path.join(person_path, image_file)
 
-                    # Dosya adını yazdır
-                    file.write(f'{folder_number:05d}_{counter:05d}\n')  # Klasör numarası + sayacı formatla
-                    counter += 1  # Sayacı bir artır
-            folder_number += 1  # Klasör numarasını bir artır
+                        # ID'leri oluştur
+                        person_id = f'{person_number:05d}'
+                        image_id = f'{image_counter:05d}'
 
-# Bilgileri içeren txt dosyası oluşturuldu
-print(f'Liste oluşturuldu ve {output_file} adında kaydedildi.')
+                        # Dosya adını ve tam yolunu yaz
+                        file.write(f'{person_id}_{image_id}\n')
+
+                        # Sayaçları arttır
+                        image_counter += 1
+
+    print(f'Liste oluşturuldu ve {output_file} adında kaydedildi.')
+
+except Exception as e:
+    print(f'Hata: {str(e)}')
