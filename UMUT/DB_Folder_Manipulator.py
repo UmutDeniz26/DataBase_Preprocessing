@@ -31,7 +31,6 @@ import RetinaFace
 #from retinaface import RetinaFace
 
 print("RetinaFace imported from", RetinaFace.__file__)
-input("Press Enter to continue...")
 
 intra = 0
 inter = 0
