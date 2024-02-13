@@ -18,7 +18,7 @@ def printFeatures( output_dict,printFeaturesFlag=False ):
 def decideWhichElementsWhichFeatures( file_name_split,out_file_name ):
     file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_index = 0, 0, 0, 0
 
-    for element in file_name_split:
+    for index, element in enumerate(file_name_split):
         os.system('cls')
         print("File Name: " + out_file_name)
         print(file_name_split)
@@ -29,13 +29,13 @@ def decideWhichElementsWhichFeatures( file_name_split,out_file_name ):
                         " il -> inner_id_left_side \n" +
                         " l -> learnType : " )
         if inputTemp == "f":
-            file_id_index = file_name_split.index(element)
+            file_id_index = index
         elif inputTemp == "ir":
-            inner_id_right_side_index = file_name_split.index(element)
+            inner_id_right_side_index = index
         elif inputTemp == "il":
-            inner_id_left_side_index = file_name_split.index(element)
+            inner_id_left_side_index = index
         elif inputTemp == "l":
-            learnType_index = file_name_split.index(element)
+            learnType_index = index
         elif inputTemp == "n":
             continue
         else:

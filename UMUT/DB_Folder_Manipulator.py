@@ -107,8 +107,8 @@ def main(
         image_informations = image_informations_txt.readlines()
         image_informations = Common.replaceEntersAndTabs(image_informations)
         files = DBsWithTxtInfo.imgTxtDBsFilesConcat(files)
+        files.sort()
 
-    files.sort()
 
     #Iterate through the files
     for index,file in enumerate(files):
@@ -291,6 +291,6 @@ if __name__ == "__main__":
     main(
         data_base_name='YoutubeFace', upper_folder_name='UMUT',
         align_images_flag=True, reset_images_flag=True,
-        auto_feature_select=False, print_features_flag=False,
+        auto_feature_select=False, print_features_flag=True,
         select_first_image_as_frontal=False, show_aligned_images=False
     )
