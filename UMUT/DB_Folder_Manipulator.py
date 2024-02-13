@@ -3,6 +3,7 @@ import re
 import cv2
 import sys
 import shutil
+import time
 
 # Custom scripts
 import Common
@@ -17,15 +18,15 @@ root_dir_without_current_folder_name = '\\'.join(root_dir_without_current_folder
 
 os.chdir(root_dir_without_current_folder_name)
 
-sys.path.insert(0, root_dir_without_current_folder_name + '\\UMUT')
-sys.path.insert(0, root_dir_without_current_folder_name + '\\Ali')
+sys.path.insert(0, './UMUT')
+sys.path.insert(0, './Ali')
 
 
 import DetectUpperCase
 import detectFrontelImageFromTxt
 
 
-sys.path.insert(0, root_dir_without_current_folder_name+'\\retinaface_custom/main')
+sys.path.insert(0, './retinaface_custom/main')
 
 import RetinaFace
 #from retinaface import RetinaFace
@@ -56,6 +57,10 @@ def main(
     """
 
     #------------------------------------------------------- Initialization -------------------------------------------------------#
+    #Start timer
+    start = time.time()
+
+
     #This is the folder path of the logs
     log_folder_path = os.path.join(upper_folder_name, 'LOG', data_base_name)
 
@@ -235,7 +240,12 @@ def main(
                         Common.writeLog(log_folder_path+'/logNoFace.txt', output_file_name)
                         Common.copyFile(input_file_path, output_file_path)
                     else:
-                        print("Copying " + input_file_path + " to " + output_file_path)
+
+                        os.system('cls')
+                        print(f"Processed: {index+1:08d} / {len(files):08d} ({(index+1)/len(files)*100:3.3f}%)")
+                        print(f"Elapsed time (hh:mm:ss): {time.strftime('%H:%M:%S', time.gmtime(time.time()-start))}")
+                        print(f"Remaining time (hh:mm:ss): {time.strftime('%H:%M:%S', time.gmtime((time.time()-start)*(len(files)-index)/(index+1)))}")
+                        print("Copying: \n" + input_file_path + " to " + output_file_path)
                         cv2.imwrite(output_file_path, cropped_aligned_face)
                         #Common.copyFile(aligned_file_path, output_file_path)
                 else:
