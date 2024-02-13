@@ -7,13 +7,13 @@ def main(dataset_path, output_file):
 
     counter = 0
     n = 0
-    #print(os.listdir("./Elif/YoutubeFace/aligned_images_DB2"))
+    #print(sorted(os.listdir("./Elif/YoutubeFace/aligned_images_DB2"))
 
     # Dosya açma işlemi
     with open(output_file, 'w') as file:
         #file.write('personname_klasor_img\n')
         # Ana dizindeki klasörleri listele
-        for person_name in os.listdir(dataset_path):
+        for person_name in sorted(os.listdir(dataset_path)):
             person_path = os.path.join(dataset_path, person_name)
 
             # Klasörleri kontrol et ve içerisindeki dosyaları listele
@@ -23,12 +23,12 @@ def main(dataset_path, output_file):
                 # Person'a ait tüm alt klasörlerdeki görselleri listele
                 person_images = []
 
-                for subfolder_name in os.listdir(person_path):
+                for subfolder_name in sorted(os.listdir(person_path)):
                     subfolder_path = os.path.join(person_path, subfolder_name)
 
                     if os.path.isdir(subfolder_path):
                         # Alt klasördeki dosyaları listele
-                        for image_file in os.listdir(subfolder_path):
+                        for image_file in sorted(os.listdir(subfolder_path)):
                             person_number = f'{counter:05d}'
                             img_number = f'{n:06d}'
 
@@ -45,5 +45,5 @@ def main(dataset_path, output_file):
     print(f'Liste oluşturuldu ve {output_file} adında kaydedildi.')
 
 if __name__ == "__main__":
-    main(dataset_path="./Elif/YoutubeFace/YoutubeFace",
-         output_file='./Elif/YoutubeFace/new.txt')
+    main(dataset_path="./Elif/YoutubeFace/YoutubeFace_parcalanmıs",
+         output_file='./Elif/YoutubeFace/parca.txt')

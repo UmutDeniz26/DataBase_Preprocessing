@@ -97,6 +97,9 @@ def main(
                 print("The number of txt file lines and the number of images are not equal!",
                     "\nThe number of txt file lines: " + str(len(image_informations)) +
                     "\nThe number of images: " + str(len(files)),
+                    "\nImages file path: " + str(file),
+                    "\nTxt file path: " + str(txt_info_path),
+                    
                     "\nThis can cause a problem!")
 
                 input("Press Enter to continue...")

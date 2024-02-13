@@ -28,16 +28,16 @@ def newFolder(subfolder_path, new_dataset_name, person_name, subfolder_name,sele
     """
 
 def imgReduction(subfolder_path,N=201):
-    total_img = len(os.listdir(subfolder_path))
+    total_img = len(sorted(os.listdir(subfolder_path)))
     print(total_img, subfolder_path)
     if total_img <= N:
-        selected_images = os.listdir(subfolder_path)
+        selected_images = sorted(os.listdir(subfolder_path))
 
 
     else:
-        image_files = os.listdir(subfolder_path)
+        image_files = sorted(os.listdir(subfolder_path))
         minVal = 0
-        maxVal = len(os.listdir(subfolder_path))
+        maxVal = len(sorted(os.listdir(subfolder_path)))
         interval = np.floor((maxVal-minVal)/N)
 
         x1 = np.linspace(minVal, maxVal, N, endpoint=True)
@@ -56,7 +56,8 @@ def imgReduction(subfolder_path,N=201):
         selected_images = [image_files[i % len(image_files)] for i in new_arr]
         #print(len(selected_images))
         if len(np.unique(new_arr)) == len(new_arr):
-            print(new_arr)
+            #print(new_arr)
+            True
         else:
             print("Error")
     return selected_images
@@ -68,15 +69,15 @@ def main(dataset_path, new_dataset_name):
 
     from collections import Counter
 
-    for person_name in os.listdir(dataset_path):
+    for person_name in sorted(os.listdir(dataset_path)):
         person_path = os.path.join(dataset_path, person_name)
 
         if os.path.isdir(person_path):
             person_images = []
 
-            for subfolder_name in os.listdir(person_path):
+            for subfolder_name in sorted(os.listdir(person_path)):
                 subfolder_path = os.path.join(person_path, subfolder_name)
-                print(subfolder_path)
+                #print(subfolder_path)
                 if os.path.isdir(subfolder_path):
                     selected_images = imgReduction(subfolder_path)
 
@@ -86,7 +87,7 @@ def main(dataset_path, new_dataset_name):
                                 selected_images.pop(-1)
 
                     newFolder(subfolder_path, new_dataset_name, person_name, subfolder_name,selected_images)
-                    """total_img = len(os.listdir(subfolder_path))
+                    """total_img = len(sorted(os.listdir(subfolder_path))
                     print(total_img)
                     if total_img <= 200:
                         newFolder(subfolder_path, new_dataset_name, person_name, subfolder_name,selected_images=None)
