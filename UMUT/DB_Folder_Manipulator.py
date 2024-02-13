@@ -17,15 +17,15 @@ root_dir_without_current_folder_name = '\\'.join(root_dir_without_current_folder
 
 os.chdir(root_dir_without_current_folder_name)
 
-sys.path.insert(0, root_dir_without_current_folder_name + '\\UMUT')
-sys.path.insert(0, root_dir_without_current_folder_name + '\\Ali')
+sys.path.insert(0, './UMUT')
+sys.path.insert(0, './Ali')
 
 
 import DetectUpperCase
 import detectFrontelImageFromTxt
 
 
-sys.path.insert(0, root_dir_without_current_folder_name+'\\retinaface_custom/main')
+sys.path.insert(0, './retinaface_custom/main')
 
 import RetinaFace
 #from retinaface import RetinaFace
