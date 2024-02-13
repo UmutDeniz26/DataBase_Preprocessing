@@ -92,6 +92,7 @@ def main(
     """
 
     files = os.scandir(data_base_folder_path)
+    files = sorted(files, key=lambda entry: entry.name)
 
     if DetectUpperCase.save_second_letter_upper(data_base_folder_path,"uppercase_files.txt") >0:
         print("There are some folders that has two upper case.")

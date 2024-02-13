@@ -7,5 +7,5 @@ dataset_path="./UMUT/YoutubeFace"
 output_file='./UMUT/YoutubeFace.txt'
 output_folder = './UMUT/YoutubeFace200'
 
-img_sayısı_200.main(dataset_path,output_folder)
+#img_sayısı_200.main(dataset_path,output_folder)
 listeleme_sirali.main(output_folder, output_file)
