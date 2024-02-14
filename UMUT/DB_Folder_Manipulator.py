@@ -3,7 +3,7 @@ import re
 import cv2
 import sys
 import shutil
-import matplotlib.pyplot as plt
+import time
 
 # Custom scripts
 import Common
@@ -12,16 +12,27 @@ import txtFileOperations
 import NameFeatureExtractor
 import FrontalFaceFunctions
 
+root_dir_path = os.path.dirname(os.path.abspath(__file__))
+root_dir_without_current_folder_name = root_dir_path.split('\\')[:-1]
+root_dir_without_current_folder_name = '\\'.join(root_dir_without_current_folder_name)
+
+os.chdir(root_dir_without_current_folder_name)
+
+sys.path.insert(0, './UMUT')
 sys.path.insert(0, './Ali')
+
+
 import DetectUpperCase
 import detectFrontelImageFromTxt
-import detect_distences_of_sides
+
 
 sys.path.insert(0, './retinaface_custom/main')
+
 import RetinaFace
 #from retinaface import RetinaFace
 
 print("RetinaFace imported from", RetinaFace.__file__)
+input("Press Enter to continue...")
 
 intra = 0
 inter = 0
@@ -46,6 +57,10 @@ def main(
     """
 
     #------------------------------------------------------- Initialization -------------------------------------------------------#
+    #Start timer
+    start = time.time()
+
+
     #This is the folder path of the logs
     log_folder_path = os.path.join(upper_folder_name, 'LOG', data_base_name)
 
@@ -70,8 +85,14 @@ def main(
     #------------------------------------------------------- Main Part -------------------------------------------------------#
 
     data_base_folder_path = os.path.join(upper_folder_name, data_base_name)
+    """
+    data_base_folder_path = os.path.join(root_dir_without_current_folder_name, data_base_folder_path)
+    txt_info_path = os.path.join(root_dir_without_current_folder_name, txt_info_path)
+    log_folder_path = os.path.join(root_dir_without_current_folder_name, log_folder_path)
+    """
 
     files = os.scandir(data_base_folder_path)
+    files = sorted(files, key=lambda entry: entry.name)
 
     if DetectUpperCase.save_second_letter_upper(data_base_folder_path,"uppercase_files.txt") >0:
         print("There are some folders that has two upper case.")
@@ -86,8 +107,8 @@ def main(
         image_informations = image_informations_txt.readlines()
         image_informations = Common.replaceEntersAndTabs(image_informations)
         files = DBsWithTxtInfo.imgTxtDBsFilesConcat(files)
+        files.sort()
 
-    files.sort()
 
     #Iterate through the files
     for index,file in enumerate(files):
@@ -220,7 +241,12 @@ def main(
                         Common.writeLog(log_folder_path+'/logNoFace.txt', output_file_name)
                         Common.copyFile(input_file_path, output_file_path)
                     else:
-                        print("Copying " + input_file_path + " to " + output_file_path)
+
+                        os.system('cls')
+                        print(f"Processed: {index+1:08d} / {len(files):08d} ({(index+1)/len(files)*100:3.3f}%)")
+                        print(f"Elapsed time (hh:mm:ss): {time.strftime('%H:%M:%S', time.gmtime(time.time()-start))}")
+                        print(f"Remaining time (hh:mm:ss): {time.strftime('%H:%M:%S', time.gmtime((time.time()-start)*(len(files)-index)/(index+1)))}")
+                        print("Copying: \n" + input_file_path + " to " + output_file_path)
                         cv2.imwrite(output_file_path, cropped_aligned_face)
                         #Common.copyFile(aligned_file_path, output_file_path)
                 else:
@@ -265,6 +291,6 @@ if __name__ == "__main__":
     main(
         data_base_name='YoutubeFace', upper_folder_name='UMUT',
         align_images_flag=True, reset_images_flag=True,
-        auto_feature_select=False, print_features_flag=False,
+        auto_feature_select=False, print_features_flag=True,
         select_first_image_as_frontal=False, show_aligned_images=False
     )

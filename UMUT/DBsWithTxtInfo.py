@@ -4,7 +4,7 @@ def imgTxtDBsFilesConcat(inFiles):
     inFilesPaths = []
 
     def traverse_directory(root_dir):
-        for file in os.scandir(root_dir):
+        for file in sorted(os.scandir(root_dir), key=lambda entry: entry.name) :
             if file.is_dir():
                 traverse_directory(file.path)
             elif file.name.endswith(".jpg") or file.name.endswith(".bmp"):#değişen
@@ -14,6 +14,7 @@ def imgTxtDBsFilesConcat(inFiles):
         if file.is_dir():
             traverse_directory(file.path)
         elif file.name.endswith(".jpg") or file.name.endswith(".bmp"):#değişen
-            inFilesPaths.append(file.path)
+            print("Uncorrect structure: " + file.path)
+            exit()
 
     return inFilesPaths
