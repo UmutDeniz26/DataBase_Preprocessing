@@ -46,5 +46,5 @@ def main(dataset_path, output_file):
     print(f'Liste oluşturuldu ve {output_file} adında kaydedildi.')
 
 if __name__ == "__main__":
-    main(dataset_path="./Elif/YoutubeFace/YoutubeFace_parcalanmıs",
-         output_file='./Elif/YoutubeFace/parca.txt')
+    main(dataset_path="./Elif/YoutubeFace/YoutubeFace",
+         output_file='./Elif/YoutubeFace/YoutubeFace.txt')

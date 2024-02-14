@@ -97,5 +97,5 @@ def main(dataset_path, new_dataset_name):
                         newFolder(subfolder_path, new_dataset_name, person_name, subfolder_name,selected_images)"""
 
 if __name__ == "__main__":
-    main( dataset_path="./Elif/YoutubeFace/YoutubeFace",
-          new_dataset_name='./Elif/YoutubeFace/200')
+    main( dataset_path="./Elif/YoutubeFace/YoutubeFace_all",
+          new_dataset_name='./Elif/YoutubeFace/YoutubeFace')
