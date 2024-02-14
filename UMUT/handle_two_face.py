@@ -161,11 +161,13 @@ def select_which_face_is_true(txt_path,change_face_selection):
 
 
 def handle_error_paths(few_error_txt_path, too_much_error_txt_path):
+    # Read the txt files and remove the images with error
     with open(few_error_txt_path, 'r') as f:
         few_error_file_paths = f.readlines()
     with open(too_much_error_txt_path, 'r') as f:
         too_much_error_file_paths = f.readlines()
     
+    # Remove the images with error
     for file_path in few_error_file_paths:
         file_path = file_path.strip()
         if os.path.exists(file_path):
@@ -174,6 +176,7 @@ def handle_error_paths(few_error_txt_path, too_much_error_txt_path):
             print("File does not exist: ", file_path)
             exit()
 
+    # Select the correct face and write the landmarks
     hold_intra = 'init'
     for file_path in too_much_error_file_paths:
         file_path = file_path.strip()
@@ -190,8 +193,9 @@ def handle_error_paths(few_error_txt_path, too_much_error_txt_path):
             print("File does not exist: ", file_path)
             exit()
 
+def main(folder_path, output_folder_path, reset):
+    few_error_txt_path, too_much_error_txt_path = extract_error_paths(folder_path, output_folder_path, reset)
+    handle_error_paths(few_error_txt_path, too_much_error_txt_path)
 
 if __name__ == '__main__':
-    few_error_txt_path, too_much_error_txt_path = extract_error_paths(folder_path='UMUT/YoutubeFace_FOLDERED',
-         output_folder_path='UMUT/Two_Face_Handle', reset=False)
-    handle_error_paths(few_error_txt_path, too_much_error_txt_path)    
+    main( folder_path = 'UMUT/YoutubeFace200', output_folder_path='UMUT/Two_Face_Handle', reset=False )
