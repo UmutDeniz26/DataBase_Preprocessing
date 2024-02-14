@@ -43,8 +43,8 @@ def extract_error_paths(folder_path,output_folder_path, reset=False):
                     content = txt_file.read()
                     #print(len(content))
                     if len(content) <200:
-                        print( "---------------\ncontent:", content,",path: ", txt_path)
-
+                        #print( "---------------\ncontent:", content,",path: ", txt_path)
+                        None
                     if "Error" in content or "Stack Overflow" in content:
                         error_counter += 1
                         error_file_names.append(txt_path)
@@ -103,7 +103,8 @@ def process_faces(img_path ,faces ,hold_original_img ,change_face_selection ,dyn
     if change_face_selection == True:
         for i, face_crop in enumerate(face_crops):
             cv2.imshow("Face " + str(i+1), face_crop)
-            cv2.waitKey(3000);cv2.destroyAllWindows()
+            cv2.imshow("Original Image", hold_original_img)
+            cv2.waitKey();cv2.destroyAllWindows()
             print("Is it the correct face? (y/n)")
             correct_face = input()
             if correct_face == 'y':
@@ -196,6 +197,7 @@ def handle_error_paths(few_error_txt_path, too_much_error_txt_path):
 def main(folder_path, output_folder_path, reset):
     few_error_txt_path, too_much_error_txt_path = extract_error_paths(folder_path, output_folder_path, reset)
     handle_error_paths(few_error_txt_path, too_much_error_txt_path)
+    print("Completed the process...")
 
 if __name__ == '__main__':
-    main( folder_path = 'UMUT/YoutubeFace200', output_folder_path='UMUT/Two_Face_Handle', reset=False )
+    main( folder_path = 'UMUT/YoutubeFace_FOLDERED', output_folder_path='UMUT/Two_Face_Handle', reset=False )
