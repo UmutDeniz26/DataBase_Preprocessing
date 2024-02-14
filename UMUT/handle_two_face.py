@@ -45,7 +45,7 @@ def extract_error_paths(folder_path,output_folder_path, reset=False):
                     if len(content) <200:
                         #print( "---------------\ncontent:", content,",path: ", txt_path)
                         None
-                    if "Error" in content or "Stack Overflow" in content:
+                    if "Error" in content or "Stack Overflow" in content or "too small" in content:
                         error_counter += 1
                         error_file_names.append(txt_path)
                         img_path = os.path.join(os.path.splitext(txt_path)[0] + '.jpg')
@@ -197,10 +197,10 @@ def handle_error_paths(few_error_txt_path, too_much_error_txt_path):
 def main(folder_path, output_folder_path, reset):
     few_error_txt_path, too_much_error_txt_path = extract_error_paths(folder_path, output_folder_path, reset)
     handle_error_paths(few_error_txt_path, too_much_error_txt_path)
-    
-    few_error_txt_path, too_much_error_txt_path = extract_error_paths(folder_path, output_folder_path, reset)
+
+    few_error_txt_path, too_much_error_txt_path = extract_error_paths(folder_path, output_folder_path, False)
     handle_error_paths(few_error_txt_path, too_much_error_txt_path)
     print("Completed the process...")
 
 if __name__ == '__main__':
-    main( folder_path = 'UMUT/YoutubeFace_FOLDERED', output_folder_path='UMUT/Two_Face_Handle', reset=False )
+    main( folder_path = 'UMUT/YoutubeFace_FOLDERED', output_folder_path='UMUT/Two_Face_Handle', reset=True )
