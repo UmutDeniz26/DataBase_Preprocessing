@@ -21,15 +21,12 @@ os.chdir(root_dir_without_current_folder_name)
 sys.path.insert(0, './UMUT')
 sys.path.insert(0, './Ali')
 
-
 import DetectUpperCase
 import detectFrontelImageFromTxt
 
 
 sys.path.insert(0, './retinaface_custom/main')
-
 import RetinaFace
-#from retinaface import RetinaFace
 
 print("RetinaFace imported from", RetinaFace.__file__)
 input("Press Enter to continue...")
