@@ -24,7 +24,7 @@ def check_dataset_consistency(txt_file, dataset_folder):
     for line in txt_data:
         person_id = line.split('_')[0]  # Person ID'sini al
         img_count = int(line.split('_')[-1]) + 1  # Görüntü sayısını al
-        
+
         if person_id not in image_counts:
             print(f"Hata: {person_id} için klasör bulunamadı.")
             return False
@@ -32,7 +32,7 @@ def check_dataset_consistency(txt_file, dataset_folder):
         if image_counts[person_id] != img_count:
             print(f"Hata: {person_id} için beklenen görüntü sayısı: {img_count}, gerçek sayı: {image_counts[person_id]}")
             return False
-    
+
     print("Veri seti uyumluluğu doğrulandı.")
     return True
 
@@ -43,6 +43,3 @@ dataset_folder = './Elif/YoutubeFace/YoutubeFace'
 
 # Veri seti uyumluluğunu kontrol et
 check_dataset_consistency(txt_file, dataset_folder)
-
-
-

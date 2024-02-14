@@ -1,4 +1,4 @@
-import os 
+import os
 
 def printList(lst):
     for i in lst:
@@ -52,12 +52,12 @@ def validate_database_folder_txt(database_folder, txt_file):
                                 txt_split = txt_informations[counter_inter].split('_')
                                 txt_dict = {'person': int(txt_split[0]), 'intra': int(txt_split[1]), 'inter': int(txt_split[2])}
                             except:
-                                print("IndexError in txt file\n", "txt: ",txt_dict," path:",inter.path) 
+                                print("IndexError in txt file\n", "txt: ",txt_dict," path:",inter.path)
                                 print("Person: ", index_p, "Intra: ", counter_intra, "Inter: ", counter_inter)
                                 exit()
 
                             if txt_dict['person'] != index_p or txt_dict['intra'] != counter_intra or txt_dict['inter'] != counter_inter:
-                                print("Error in txt file\n", "txt: ",txt_dict," path:",inter.path) 
+                                print("Error in txt file\n", "txt: ",txt_dict," path:",inter.path)
                                 print("Person: ", index_p, "Intra: ", counter_intra, "Inter: ", counter_inter)
 
                                 files_to_investigate = all_images[counter_inter-5:counter_inter+5]
@@ -68,7 +68,7 @@ def validate_database_folder_txt(database_folder, txt_file):
 
                                 exit()
 
-                            counter_inter += 1      
+                            counter_inter += 1
                         else:
                             print("Inter is not a file")
                             exit()
