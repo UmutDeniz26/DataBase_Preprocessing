@@ -197,6 +197,9 @@ def handle_error_paths(few_error_txt_path, too_much_error_txt_path):
 def main(folder_path, output_folder_path, reset):
     few_error_txt_path, too_much_error_txt_path = extract_error_paths(folder_path, output_folder_path, reset)
     handle_error_paths(few_error_txt_path, too_much_error_txt_path)
+    
+    few_error_txt_path, too_much_error_txt_path = extract_error_paths(folder_path, output_folder_path, reset)
+    handle_error_paths(few_error_txt_path, too_much_error_txt_path)
     print("Completed the process...")
 
 if __name__ == '__main__':
