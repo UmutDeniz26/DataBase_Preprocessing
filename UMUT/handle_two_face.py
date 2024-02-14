@@ -41,8 +41,11 @@ def extract_error_paths(folder_path,output_folder_path, reset=False):
                 txt_path = os.path.join(root_path, file_name)
                 with open(txt_path, 'r') as txt_file:
                     content = txt_file.read()
-                    
-                    if "Error" in content:
+                    #print(len(content))
+                    if len(content) <200:
+                        print( "---------------\ncontent:", content,",path: ", txt_path)
+
+                    if "Error" in content or "Stack Overflow" in content:
                         error_counter += 1
                         error_file_names.append(txt_path)
                         img_path = os.path.join(os.path.splitext(txt_path)[0] + '.jpg')
@@ -55,8 +58,6 @@ def extract_error_paths(folder_path,output_folder_path, reset=False):
         if root_path != root_path_holder and root_path_holder!='init':
             len_file_names = int((len(file_names)-1)/2)
             len_file_names = 1 if len_file_names == 0 else len_file_names
-
-            # if error_counter/len_file_names > 0.8 then dont delete,
             if error_counter/len_file_names > 0.3:
                 too_much_error_folders.append(root_path)
             
@@ -69,7 +70,9 @@ def extract_error_paths(folder_path,output_folder_path, reset=False):
                 too_much_error_file_paths.append(file_path)
             else:
                 few_error_file_paths.append(file_path)
-
+        if len (too_much_error_file_paths) == 0:
+            few_error_file_paths.append(file_path)
+                
     with open(few_error_txt_path, 'w') as f:
         for file_path in few_error_file_paths:
             f.write(file_path + '\n')
@@ -190,5 +193,5 @@ def handle_error_paths(few_error_txt_path, too_much_error_txt_path):
 
 if __name__ == '__main__':
     few_error_txt_path, too_much_error_txt_path = extract_error_paths(folder_path='UMUT/YoutubeFace_FOLDERED',
-         output_folder_path='UMUT/Two_Face_Handle', reset=True)
+         output_folder_path='UMUT/Two_Face_Handle', reset=False)
     handle_error_paths(few_error_txt_path, too_much_error_txt_path)    
