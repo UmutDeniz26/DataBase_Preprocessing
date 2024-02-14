@@ -83,4 +83,3 @@ def validate_database_folder_txt(database_folder, txt_file):
 
 if __name__ == "__main__":
     validate_database_folder_txt('Elif/YoutubeFace/YoutubeFace', 'Elif/YoutubeFace/new.txt')
-
