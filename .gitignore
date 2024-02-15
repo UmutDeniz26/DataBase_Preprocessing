@@ -31,9 +31,12 @@
 /Elif/YoutubeFace/YoutubeFace_parcalanmıs
 /Elif/YoutubeFace/alignedimages
 /Elif/YoutubeFace/YoutubeFace
+/Elif/YoutubeFace/1267-1467
 /Elif/YoutubeFace/YoutubeFace_all
 /Elif/YoutubeFace/New_YotubeFace
 /Elif/YoutubeFace_FOLDERED
+/Elif/foldered
+/Elif/Two_Face_Handle
 /Elif/YoutubeFace/dataset_eski
 /IPEK/LFW
 /Ali/CASIA-FaceV5(BMP)
@@ -63,3 +66,9 @@
 UMUT/ConcatFolders/Input/
 UMUT/ConcatFolders/Output/
 UMUT/Two_Face_Handle/YoutubeFace_FOLDERED_copy
+IPEK/Two_Face_Handle/LFW_FOLDERED_copy
+UMUT/Two_Face_Handle/LFW_FOLDERED_copy
+Ali/1468-1598
+Ali/Two_Face_Handle
+Ali/YoutubeFace
+Ali/YoutubeFace_FOLDERED

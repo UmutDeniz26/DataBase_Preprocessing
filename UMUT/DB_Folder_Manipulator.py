@@ -12,11 +12,11 @@ import txtFileOperations
 import NameFeatureExtractor
 import FrontalFaceFunctions
 
-root_dir_path = os.path.dirname(os.path.abspath(__file__))
-root_dir_without_current_folder_name = root_dir_path.split('\\')[:-1]
-root_dir_without_current_folder_name = '\\'.join(root_dir_without_current_folder_name)
+# root_dir_path = os.path.dirname(os.path.abspath(__file__))
+# root_dir_without_current_folder_name = root_dir_path.split('\\')[:-1]
+# root_dir_without_current_folder_name = '\\'.join(root_dir_without_current_folder_name)
 
-os.chdir(root_dir_without_current_folder_name)
+# os.chdir(root_dir_without_current_folder_name)
 
 sys.path.insert(0, './UMUT')
 sys.path.insert(0, './Ali')

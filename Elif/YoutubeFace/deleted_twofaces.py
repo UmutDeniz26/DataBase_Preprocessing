@@ -1,6 +1,5 @@
 import os
 
-
 def delete_files_with_error(folder_path):
     i=0
     twoface_folder = os.path.join(folder_path, "twoface")
@@ -25,7 +24,7 @@ def delete_files_with_error(folder_path):
                     # Txt içersinde Error geçiyorsa
                     if "Error" in content:
                         errorCounter += 1
-                        #print(txt_path)
+                        print(txt_path)
                         #print(content)
                         # -> os.remove(txt_path)  # txt dosyasını sil
                         # print('Txt silindi: ',txt_path)
@@ -65,5 +64,5 @@ def delete_files_with_error(folder_path):
             f.write(file_path + '\n')
 
 
-folder_path = 'UMUT/YoutubeFace_FOLDERED'
+folder_path = 'Elif/foldered'
 delete_files_with_error(folder_path)
