@@ -309,7 +309,7 @@ def main(
 
 if __name__ == "__main__":
     main(
-        data_base_name='AFW', upper_folder_name='UMUT',
+        data_base_name='HELEN', upper_folder_name='UMUT',
         align_images_flag=True, reset_images_flag=True,
         auto_feature_select=False, print_features_flag=True,
         select_first_image_as_frontal=False, show_aligned_images=False

@@ -28,7 +28,7 @@ def calculate_average_img_size(folder_path):
     return Average_size
 
 
-def extract_error_paths(folder_path,output_folder_path, reset=False):
+def extract_error_paths(folder_path,output_folder_path, delete_small_images, reset=False):
     os.makedirs(output_folder_path, exist_ok=True)
 
     # to work in copy the folder to folder_path+'_copy' and work on it
@@ -39,7 +39,7 @@ def extract_error_paths(folder_path,output_folder_path, reset=False):
             shutil.rmtree(folder_path_copy)
         shutil.copytree(folder_path, folder_path_copy)
         shutil.rmtree(os.path.join(folder_path_copy,'Frontal_Faces'))
-        shutil.rmtree(os.path.join(folder_path_copy,'AFW_Info.txt'))
+        os.remove(os.path.join(folder_path_copy,'AFW_Info.txt'))
         
         print("Copied the folder to: ", folder_path_copy)
     folder_path = folder_path_copy
@@ -58,7 +58,7 @@ def extract_error_paths(folder_path,output_folder_path, reset=False):
             average_img_size =  calculate_average_img_size(root_path)
 
         for file_name in file_names:
-            if file_name.endswith('.jpg'):
+            if file_name.endswith('.jpg') and delete_small_images == True:
                 img_path = os.path.join(root_path, file_name)
                 img = cv2.imread(img_path)
                 img_size = img.shape[0] * img.shape[1]
@@ -241,13 +241,13 @@ def handle_error_paths(few_error_txt_path, too_much_error_txt_path):
             exit()
 
 def main(folder_path, output_folder_path, reset):
-    few_error_txt_path, too_much_error_txt_path = extract_error_paths(folder_path, output_folder_path, reset)
+    few_error_txt_path, too_much_error_txt_path = extract_error_paths(folder_path, output_folder_path, True, reset)
     handle_error_paths(few_error_txt_path, too_much_error_txt_path)
   
     shutil.copy(few_error_txt_path, './Umut/Two_Face_Handle/few_error_hold.txt')
     shutil.copy(too_much_error_txt_path, './Umut/Two_Face_Handle/too_much_error_hold.txt')
 
-    few_error_txt_path, too_much_error_txt_path = extract_error_paths(folder_path, output_folder_path, False)
+    few_error_txt_path, too_much_error_txt_path = extract_error_paths(folder_path, output_folder_path, False, False)
     
     with open(too_much_error_txt_path, 'r') as f:
         too_much_error_file_paths = f.readlines()
