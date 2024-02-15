@@ -39,7 +39,7 @@ def extract_error_paths(folder_path,output_folder_path, delete_small_images, res
             shutil.rmtree(folder_path_copy)
         shutil.copytree(folder_path, folder_path_copy)
         shutil.rmtree(os.path.join(folder_path_copy,'Frontal_Faces'))
-        os.remove(os.path.join(folder_path_copy,'AFW_Info.txt'))
+        os.remove(os.path.join(folder_path_copy,'HELEN_Info.txt'))
         
         print("Copied the folder to: ", folder_path_copy)
     folder_path = folder_path_copy
@@ -176,7 +176,7 @@ def process_faces(img_path ,faces ,hold_original_img , dynamic_offset=0):
 
     if len(list(resp.keys())) >1 or len(list(resp.keys())) == 0:
         if dynamic_offset == 4:
-            return {"Response": str("Stack Overflow while finding face( more than 4 loop ): " +img_path) }, hold_original_img
+            return {"Error": str("Stack Overflow while finding face( more than 4 loop ): " +img_path) }, hold_original_img
         write_value_dict, final_cropped_img = process_faces(img_path,faces,hold_original_img,dynamic_offset+1)
         return write_value_dict, final_cropped_img
 
@@ -208,7 +208,7 @@ def select_which_face_is_true(txt_path):
         exit()
 
 
-def handle_error_paths(few_error_txt_path, too_much_error_txt_path):
+def handle_error_paths(few_error_txt_path, too_much_error_txt_path,force_reset):
     # Read the txt files and remove the images with error
     with open(few_error_txt_path, 'r') as f:
         few_error_file_paths = f.readlines()
@@ -229,6 +229,10 @@ def handle_error_paths(few_error_txt_path, too_much_error_txt_path):
     for file_path in too_much_error_file_paths:
         file_path = file_path.strip()
         if os.path.exists(file_path) and file_path.endswith('.txt'):
+            if force_reset == True:
+                os.remove(file_path)
+                os.remove(file_path.replace('txt','jpg'))
+                continue
             try:
                 intra = file_path.split('\\')[-1].split('.')[0].split('_')[1]
             except:
@@ -238,11 +242,11 @@ def handle_error_paths(few_error_txt_path, too_much_error_txt_path):
             hold_intra = intra
         elif not os.path.exists(file_path):
             print(" * File does not exist: ", file_path)
-            exit()
+            #exit()
 
-def main(folder_path, output_folder_path, reset):
+def main(folder_path, output_folder_path, force_reset, reset):
     few_error_txt_path, too_much_error_txt_path = extract_error_paths(folder_path, output_folder_path, True, reset)
-    handle_error_paths(few_error_txt_path, too_much_error_txt_path)
+    handle_error_paths(few_error_txt_path, too_much_error_txt_path, force_reset)
   
     shutil.copy(few_error_txt_path, './Umut/Two_Face_Handle/few_error_hold.txt')
     shutil.copy(too_much_error_txt_path, './Umut/Two_Face_Handle/too_much_error_hold.txt')
@@ -257,8 +261,8 @@ def main(folder_path, output_folder_path, reset):
     with open(too_much_error_txt_path, 'w') as f:
         f.write("")
 
-    handle_error_paths(few_error_txt_path, too_much_error_txt_path)
+    handle_error_paths(few_error_txt_path, too_much_error_txt_path, force_reset)
     print("Completed the process...")
 
 if __name__ == '__main__':
-    main( folder_path = './Umut/AFW_FOLDERED', output_folder_path='./Umut/Two_Face_Handle', reset=False)
+    main( folder_path = './Umut/HELEN_FOLDERED', output_folder_path='./Umut/Two_Face_Handle', force_reset = True ,reset=True)
