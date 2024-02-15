@@ -98,7 +98,7 @@ def process_faces(img_path ,faces ,hold_original_img ,change_face_selection ,dyn
     face_crops = []
     for key, value in faces.items():
         facial_area = value['facial_area']
-        offset = dynamic_offset * 20 - 10
+        offset = dynamic_offset * 10 - 10
         face_img = hold_original_img[
             int(facial_area[1])-offset:int(facial_area[3])+offset, int(facial_area[0])-offset:int(facial_area[2])+offset
         ]
@@ -106,19 +106,20 @@ def process_faces(img_path ,faces ,hold_original_img ,change_face_selection ,dyn
 
     if change_face_selection == True:
         for i, face_crop in enumerate(face_crops):
+            try:
+                WINDOW_NAME = img_path
+                cv2.namedWindow(WINDOW_NAME)
+                cv2.startWindowThread()
+                cv2.imshow(WINDOW_NAME,face_crop)
 
-
-            WINDOW_NAME = img_path
-            cv2.namedWindow(WINDOW_NAME)
-            cv2.startWindowThread()
-            cv2.imshow(WINDOW_NAME,face_crop)
-
-            cv2.waitKey();cv2.destroyAllWindows()
-            print("Is it the correct face? (y/n)")
-            correct_face = input()
-            if correct_face == 'y':
-                selected_face = i
-                break
+                cv2.waitKey();cv2.destroyAllWindows()
+                print("Is it the correct face? (y/n)")
+                correct_face = input()
+                if correct_face == 'y':
+                    selected_face = i
+                    break
+            except:
+                None
 
     if len(face_crops) != 0 and face_crops[selected_face].shape[0] != 0 and face_crops[selected_face].shape[1] != 0:
         cv2.imwrite(img_path, face_crops[selected_face])
@@ -149,7 +150,7 @@ def select_which_face_is_true(txt_path,change_face_selection):
             input("No face found in the image: ", img_path,"\nPress Enter to continue...")
             return
 
-        write_value_dict, final_cropped_img = process_faces(img_path,faces,hold_original_img,True)
+        write_value_dict, final_cropped_img = process_faces(img_path,faces,hold_original_img,change_face_selection)
 
         try:
             facial_area = write_value_dict.get('face_1').get('facial_area')
@@ -183,15 +184,19 @@ def handle_error_paths(few_error_txt_path, too_much_error_txt_path):
         if os.path.exists(file_path):
             os.remove(file_path)
         else:
-            print("File does not exist: ", file_path)
-            exit()
+            print(" ** File does not exist: ", file_path)
+            #exit()
 
     # Select the correct face and write the landmarks
     hold_intra = 'init'
     for file_path in too_much_error_file_paths:
         file_path = file_path.strip()
         if os.path.exists(file_path) and file_path.endswith('.txt'):
-            intra = file_path.split('\\')[-1].split('.')[0].split('_')[1]
+            try:
+                intra = file_path.split('\\')[-1].split('.')[0].split('_')[1]
+            except:
+                intra = file_path.split('/')[-1].split('.')[0].split('_')[1]
+
             if hold_intra != intra:
                 change_face_selection = True
             else:
@@ -200,7 +205,7 @@ def handle_error_paths(few_error_txt_path, too_much_error_txt_path):
             select_which_face_is_true(file_path,change_face_selection)
             hold_intra = intra
         elif not os.path.exists(file_path):
-            print("File does not exist: ", file_path)
+            print(" * File does not exist: ", file_path)
             exit()
 
 def main(folder_path, output_folder_path, reset):
@@ -212,4 +217,4 @@ def main(folder_path, output_folder_path, reset):
     print("Completed the process...")
 
 if __name__ == '__main__':
-    main( folder_path = 'UMUT/LFW_FOLDERED', output_folder_path='UMUT/Two_Face_Handle', reset=False )
+    main( folder_path = './Ali/YoutubeFace_FOLDERED', output_folder_path='./Ali/Two_Face_Handle', reset=True )
