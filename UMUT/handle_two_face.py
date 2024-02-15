@@ -67,12 +67,12 @@ def extract_error_paths(folder_path,output_folder_path, reset=False):
         root_path_holder = root_path
 
     for file_path in error_file_names:
-        for too_much_error_path in too_much_error_folders:
-            if too_much_error_path in file_path:
-                too_much_error_file_paths.append(file_path)
-            else:
-                few_error_file_paths.append(file_path)
-                
+    
+        if '\\'.join(file_path.split('\\')[:-1]) in too_much_error_folders:
+            too_much_error_file_paths.append(file_path)
+        else:
+            few_error_file_paths.append(file_path)
+
         if len (too_much_error_file_paths) == 0:
             few_error_file_paths.append(file_path)
 
