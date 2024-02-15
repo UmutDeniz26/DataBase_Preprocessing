@@ -56,20 +56,18 @@ def main(folder_path):
                                         max_abs_value = difference_between_le_re
                                         img_path = os.path.splitext(image_file)[0] + '.jpg'
                                         #max_abs_image = file.replace(".txt",".jpg")
-                                        
-                                        
+                                             
                                 except:
                                     difference_between_le_re = 1000.0
 
                         #if max_abs_value == -1 or max_abs_image == "":
                         try:
-                            #new_frontal_img =  os.path.join( os.listdir(folder_path)[0].split('.')[:-1] )
                             new_frontal_path = os.path.join(subfolder_path, "new")
                             os.makedirs(new_frontal_path) 
-                            print("Yeni frontal path oluşturuldu: ", new_frontal_path)
+                            print("Yeni frontal klasörü oluşturuldu: ", new_frontal_path)
                             if img_path and os.path.exists(new_frontal_path):
                                 shutil.copy(os.path.join(subfolder_path, img_path), new_frontal_path)
-                                print("kopyalandı")
+                                print("Frontal img kopyalandı")
                             #return 0,  '.'.join( os.listdir(root_path)[0].split('.')[:-1] )
                         except FileNotFoundError:
                             print(f"Hata: {img_path} dosyası bulunamadı.")

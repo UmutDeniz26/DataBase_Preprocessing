@@ -85,4 +85,4 @@ def validate_database_folder_txt(database_folder, txt_file):
 folder_path='.\IPEK\LFW'
 txt_path='.\IPEK\LFW.txt'
 if __name__ == "__main__":
-    validate_database_folder_txt('./UMUT/YoutubeFace', './UMUT/YoutubeFace.txt')
+    validate_database_folder_txt('./Ali/YoutubeFace', './Ali/YoutubeFace.txt')
