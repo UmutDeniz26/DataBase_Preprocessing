@@ -67,7 +67,6 @@ def extract_error_paths(folder_path,output_folder_path, reset=False):
         root_path_holder = root_path
 
     for file_path in error_file_names:
-    
         if '\\'.join(file_path.split('\\')[:-1]) in too_much_error_folders:
             too_much_error_file_paths.append(file_path)
         else:
@@ -92,7 +91,23 @@ import txtFileOperations
 selected_face = 0
 square_threshold = 3000
 
-def process_faces(img_path ,faces ,hold_original_img ,change_face_selection ,dynamic_offset=0):
+
+def find_eucledian_distance(point1,point2):
+    return ((point1[0]-point2[0])**2 + (point1[1]-point2[1])**2)**0.5
+
+
+def find_best_face(faces,hold_original_img):
+    min_distance = sys.maxsize
+    center_original_img = [int(hold_original_img.shape[1]/2),int(hold_original_img.shape[0]/2)]
+    for key, value in faces.items():
+        center_face = [int((value['facial_area'][2]-value['facial_area'][0])/2),int((value['facial_area'][3]-value['facial_area'][1])/2)]
+        distance = find_eucledian_distance(center_original_img,center_face)
+        if distance < min_distance:
+            min_distance = distance
+            selected_face = list(faces.keys()).index(key)
+    return selected_face
+
+def process_faces(img_path ,faces ,hold_original_img ,change_face_selection , dynamic_offset=0):
     global selected_face
     face_crops = []
     for key, value in faces.items():
@@ -103,22 +118,21 @@ def process_faces(img_path ,faces ,hold_original_img ,change_face_selection ,dyn
         ]
         face_crops.append(face_img)
 
-    if change_face_selection == True:
-        for i, face_crop in enumerate(face_crops):
-            try:
-                WINDOW_NAME = img_path
-                cv2.namedWindow(WINDOW_NAME)
-                cv2.startWindowThread()
-                cv2.imshow(WINDOW_NAME,face_crop)
+    try:
+        with open(img_path.replace('jpg','txt'), 'r') as f:
+            txt_content = f.read()
+    except:
+        txt_content = 'No txt file found'
 
-                cv2.waitKey();cv2.destroyAllWindows()
-                print("Is it the correct face? (y/n)")
-                correct_face = input()
-                if correct_face == 'y':
-                    selected_face = i
-                    break
-            except:
-                None
+    if change_face_selection == True:
+        if "TwoPeopleDetected" in txt_content:
+            selected_face = find_best_face(faces,hold_original_img)
+            cv2.startWindowThread()
+            cv2.imshow("Selected Face",face_crops[selected_face])
+            cv2.imshow("Original",hold_original_img)
+            cv2.waitKey();cv2.destroyAllWindows()
+        else:
+            selected_face = 0
 
     if len(face_crops) != 0 and face_crops[selected_face].shape[0] != 0 and face_crops[selected_face].shape[1] != 0:
         cv2.imwrite(img_path, face_crops[selected_face])
@@ -164,6 +178,8 @@ def select_which_face_is_true(txt_path,change_face_selection):
             None
         txtFileOperations.writeLandmarksTxtFile(txt_path, write_value_dict)
         cv2.imwrite(img_path, final_cropped_img)
+        print("Completed the process for: ", img_path)
+       
 
     else:
         print("Image does not exist: ", img_path)
@@ -210,10 +226,22 @@ def handle_error_paths(few_error_txt_path, too_much_error_txt_path):
 def main(folder_path, output_folder_path, reset):
     few_error_txt_path, too_much_error_txt_path = extract_error_paths(folder_path, output_folder_path, reset)
     handle_error_paths(few_error_txt_path, too_much_error_txt_path)
+  
+    shutil.copy(few_error_txt_path, './Umut/Two_Face_Handle/few_error_hold.txt')
+    shutil.copy(too_much_error_txt_path, './Umut/Two_Face_Handle/too_much_error_hold.txt')
 
     few_error_txt_path, too_much_error_txt_path = extract_error_paths(folder_path, output_folder_path, False)
+    
+    with open(too_much_error_txt_path, 'r') as f:
+        too_much_error_file_paths = f.readlines()
+    with open(few_error_txt_path, 'a') as f:
+        for file_path in too_much_error_file_paths:
+            f.write(file_path)
+    with open(too_much_error_file_paths, 'w') as f:
+        f.write('')
+
     handle_error_paths(few_error_txt_path, too_much_error_txt_path)
     print("Completed the process...")
 
 if __name__ == '__main__':
-    main( folder_path = './Umut/AFW_FOLDERED', output_folder_path='./Umut/Two_Face_Handle', reset=True )
+    main( folder_path = './Umut/AFW_FOLDERED', output_folder_path='./Umut/Two_Face_Handle', reset=True)
