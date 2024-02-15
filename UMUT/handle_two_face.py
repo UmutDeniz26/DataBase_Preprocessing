@@ -108,7 +108,7 @@ def process_faces(img_path ,faces ,hold_original_img ,change_face_selection ,dyn
         for i, face_crop in enumerate(face_crops):
 
 
-            WINDOW_NAME = "Face"+str(i)
+            WINDOW_NAME = img_path
             cv2.namedWindow(WINDOW_NAME)
             cv2.startWindowThread()
             cv2.imshow(WINDOW_NAME,face_crop)
