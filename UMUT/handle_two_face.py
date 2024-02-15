@@ -106,8 +106,13 @@ def process_faces(img_path ,faces ,hold_original_img ,change_face_selection ,dyn
 
     if change_face_selection == True:
         for i, face_crop in enumerate(face_crops):
-            cv2.imshow("Face " + str(i+1), face_crop)
-            cv2.imshow("Original Image", hold_original_img)
+
+
+            WINDOW_NAME = "Face"+str(i)
+            cv2.namedWindow(WINDOW_NAME)
+            cv2.startWindowThread()
+            cv2.imshow(WINDOW_NAME,face_crop)
+
             cv2.waitKey();cv2.destroyAllWindows()
             print("Is it the correct face? (y/n)")
             correct_face = input()
@@ -144,7 +149,7 @@ def select_which_face_is_true(txt_path,change_face_selection):
             input("No face found in the image: ", img_path,"\nPress Enter to continue...")
             return
 
-        write_value_dict, final_cropped_img = process_faces(img_path,faces,hold_original_img,change_face_selection)
+        write_value_dict, final_cropped_img = process_faces(img_path,faces,hold_original_img,True)
 
         try:
             facial_area = write_value_dict.get('face_1').get('facial_area')
