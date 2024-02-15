@@ -45,7 +45,7 @@ def extract_error_paths(folder_path,output_folder_path, reset=False):
                     if len(content) <200:
                         #print( "---------------\ncontent:", content,",path: ", txt_path)
                         None
-                    if "Error" in content or "Stack Overflow" in content or "too small" in content:
+                    if "Error" in content or "Stack Overflow" in content or "too small" in content or "LandmarkError" in content:
                         error_counter += 1
                         error_file_names.append(txt_path)
                         img_path = os.path.join(os.path.splitext(txt_path)[0] + '.jpg')
@@ -70,10 +70,9 @@ def extract_error_paths(folder_path,output_folder_path, reset=False):
         for too_much_error_path in too_much_error_folders:
             if too_much_error_path in file_path:
                 too_much_error_file_paths.append(file_path)
-                break
             else:
                 few_error_file_paths.append(file_path)
-                break
+                
         if len (too_much_error_file_paths) == 0:
             few_error_file_paths.append(file_path)
 
@@ -147,7 +146,7 @@ def select_which_face_is_true(txt_path,change_face_selection):
         faces = RetinaFace.detect_faces(img_path)
 
         if len (faces) == 0:
-            input("No face found in the image: ", img_path,"\nPress Enter to continue...")
+            input("No face found in the image: "+ img_path + "\nPress Enter to continue...")
             return
 
         write_value_dict, final_cropped_img = process_faces(img_path,faces,hold_original_img,change_face_selection)
@@ -217,4 +216,4 @@ def main(folder_path, output_folder_path, reset):
     print("Completed the process...")
 
 if __name__ == '__main__':
-    main( folder_path = './Ali/YoutubeFace_FOLDERED', output_folder_path='./Ali/Two_Face_Handle', reset=True )
+    main( folder_path = './Umut/AFW_FOLDERED', output_folder_path='./Umut/Two_Face_Handle', reset=True )
