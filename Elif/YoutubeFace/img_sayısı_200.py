@@ -42,9 +42,9 @@ def imgReduction(subfolder_path,N=201):
 
         x1 = np.linspace(minVal, maxVal, N, endpoint=True)
         arr = np.floor(x1).astype(int)
-        print(arr)
+        #print(arr)
         new_arr = []
-        print(len(np.unique(arr)),len(arr))
+        #print(len(np.unique(arr)),len(arr))
 
         for number in arr:
             sign = np.random.randint(1)
