@@ -31,6 +31,7 @@ import RetinaFace
 print("RetinaFace imported from", RetinaFace.__file__)
 input("Press Enter to continue...")
 
+person_cnt = 0
 intra = 0
 inter = 0
 
@@ -56,6 +57,7 @@ def main(
     #------------------------------------------------------- Initialization -------------------------------------------------------#
     #Start timer
     start = time.time()
+    global person_cnt,intra,inter
 
 
     #This is the folder path of the logs
@@ -68,13 +70,16 @@ def main(
     #The txt file should be in the same folder with the images and the name of the txt file should be the same with the name of the folder
     txt_info_path = os.path.join(upper_folder_name, data_base_name + '.txt')
 
+    if reset_images_flag:
+        shutil.rmtree(os.path.join(upper_folder_name, data_base_name + "_FOLDERED"), ignore_errors=True)
+
     print(txtFileOperations.initMainTxtFile(data_base_name,upper_folder_name,
         ["file_path","inter","intra","right_eye","left_eye","nose","mouth_right","mouth_left"]))
 
     #These variables will be automatically changed according to the number of features
     hold_id, hold_left_inner_id, hold_features_count, frontal_count = 0, 0, 0, 0
 
-    if data_base_name == 'YoutubeFace' or 'LFW' or 'CASIA-FaceV5(BMP)':
+    if data_base_name == 'YoutubeFace' or  data_base_name ==  'LFW' or data_base_name ==  'CASIA-FaceV5(BMP)':
         images_with_txt_file_format = True
     else:
         images_with_txt_file_format = False
@@ -146,8 +151,11 @@ def main(
 
         #If the fileID or inner_id_left_side is different than the previous one, we should detect the frontal face of the previous folder
         if ( hold_id != file_id or hold_left_inner_id != inner_id_left_side ) and first_iteration == False:
-            global inter
             inter+=1
+            if hold_id != file_id:
+                person_cnt+=1
+
+
             os.makedirs(output_folder + "frontal/", exist_ok=True);os.makedirs(output_folder, exist_ok=True)
 
             confidence_score, most_frontal_face_name = detectFrontelImageFromTxt.run(output_folder)
@@ -205,14 +213,31 @@ def main(
 
         # Add inner folder when inner_id_left_side is different than False and inner_id_left_side is a number
         if inner_id_left_side != False and inner_id_left_side.isdigit() == True:
-            output_folder = os.path.join(output_folder, inner_id_left_side + "/")
+            if images_with_txt_file_format:
+                output_folder = os.path.join(output_folder, inner_id_left_side + "/")
         else:
             output_folder = os.path.join(output_folder, "0" + "/")
+
+        if images_with_txt_file_format==False:
+            string_person_cnt = f'{person_cnt:08d}'
+            string_inter = f'{intra:08d}'
+            string_intra = f'{inter:08d}'
+
+            if len(output_folder)>30:
+                print()
+
+            output_folder = os.path.join('\\'.join(
+                output_folder.split('\\')[:-1]),string_person_cnt,string_intra)
 
         # Create folders if they don't exist / COPY PROCESS
         # Replace the images with same name
         os.makedirs(output_folder, exist_ok=True)
-        output_file_path = os.path.join(output_folder, output_file_name)
+        if images_with_txt_file_format:
+            output_file_path = os.path.join(output_folder, output_file_name)
+        else:
+            output_file_path = os.path.join(
+                output_folder, '_'.join([string_person_cnt,string_intra,string_inter])
+                +'.'+output_file_name.split('_')[-1].split('.')[-1])
 
         #Here we copy the jpg file to the output folder
         if extension != 'mat':
@@ -238,12 +263,12 @@ def main(
                         Common.writeLog(log_folder_path+'/logNoFace.txt', output_file_name)
                         Common.copyFile(input_file_path, output_file_path)
                     else:
-
                         os.system('cls')
                         print(f"Processed: {index+1:08d} / {len(files):08d} ({(index+1)/len(files)*100:3.3f}%)")
                         print(f"Elapsed time (hh:mm:ss): {time.strftime('%H:%M:%S', time.gmtime(time.time()-start))}")
                         print(f"Remaining time (hh:mm:ss): {time.strftime('%H:%M:%S', time.gmtime((time.time()-start)*(len(files)-index)/(index+1)))}")
                         print("Copying: \n" + input_file_path + " to " + output_file_path)
+
                         cv2.imwrite(output_file_path, cropped_aligned_face)
                         #Common.copyFile(aligned_file_path, output_file_path)
                 else:
@@ -271,7 +296,6 @@ def main(
             #Read the image
             image_cv2 = cv2.imread(input_file_path)
 
-            global intra
             #Calculate the landmarks of the frontal face and write them to the txt file
             response = FrontalFaceFunctions.writeRetinaFaceLandmarks(
                                             image_cv2, output_file_path,
@@ -286,7 +310,7 @@ def main(
 
 if __name__ == "__main__":
     main(
-        data_base_name='YoutubeFace', upper_folder_name='UMUT',
+        data_base_name='AFW', upper_folder_name='UMUT',
         align_images_flag=True, reset_images_flag=True,
         auto_feature_select=False, print_features_flag=True,
         select_first_image_as_frontal=False, show_aligned_images=False
