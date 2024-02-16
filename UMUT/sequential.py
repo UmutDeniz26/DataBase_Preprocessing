@@ -12,4 +12,4 @@ def main(folder_path):
 
 
 if __name__ == "__main__":
-    main("UMUT\ConcatFolders\Output")
+    main("Elif\deneme")
