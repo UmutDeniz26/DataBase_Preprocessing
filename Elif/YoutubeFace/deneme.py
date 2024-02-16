@@ -18,7 +18,10 @@ def deleted_frontal_foldered(subfolder_path):
         print("'Foldered' adında bir alt klasör bulunamadı.")
 
 def main(folder_path):
-
+    
+    if os.path.exists(os.path.join(folder_path,"frontal_faces")):
+        shutil.rmtree(os.path.join(folder_path,"frontal_faces"))
+    os.makedirs( os.path.join(folder_path,"frontal_faces") ,exist_ok=True)
 
 
     for person_name in os.listdir(folder_path):
@@ -33,7 +36,7 @@ def main(folder_path):
 
                 for subfolder_name in os.listdir(person_path):
                     subfolder_path = os.path.join(person_path, subfolder_name)
-                    max_abs_value = sys.maxsize
+                    min_abs_value = sys.maxsize
                     img_path = ""
                     if os.path.isdir(subfolder_path):
                         deleted_frontal_foldered(subfolder_path)
@@ -52,21 +55,26 @@ def main(folder_path):
                                     distance_nose_left_eye = math.sqrt((content["left_eye"][0] - content["nose"][0])**2 + (content["left_eye"][1] - content["nose"][1])**2)
                                     distance_nose_right_eye = math.sqrt((content["right_eye"][0] - content["nose"][0])**2 + (content["right_eye"][1] - content["nose"][1])**2)
                                     difference_between_le_re = abs(distance_nose_left_eye-distance_nose_right_eye)
-                                    if difference_between_le_re < max_abs_value:
-                                        max_abs_value = difference_between_le_re
+                                    if difference_between_le_re < min_abs_value:
+                                        min_abs_value = difference_between_le_re
                                         img_path = os.path.splitext(image_file)[0] + '.jpg'
                                         #max_abs_image = file.replace(".txt",".jpg")
                                              
                                 except:
                                     difference_between_le_re = 1000.0
 
-                        #if max_abs_value == -1 or max_abs_image == "":
+                        #if min_abs_value == -1 or max_abs_image == "":
                         try:
-                            new_frontal_path = os.path.join(subfolder_path, "new")
-                            os.makedirs(new_frontal_path) 
+                            new_frontal_path = os.path.join(subfolder_path, "Frontal")
+                                            
+                            if os.path.exists(new_frontal_path):
+                                shutil.rmtree(new_frontal_path)
+                            os.makedirs(new_frontal_path,exist_ok=True)
+                             
                             print("Yeni frontal klasörü oluşturuldu: ", new_frontal_path)
                             if img_path and os.path.exists(new_frontal_path):
                                 shutil.copy(os.path.join(subfolder_path, img_path), new_frontal_path)
+                                shutil.copy(os.path.join(subfolder_path, img_path), os.path.join(folder_path,"frontal_faces"))
                                 print("Frontal img kopyalandı")
                             #return 0,  '.'.join( os.listdir(root_path)[0].split('.')[:-1] )
                         except FileNotFoundError:
