@@ -40,7 +40,7 @@ def extract_error_paths(folder_path,output_folder_path, delete_small_images, res
         shutil.copytree(folder_path, folder_path_copy)
         shutil.rmtree(os.path.join(folder_path_copy,'Frontal_Faces'))
         os.remove(os.path.join(folder_path_copy,'HELEN_Info.txt'))
-        
+
         print("Copied the folder to: ", folder_path_copy)
     folder_path = folder_path_copy
 
@@ -156,7 +156,7 @@ def process_faces(img_path ,faces ,hold_original_img , dynamic_offset=0):
             txt_content = f.read()
     except:
         txt_content = 'No txt file found'
-    
+
     if "TwoPeopleDetected" in txt_content:
         selected_face = find_best_face(faces,hold_original_img)
         """
@@ -201,7 +201,7 @@ def select_which_face_is_true(txt_path):
         txtFileOperations.writeLandmarksTxtFile(txt_path, write_value_dict)
         cv2.imwrite(img_path, final_cropped_img)
         print("Completed the process for: ", img_path)
-       
+
 
     else:
         print("Image does not exist: ", img_path)
@@ -247,12 +247,12 @@ def handle_error_paths(few_error_txt_path, too_much_error_txt_path,force_reset):
 def main(folder_path, output_folder_path, force_reset, reset):
     few_error_txt_path, too_much_error_txt_path = extract_error_paths(folder_path, output_folder_path, True, reset)
     handle_error_paths(few_error_txt_path, too_much_error_txt_path, force_reset)
-  
+
     shutil.copy(few_error_txt_path, './Umut/Two_Face_Handle/few_error_hold.txt')
     shutil.copy(too_much_error_txt_path, './Umut/Two_Face_Handle/too_much_error_hold.txt')
 
     few_error_txt_path, too_much_error_txt_path = extract_error_paths(folder_path, output_folder_path, False, False)
-    
+
     with open(too_much_error_txt_path, 'r') as f:
         too_much_error_file_paths = f.readlines()
     with open(few_error_txt_path, 'a') as f:
@@ -265,4 +265,4 @@ def main(folder_path, output_folder_path, force_reset, reset):
     print("Completed the process...")
 
 if __name__ == '__main__':
-    main( folder_path = './Umut/HELEN_FOLDERED', output_folder_path='./Umut/Two_Face_Handle', force_reset = True ,reset=True)
+    main( folder_path = 'UMUT/ConcatFolders/Output', output_folder_path='./Umut/Two_Face_Handle', force_reset = True ,reset=True)
