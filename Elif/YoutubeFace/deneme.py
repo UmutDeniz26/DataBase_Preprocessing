@@ -19,9 +19,9 @@ def deleted_frontal_foldered(subfolder_path):
 
 def main(folder_path):
     
-    if os.path.exists(os.path.join(folder_path,"frontal_faces")):
-        shutil.rmtree(os.path.join(folder_path,"frontal_faces"))
-    os.makedirs( os.path.join(folder_path,"frontal_faces") ,exist_ok=True)
+    if os.path.exists(os.path.join(folder_path,"Frontal_Faces")):
+        shutil.rmtree(os.path.join(folder_path,"Frontal_Faces"))
+    os.makedirs( os.path.join(folder_path,"Frontal_Faces") ,exist_ok=True)
 
 
     for person_name in os.listdir(folder_path):
@@ -70,11 +70,11 @@ def main(folder_path):
                             if os.path.exists(new_frontal_path):
                                 shutil.rmtree(new_frontal_path)
                             os.makedirs(new_frontal_path,exist_ok=True)
-                             
+
                             print("Yeni frontal klasörü oluşturuldu: ", new_frontal_path)
                             if img_path and os.path.exists(new_frontal_path):
                                 shutil.copy(os.path.join(subfolder_path, img_path), new_frontal_path)
-                                shutil.copy(os.path.join(subfolder_path, img_path), os.path.join(folder_path,"frontal_faces"))
+                                shutil.copy(os.path.join(subfolder_path, img_path), os.path.join(folder_path,"Frontal_Faces"))
                                 print("Frontal img kopyalandı")
                             #return 0,  '.'.join( os.listdir(root_path)[0].split('.')[:-1] )
                         except FileNotFoundError:

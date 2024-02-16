@@ -1,10 +1,10 @@
 import os
 
 # Veri setinin bulunduğu dizin
-dataset_path = "./Elif/YoutubeFace/YoutubeFace"
+dataset_path = "./UMUT/ConcatFolders/Output"
 
 # Çıktı dosyasının adı
-output_file = './Elif/YoutubeFace/deneme.txt'
+output_file = './Elif/YoutubeFace/Last_edition.txt'
 
 counter = 0
 a=0
