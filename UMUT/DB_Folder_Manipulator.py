@@ -156,7 +156,8 @@ def main(
                 person_cnt+=1
 
 
-            os.makedirs(output_folder + "frontal/", exist_ok=True);os.makedirs(output_folder, exist_ok=True)
+            os.makedirs(output_folder +"frontal\\", exist_ok=True)
+            os.makedirs(output_folder, exist_ok=True)
 
             confidence_score, most_frontal_face_name = detectFrontelImageFromTxt.run(output_folder)
 
@@ -227,7 +228,7 @@ def main(
                 print()
 
             output_folder = os.path.join('\\'.join(
-                output_folder.split('\\')[:-1]),string_person_cnt,string_intra)
+                output_folder.split('\\')[:-1]),string_person_cnt,string_intra) + "\\"
 
         # Create folders if they don't exist / COPY PROCESS
         # Replace the images with same name
@@ -253,11 +254,10 @@ def main(
                     except:
                         cropped_aligned_face = [];landmarks = {}
 
-                    try:
+                    if "TwoPeopleDetected" in response_dictionary.keys():
                         if response_dictionary["TwoPeopleDetected"] == True:
                             Common.writeLog( log_folder_path+"/logTwoFace", output_file_path)
-                    except:
-                        True
+                
 
                     if len(cropped_aligned_face) ==0:
                         Common.writeLog(log_folder_path+'/logNoFace.txt', output_file_name)
@@ -301,16 +301,15 @@ def main(
                                             image_cv2, output_file_path,
                                             inter, intra,show_aligned_images, landmarks
                         )
-            intra+=1
-
             if response != "Txt already exists!":
                 Common.writeLog(log_folder_path+'/logAddedTxt.txt', response)
             else:
                 Common.writeLog(log_folder_path+'/logTxtExists.txt', output_folder)
+            intra+=1
 
 if __name__ == "__main__":
     main(
-        data_base_name='AFW', upper_folder_name='UMUT',
+        data_base_name='HELEN', upper_folder_name='UMUT',
         align_images_flag=True, reset_images_flag=True,
         auto_feature_select=False, print_features_flag=True,
         select_first_image_as_frontal=False, show_aligned_images=False
