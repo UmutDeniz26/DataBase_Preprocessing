@@ -32,7 +32,7 @@ def extract_error_paths(folder_path,output_folder_path, delete_small_images, res
     os.makedirs(output_folder_path, exist_ok=True)
 
     # to work in copy the folder to folder_path+'_copy' and work on it
-    os.path.join(output_folder_path, os.path.split(folder_path)[-1]+'_copy')
+    folder_path_copy = os.path.join(output_folder_path, os.path.split(folder_path)[-1]+'_copy')
     os.makedirs(folder_path_copy, exist_ok=True)
     if not os.path.exists(folder_path_copy) or reset == True:
         if reset == True:
