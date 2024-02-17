@@ -48,7 +48,7 @@ def find_best_face(faces,hold_original_img):
     return best_face
 
 def process_faces(img_path ,faces ,hold_original_img, make_decision, dynamic_offset=0):
-    global selected_face
+    global selected_face,hold_last_face
     face_crops = []
 
     for key, value in faces.items():
@@ -59,12 +59,25 @@ def process_faces(img_path ,faces ,hold_original_img, make_decision, dynamic_off
         ]
         face_crops.append(face_img)
         
+
+    if len(hold_last_face)>1:
+        current_size_square = face_crops[selected_face].shape[0] * face_crops[selected_face].shape[1]
+        size_square = hold_last_face.shape[0] * hold_last_face.shape[1]
+        if abs(current_size_square - size_square) > current_size_square * 0.5:
+            print("Size difference is more than 20%")
+            print("Current size: ", current_size_square)
+            print("Last size: ", size_square)
+            print("Difference: ", abs(current_size_square - size_square), "is greater than", current_size_square * 0.2)
+            make_decision = True
+
     if make_decision:
         fig, axs = plt.subplots(1, len(face_crops) + 1, figsize=(15, 5))
+        fig.suptitle(img_path)
 
         for i, face_img in enumerate(face_crops):
-            axs[i].imshow(face_img)
-            axs[i].set_title("Selected Face " + str(i))
+            if face_img.shape[0] != 0 and face_img.shape[1] != 0:    
+                axs[i].imshow(face_img)
+                axs[i].set_title("Selected Face " + str(i))
 
         axs[len(face_crops)].imshow(hold_original_img)
         axs[len(face_crops)].set_title("Original")
@@ -74,36 +87,33 @@ def process_faces(img_path ,faces ,hold_original_img, make_decision, dynamic_off
         
 
     if len(face_crops) != 0 and face_crops[selected_face].shape[0] != 0 and face_crops[selected_face].shape[1] != 0:
-        #cv2.imwrite(img_path, face_crops[selected_face])
-        #resp = RetinaFace.extract_faces(img_path,align=True,align_first=True)
-        final_cropped_img = face_crops[selected_face]
-        faces.get('face_'+str(selected_face+1)).get('landmarks').update(
-            {"facial_area":faces.get('face_'+str(selected_face+1)).get('facial_area')}
-        )
-        write_value_dict = faces.get('face_'+str(selected_face+1)).get('landmarks')
+        cv2.imwrite(img_path, face_crops[selected_face])
+        resp = RetinaFace.extract_faces(img_path,align=True,align_first=True)
     else:
-        exit() 
-    
-    """ 
+        return {"Error": str("Stack Overflow while finding face( len(face_crops) == 0 ): " +img_path) }, hold_original_img
+        
     if len(list(resp.keys())) >1 or len(list(resp.keys())) == 0:
         if dynamic_offset == 4:
             return {"Error": str("Stack Overflow while finding face( more than 4 loop ): " +img_path) }, hold_original_img
-        write_value_dict, final_cropped_img = process_faces(img_path,faces,hold_original_img,dynamic_offset+1)
+        write_value_dict, final_cropped_img = process_faces(img_path,faces,hold_original_img,False,dynamic_offset+1)
         return write_value_dict, final_cropped_img
-    """
-
-    #write_value_dict = resp.get('face_1').get('landmarks')
-    #final_cropped_img = resp.get('face_1').get('face')
+    
+    
+    write_value_dict = resp.get('face_1').get('landmarks')
+    final_cropped_img = resp.get('face_1').get('face')
     return write_value_dict, final_cropped_img
 
+hold_last_face = []
 
-def select_which_face_is_true(txt_path,make_decision):
-    global selected_face,hold_intra
+def select_which_face_is_true(txt_path):
+    global selected_face,hold_intra,hold_last_face
+    txt_path = os.path.normpath(txt_path)
 
     try:
         intra = txt_path.split('\\')[-1].split('.')[0].split('_')[1]
     except:
-        intra = txt_path.split('/')[-1].split('.')[0].split('_')[1] 
+        print("Error ( cannot found intra ): ", txt_path)
+        exit()
 
     img_path = os.path.splitext(txt_path)[0] + '.jpg'
     if os.path.exists(img_path):
@@ -122,7 +132,9 @@ def select_which_face_is_true(txt_path,make_decision):
                 make_decision = True
             else:  
                 make_decision = False    
-            write_value_dict, final_cropped_img = process_faces(img_path,faces,make_decision,hold_original_img)
+            
+            write_value_dict, final_cropped_img = process_faces(img_path,faces,hold_original_img,make_decision)
+            hold_last_face = final_cropped_img
 
         txtFileOperations.writeLandmarksTxtFile(txt_path, write_value_dict)
         cv2.imwrite(img_path, final_cropped_img)
