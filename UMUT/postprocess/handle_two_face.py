@@ -91,8 +91,11 @@ def process_faces(img_path ,faces ,hold_original_img, make_decision, dynamic_off
 
     # if hold last face is not empty, then calculate the difference
     if len(hold_last_face)>1:
+        if len(face_crops_without_offset) <= selected_face:
+            print("Selected face is not in the list, select the face again: ")
+            selected_face = select_face(face_crops, hold_original_img, img_path)
         difference = calculate_size_difference(face_crops_without_offset[selected_face],hold_last_face_without_offset)
-        if difference > (hold_last_face_without_offset.shape[0] * hold_last_face_without_offset.shape[1]) * 0.3:
+        if difference > (hold_last_face_without_offset.shape[0] * hold_last_face_without_offset.shape[1]) * 0.3 and make_decision!=True:
             print("Difference is too much, select the face again: ")
             selected_face = select_face(face_crops,hold_original_img,img_path)
     hold_last_face_without_offset = face_crops_without_offset[selected_face]
@@ -217,7 +220,7 @@ def handle_error_paths(error_paths_txt_path):
 
         error_path_list_linespace = np.linspace(0, len(temp_error_paths_list) - 1, limit_error, dtype=int)
 
-        if correct_file_counter > limit_error:
+        if correct_file_counter > limit_error-1 or error_path_list_linespace[index] == None:
             continue
         
         select_which_face_is_true(temp_error_paths_list[error_path_list_linespace[index]])
