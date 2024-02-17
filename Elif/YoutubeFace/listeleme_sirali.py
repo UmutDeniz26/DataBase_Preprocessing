@@ -46,5 +46,5 @@ def main(dataset_path, output_file):
     print(f'Liste oluşturuldu ve {output_file} adında kaydedildi.')
 
 if __name__ == "__main__":
-    main(dataset_path="./Elif/YoutubeFace/YoutubeFace",
-         output_file='./Elif/YoutubeFace/YoutubeFace.txt')
+    main(dataset_path="./Elif/Two_Face_Handle/Output_copy",
+         output_file='./Elif/Two_Face_Handle/before_error_delete.txt')
