@@ -5,6 +5,8 @@ import sys
 sys.path.insert(0, './retinaface_custom/main')
 import RetinaFace
 
+sys.path.insert(0, './UMUT')
+
 print("RetinaFace imported from", RetinaFace.__file__)
 
 
@@ -32,7 +34,7 @@ def extract_error_paths(folder_path,output_folder_path, delete_small_images, res
     os.makedirs(output_folder_path, exist_ok=True)
 
     # to work in copy the folder to folder_path+'_copy' and work on it
-    folder_path_copy = os.path.join(output_folder_path, folder_path.split('/')[-1]+'_copy')
+    folder_path_copy = os.path.join(output_folder_path, os.path.split(folder_path)[-1]+'_copy')
     os.makedirs(folder_path_copy, exist_ok=True)
     if not os.path.exists(folder_path_copy) or reset == True:
         if reset == True:
@@ -119,6 +121,7 @@ def extract_error_paths(folder_path,output_folder_path, delete_small_images, res
 
 
 import cv2
+sys.path.insert(0, './UMUT')
 import txtFileOperations
 
 selected_face = 0
@@ -248,11 +251,9 @@ def main(folder_path, output_folder_path, force_reset, reset):
     few_error_txt_path, too_much_error_txt_path = extract_error_paths(folder_path, output_folder_path, True, reset)
     handle_error_paths(few_error_txt_path, too_much_error_txt_path, force_reset)
 
-    shutil.copy(few_error_txt_path, './Umut/Two_Face_Handle/few_error_hold.txt')
-    shutil.copy(too_much_error_txt_path, './Umut/Two_Face_Handle/too_much_error_hold.txt')
-
     few_error_txt_path, too_much_error_txt_path = extract_error_paths(folder_path, output_folder_path, False, False)
 
+    # Copy the content of too_much_error_txt_path to few_error_txt_path
     with open(too_much_error_txt_path, 'r') as f:
         too_much_error_file_paths = f.readlines()
     with open(few_error_txt_path, 'a') as f:
@@ -265,4 +266,4 @@ def main(folder_path, output_folder_path, force_reset, reset):
     print("Completed the process...")
 
 if __name__ == '__main__':
-    main( folder_path = 'UMUT/ConcatFolders/Output', output_folder_path='./Umut/Two_Face_Handle', force_reset = True ,reset=True)
+    main( folder_path = 'UMUT\ConcatFolders\Output', output_folder_path='./Umut/Two_Face_Handle', force_reset = True ,reset=False)
