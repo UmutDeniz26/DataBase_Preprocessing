@@ -30,7 +30,7 @@ def deleted_unknown_error(subfolder_path, inner_path):
                 except OSError as e:
                     print(f"Hata: '{file_name}' dosyası silinirken bir hata oluştu: {e}")
                     
-            if os.path.exists(jpg_file_path):
+            if os.path.isfile(jpg_file_path):
                 try:  
                     os.remove(jpg_file_path)
                     print(f"'{jpg_file_path}' başarıyla silindi.")
@@ -67,6 +67,7 @@ def main(folder_path):
                                 txt_cnt += 1
                                 with open(inner_path, "r") as file:
                                     content = file.read()
+                                    file.close()
                                     #print(content)
                                     #content = json.loads(content)
 
