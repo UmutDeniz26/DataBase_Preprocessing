@@ -1,3 +1,6 @@
+"""READMED: Hangi klasörde kaç tane twofaceError ve unknownError olduğunu gösteriyor.
+ Unknown error çok olduğu klasörleri el ile temizleyeceğim. Ardından çok fazla klasörde unkError olmadığı için
+ deleted_unknown_error fonksiyonu ile unkError sileceğim."""
 import os
 import json
 import math
@@ -14,17 +17,12 @@ def main(folder_path,output_file):
                 person_path = os.path.join(folder_path, person_name)
                 # Klasörleri kontrol et ve içerisindeki dosyaları listele
                 if os.path.isdir(person_path):
-                    person_images = []
+                    person_files = []
                     for subfolder_name in os.listdir(person_path):
-                        error_counts = {
-                        "two_people_error" : 0,
-                        #"stack_overflow_error" : 0,
-                        #"too_small_error" : 0,
-                        #"landmark_error" : 0,
-                        "unknown_error": 0  
-                        }
-                       # print(error_counts)
                         subfolder_path = os.path.join(person_path, subfolder_name)
+                    
+                       # print(error_counts)
+
                         txt_cnt = 0
                         unknownError = 0
                         noError = 0
@@ -32,11 +30,11 @@ def main(folder_path,output_file):
 
                         if os.path.isdir(subfolder_path):
                             # Alt klasördeki dosyaları listele
-                            for image_file in os.listdir(subfolder_path):
-                                file_path = os.path.join(subfolder_path, image_file)
-                                if image_file.endswith(('.txt')):
+                            for inner_file in os.listdir(subfolder_path):
+                                inner_path = os.path.join(subfolder_path, inner_file)
+                                if inner_file.endswith(('.txt')):
                                     txt_cnt += 1
-                                    with open(file_path, "r") as file:
+                                    with open(inner_path, "r") as file:
                                         content = file.read()
                                         #print(content)
                                         #content = json.loads(content)
@@ -55,6 +53,7 @@ def main(folder_path,output_file):
 
                                         else:
                                             unknownError += 1
+                                            #deleted_unknown_error(subfolder_path, inner_path)
                                          
                             txt_cnt = f'{txt_cnt:06d}'
                             noError = f'{noError:06d}'
@@ -65,11 +64,11 @@ def main(folder_path,output_file):
                                 a = int(a)
                                 a += 1
                                 a = f'{a:04d}'    
-                                person_images.append(f'{a}__{subfolder_path}       {txt_cnt}        {noError}        {twoFace}        {unknownError}')
+                                person_files.append(f'{a}__{subfolder_path}       {txt_cnt}        {noError}        {twoFace}        {unknownError}')
 
-                    file_w.write('\n'.join(person_images) + '\n')
+                    file_w.write('\n'.join(person_files) + '\n')
                     
-                    #print(subfolder_path,'\n')
+                    print(subfolder_path,'\n')
 
 if __name__ == '__main__':
     main( folder_path = './Elif/Two_Face_Handle/Output_copy',

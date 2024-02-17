@@ -1,0 +1,93 @@
+"""READMED: Hangi klasörde kaç tane twofaceError ve unknownError olduğunu gösteriyor.
+ Unknown error çok olduğu klasörleri el ile temizleyeceğim. Ardından çok fazla klasörde unkError olmadığı için
+ deleted_unknown_error fonksiyonu ile unkError sileceğim."""
+import os
+import json
+import math
+import shutil
+import sys
+
+def deleted_unknown_error(subfolder_path, inner_path):
+    
+    # Dosyanın ait olduğu klasör yolu
+    #folder_path = os.path.dirname(inner_path)
+    txt_file_path = inner_path
+    # Aynı ID'ye sahip olan .jpg dosyasının yolu
+    jpg_file_path = os.path.splitext(txt_file_path)[0] + ".jpg"
+
+
+    for root, dirs, files in os.walk(subfolder_path):
+        for file_name in files:
+            # Dosya yolu oluştur
+            file_path = os.path.join(root, file_name)
+            
+            # Eğer dosya .txt uzantılı ise, sil
+
+            if os.path.exists(txt_file_path):
+                try:
+                    os.remove(txt_file_path) 
+                    print(f"'{txt_file_path}' başarıyla silindi.")
+                except OSError as e:
+                    print(f"Hata: '{file_name}' dosyası silinirken bir hata oluştu: {e}")
+                    
+            if os.path.exists(jpg_file_path):
+                try:  
+                    os.remove(jpg_file_path)
+                    print(f"'{jpg_file_path}' başarıyla silindi.")
+                except OSError as e:
+                    print(f"Hata: '{file_name}' dosyası silinirken bir hata oluştu: {e}")
+            #else:
+                #print("\n ** File does not exist: ", file_path)
+            
+            return
+
+def main(folder_path):
+
+    a = 0
+    for person_name in os.listdir(folder_path):
+            person_path = os.path.join(folder_path, person_name)
+            # Klasörleri kontrol et ve içerisindeki dosyaları listele
+            if os.path.isdir(person_path):
+                person_files = []
+                for subfolder_name in os.listdir(person_path):
+                    subfolder_path = os.path.join(person_path, subfolder_name)
+                
+                    # print(error_counts)
+
+                    txt_cnt = 0
+                    unknownError = 0
+                    noError = 0
+                    twoFace = 0
+
+                    if os.path.isdir(subfolder_path):
+                        # Alt klasördeki dosyaları listele
+                        for inner_file in os.listdir(subfolder_path):
+                            inner_path = os.path.join(subfolder_path, inner_file)
+                            if inner_file.endswith(('.txt')):
+                                txt_cnt += 1
+                                with open(inner_path, "r") as file:
+                                    content = file.read()
+                                    #print(content)
+                                    #content = json.loads(content)
+
+                                    #if content.strip() == {}:
+                                    #    b +=1
+
+                                    if "TwoPeopleDetected" in content :
+                                        twoFace +=1
+                                        #for error_type in error_counts:
+                                            #if error_type in content:
+                                                #error_counts[error_type] += 1
+                                    
+                                    elif "right_eye" in content:
+                                        noError +=1
+
+                                    else:
+                                        unknownError += 1
+                                        deleted_unknown_error(subfolder_path, inner_path)
+
+if __name__ == '__main__':
+    main( folder_path = './Elif/deneme_error_deleted/deneme')
+
+
+
