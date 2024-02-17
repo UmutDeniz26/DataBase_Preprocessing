@@ -169,10 +169,7 @@ def select_which_face_is_true(txt_path):
 
 import numpy as np
 
-def handle_error_paths(error_txt_path, error_paths_txt_path, work_on_copy=False):
-    # Read the txt files and remove the images with error
-    with open(error_txt_path, 'r') as f:
-        error_list = f.readlines()
+def handle_error_paths(error_paths_txt_path):
 
     with open(error_paths_txt_path, 'r') as f:
         error_paths_list = f.readlines()
@@ -227,13 +224,11 @@ def handle_error_paths(error_txt_path, error_paths_txt_path, work_on_copy=False)
         index+=1
 
 
-def main(folder_path, output_folder_path, error_txt_path, error_paths_txt_path, work_on_copy=False):
-    handle_error_paths(error_txt_path, error_paths_txt_path, work_on_copy)
+def main(error_paths_txt_path, work_on_copy=False):
+    handle_error_paths(error_paths_txt_path)
     print("Completed the process...")
 
 if __name__ == '__main__':
     main( 
-        folder_path = 'UMUT\ConcatFolders\Output', output_folder_path='./Umut/Two_Face_Handle',
-        error_txt_path = "UMUT\Error_Handle\error.txt" , error_paths_txt_path = "UMUT\Error_Handle\error_paths.txt",
-        work_on_copy=False
+        error_paths_txt_path = "UMUT\Error_Handle\error_paths.txt", work_on_copy=False
     )
