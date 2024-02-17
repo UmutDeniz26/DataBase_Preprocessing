@@ -30,7 +30,8 @@ def main(output_folder_path):
                         # Copy file to output
                         extention = inter.name.split('.')[-1]
                         shutil.copy(inter.path, f'{output_folder_path}/{person_id:08d}/{intra_id:08d}/{inter_id:08d}.{extention}')
-                        inter_id += 1
+                        if extention == 'txt':
+                            inter_id += 1
                 intra_id += 1
             person_id += 1
 if __name__ == '__main__':

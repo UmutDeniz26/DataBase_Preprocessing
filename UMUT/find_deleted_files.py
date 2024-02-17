@@ -1,7 +1,7 @@
 import os
 
 
-def main(changed_dataset, original_dataset,output_path):
+def main(changed_dataset, original_dataset):
     hold_inter = 'init'
     missing_numbers = []
     for root, dirs, files in os.walk(changed_dataset):
@@ -33,10 +33,11 @@ def main(changed_dataset, original_dataset,output_path):
 
     print(f'missing_paths: {missing_paths}')
     print(f'len(missing_numbers): {len(missing_numbers)}')
+    output_path = original_dataset + '_missing_files.txt'
     with open(output_path, 'w') as f:
         for item in missing_paths:
             f.write("%s\n" % item)
 
 
 if __name__ == '__main__':
-    main(changed_dataset = 'UMUT\Two_Face_Handle\HELEN_FOLDERED_copy', original_dataset = 'UMUT\HELEN_FOLDERED', output_path = 'UMUT\HELEN_deleted_files.txt')
+    main(changed_dataset = 'UMUT\Two_Face_Handle\LFPW_FOLDERED_copy', original_dataset = 'UMUT\LFPW_FOLDERED')
