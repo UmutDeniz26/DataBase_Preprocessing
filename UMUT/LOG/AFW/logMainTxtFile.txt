@@ -17,6 +17,69 @@ Text line successfully added to main text! : UMUT\AFW_FOLDERED\00000000\00000000
 Text line successfully added to main text! : UMUT\AFW_FOLDERED\00000000\00000000\00000000_00000000_00000015
 Text line successfully added to main text! : UMUT\AFW_FOLDERED\00000000\00000000\00000000_00000000_00000016
 Text line successfully added to main text! : UMUT\AFW_FOLDERED\00000000\00000000\00000000_00000000_00000017
+<<<<<<< HEAD
+Initialized txt: UMUT\AFW_FOLDERED\AFW_Info.txt successfully!
+Initialized txt: UMUT\AFW_FOLDERED\AFW_Info.txt successfully!
+Initialized txt: UMUT\AFW_FOLDERED\AFW_Info.txt successfully!
+Initialized txt: UMUT\AFW_FOLDERED\AFW_Info.txt successfully!
+Initialized txt: UMUT\AFW_FOLDERED\AFW_Info.txt successfully!
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000000
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000001
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000002
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000003
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000004
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000005
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000006
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000007
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000008
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000009
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000010
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000011
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000012
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000013
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000014
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000015
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000016
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000017
+Initialized txt: UMUT\AFW_FOLDERED\AFW_Info.txt successfully!
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000000
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000001
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000002
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000003
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000004
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000005
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000006
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000007
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000008
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000009
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000010
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000011
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000012
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000013
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000014
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000015
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000016
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000017
+Initialized txt: UMUT\AFW_FOLDERED\AFW_Info.txt successfully!
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000000
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000001
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000002
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000003
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000004
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000005
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000006
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000007
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000008
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000009
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000010
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000011
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000012
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000013
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000014
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000015
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000016
+Text line successfully added to main text! : UMUT/AFW_FOLDERED\00000000\00000000\00000000_00000000_00000017
+=======
 Text line successfully added to main text! : UMUT\AFW_FOLDERED\00000001\00000001\00000001_00000001_00000018
 Text line successfully added to main text! : UMUT\AFW_FOLDERED\00000001\00000001\00000001_00000001_00000019
 Text line successfully added to main text! : UMUT\AFW_FOLDERED\00000001\00000001\00000001_00000001_00000020
@@ -5206,3 +5269,4 @@ Text line successfully added to main text! : UMUT\AFW_FOLDERED\00000184\00000336
 Text line successfully added to main text! : UMUT\AFW_FOLDERED\00000184\00000336\00000184_00000336_00005204
 Text line successfully added to main text! : UMUT\AFW_FOLDERED\00000184\00000336\00000184_00000336_00005205
 Text line successfully added to main text! : UMUT\AFW_FOLDERED\00000184\00000336\00000184_00000336_00005206
+>>>>>>> 8d2525a408bb834a6cf7f31cce637213c7fec52b

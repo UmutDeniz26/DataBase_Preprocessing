@@ -31,9 +31,6 @@ def main(output_folder_path):
                         extention = inter.name.split('.')[-1]
                         shutil.copy(inter.path, f'{output_folder_path}/{person_id:08d}/{intra_id:08d}/{inter_id:08d}.{extention}')
                         inter_id += 1
-                    if  inter.is_dir():
-                        # Copy frontal folder to output
-                        shutil.copytree(inter.path, f'{output_folder_path}/{person_id:08d}/{intra_id:08d}/Frontal')
                 intra_id += 1
             person_id += 1
 if __name__ == '__main__':
