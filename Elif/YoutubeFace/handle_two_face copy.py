@@ -1,3 +1,4 @@
+# error siliyor
 import os
 import shutil
 import sys
@@ -259,8 +260,8 @@ def main(folder_path, output_folder_path, force_reset, reset):
     few_error_txt_path, too_much_error_txt_path = extract_error_paths(folder_path, output_folder_path, True, reset)
     handle_error_paths(few_error_txt_path, too_much_error_txt_path, force_reset)
   
-    shutil.copy(few_error_txt_path, './Umut/Two_Face_Handle/few_error_hold.txt')
-    shutil.copy(too_much_error_txt_path, './Umut/Two_Face_Handle/too_much_error_hold.txt')
+    #shutil.copy(few_error_txt_path, './Umut/Two_Face_Handle/few_error_hold.txt')
+    #shutil.copy(too_much_error_txt_path, './Umut/Two_Face_Handle/too_much_error_hold.txt')
 
     few_error_txt_path, too_much_error_txt_path = extract_error_paths(folder_path, output_folder_path, False, False)
     
@@ -276,4 +277,4 @@ def main(folder_path, output_folder_path, force_reset, reset):
     print("Completed the process...")
 
 if __name__ == '__main__':
-    main( folder_path = './UMUT/ConcatFolders/Output', output_folder_path='./Elif/Two_Face_Handle', force_reset = True ,reset=False)
+    main( folder_path = './Elif/Two_Face_Handle/Output', output_folder_path='./Elif/Two_Face_Handle', force_reset = True ,reset=False)

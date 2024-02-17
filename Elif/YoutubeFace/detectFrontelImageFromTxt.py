@@ -1,3 +1,4 @@
+# son aşama frontal klasörü oluşturma
 import os
 import json
 import math
