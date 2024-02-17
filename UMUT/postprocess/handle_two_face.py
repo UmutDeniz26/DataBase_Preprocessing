@@ -32,7 +32,7 @@ def extract_error_paths(folder_path,output_folder_path, delete_small_images, res
     os.makedirs(output_folder_path, exist_ok=True)
 
     # to work in copy the folder to folder_path+'_copy' and work on it
-    folder_path_copy = os.path.join(output_folder_path, folder_path.split('/')[-1]+'_copy')
+    os.path.join(output_folder_path, os.path.split(folder_path)[-1]+'_copy')
     os.makedirs(folder_path_copy, exist_ok=True)
     if not os.path.exists(folder_path_copy) or reset == True:
         if reset == True:
@@ -119,6 +119,7 @@ def extract_error_paths(folder_path,output_folder_path, delete_small_images, res
 
 
 import cv2
+sys.path.insert(0, './UMUT')
 import txtFileOperations
 
 selected_face = 0
@@ -265,4 +266,4 @@ def main(folder_path, output_folder_path, force_reset, reset):
     print("Completed the process...")
 
 if __name__ == '__main__':
-    main( folder_path = 'UMUT/ConcatFolders/Output', output_folder_path='./Umut/Two_Face_Handle', force_reset = True ,reset=True)
+    main( folder_path = 'UMUT\ConcatFolders\Output', output_folder_path='./Umut/Two_Face_Handle', force_reset = True ,reset=True)

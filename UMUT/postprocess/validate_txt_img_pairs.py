@@ -30,4 +30,4 @@ def main(folder_path):
         print(f'Error img count: {error_img_count}\n')
 
 if __name__ == '__main__':
-    main('UMUT\Two_Face_Handle\YoutubeFace_FOLDERED_copy')
+    main('UMUT/Two_Face_Handle/UMUT/ConcatFolders/Output_copy')
