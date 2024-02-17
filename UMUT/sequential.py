@@ -1,3 +1,4 @@
+# sıralı olaral listeledik. txt ve img aynı id aldı.
 import os
 import shutil
 
@@ -23,4 +24,4 @@ def main(folder_path):
 
 
 if __name__ == "__main__":
-    main("Elif\deneme")
+    main("Elif\Two_Face_Handle\Output_copy")

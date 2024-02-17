@@ -1,7 +1,7 @@
 import os
 
 # Veri setinin bulunduğu dizin
-dataset_path = "./UMUT/ConcatFolders/Output"
+dataset_path = "./Elif/Two_Face_Handle/Output_copy"
 
 # Çıktı dosyasının adı
 output_file = './Elif/YoutubeFace/Last_edition.txt'
