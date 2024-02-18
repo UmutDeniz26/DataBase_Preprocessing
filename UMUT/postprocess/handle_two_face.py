@@ -150,7 +150,7 @@ def process_faces(img_path ,faces ,hold_original_img, make_decision, dynamic_off
     return write_value_dict, final_cropped_img
 
 
-def select_which_face_is_true(txt_path,difference_change_selection_for_each):
+def select_which_face_is_true(txt_path):
     global selected_face,hold_intra
     txt_path = os.path.normpath(txt_path)
     img_path = txt_path.replace('.txt','.jpg')
@@ -191,7 +191,7 @@ def select_which_face_is_true(txt_path,difference_change_selection_for_each):
 
 import numpy as np
 
-def handle_error_paths(error_paths_txt_path,difference_change_selection_for_each):
+def handle_error_paths(error_paths_txt_path):
 
     with open(error_paths_txt_path, 'r') as f:
         error_paths_list = f.readlines()
@@ -243,16 +243,16 @@ def handle_error_paths(error_paths_txt_path,difference_change_selection_for_each
         if correct_file_counter > limit_error-1 or index > limit_error-1:
             continue
         
-        select_which_face_is_true(temp_error_paths_list[error_path_list_linespace[index]],difference_change_selection_for_each)
+        select_which_face_is_true(temp_error_paths_list[error_path_list_linespace[index]])
         
         index+=1
 
 
-def main(error_paths_txt_path, difference_change_selection_for_each):
-    handle_error_paths(error_paths_txt_path, difference_change_selection_for_each)
+def main(error_paths_txt_path):
+    handle_error_paths(error_paths_txt_path)
     print("Completed the process...")
 
 if __name__ == '__main__':
     main( 
-        error_paths_txt_path = "UMUT\Error_Handle\error_paths.txt", difference_change_selection_for_each = False
+        error_paths_txt_path = "UMUT\Error_Handle\error_paths.txt"
     )
