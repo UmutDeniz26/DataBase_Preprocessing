@@ -25,6 +25,10 @@ def main(folder_path, delete_all_errors=False):
         #os.system('cls')
         index+=1
 
+        # if frontal folder pass
+        if "frontal" in root:
+            continue   
+
         error_count = 0
         if count_path_slices(root) > 4:
             temp_error_files = []
@@ -42,9 +46,14 @@ def main(folder_path, delete_all_errors=False):
                             temp_error_files.append(img_path)
                             temp_error_files.append(txt_path)
                             error_count += 1
-            ratio = error_count/ (len(files)/2)
+            try:
+                ratio = error_count/ (len(files)/2)
+            except ZeroDivisionError:
+                print(f"Error: {root}")
+                ratio = 0
             correct_files = len(files)/2 - error_count
-            if correct_files < 10:
+            
+            if correct_files < 5:
                 string = (f"Error count: {error_count}  "
                           f"Total files: {len(files)}  "
                           f"Ratio: {ratio}  "
@@ -53,8 +62,7 @@ def main(folder_path, delete_all_errors=False):
                 #print(string)
                 error_info.append(string)
                 for file in temp_error_files:
-                    error_info_paths.append(file)
-                    
+                    error_info_paths.append(file)       
             else:
                 for file in files:
                     if file.endswith(".txt"):
@@ -93,4 +101,4 @@ def main(folder_path, delete_all_errors=False):
             
 
 if __name__ == "__main__":
-    main(folder_path="UMUT\Two_Face_Handle\Output_copy", delete_all_errors=True)
+    main(folder_path="UMUT/database/HELEN_FOLDERED", delete_all_errors=True)
