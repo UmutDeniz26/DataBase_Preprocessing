@@ -51,15 +51,10 @@ def main(folder_path):
                 person_files = []
                 for subfolder_name in os.listdir(person_path):
                     subfolder_path = os.path.join(person_path, subfolder_name)
-                
-                    # print(error_counts)
-
                     txt_cnt = 0
-                    unknownError = 0
-                    noError = 0
                     twoFace = 0
-                    pE = 0
-
+                    noError = 0
+                    unknownError = 0
                     if os.path.isdir(subfolder_path):
                         # Alt klasördeki dosyaları listele
                         for inner_file in os.listdir(subfolder_path):
@@ -75,21 +70,26 @@ def main(folder_path):
                                     #if content.strip() == {}:
                                     #    b +=1
 
-                                    if "TwoPeopleDetected" in content:
+                                    if "TwoPeopleDetected" in content :
                                         twoFace +=1
+                                      
                                         #for error_type in error_counts:
                                             #if error_type in content:
                                                 #error_counts[error_type] += 1
-                                    elif "pass_exception" in content:
-                                        pE += 1
                                     
                                     elif "right_eye" in content:
                                         noError +=1
 
                                     else:
                                         unknownError += 1
-                                        deleted_unknown_error(subfolder_path, inner_path)
-                
+                                        #deleted_unknown_error(subfolder_path, inner_path)
+                        tE_rate = (twoFace / txt_cnt)
+                        #tE_rate = f"{tE_rate:.4f}"
+                        thresh = 0.3
+
+                        if tE_rate >= thresh:
+                            a += 1
+                            print(subfolder_path , a)
 
 
 

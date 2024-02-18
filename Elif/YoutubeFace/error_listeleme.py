@@ -11,10 +11,11 @@ def main(folder_path,output_file):
     
     
     with open(output_file, 'w') as file_w:
-        file_w.write("Subfolfer_path                                                 | txt_cnt     |noError   |twoFace          |unkn         |tE_rate       |uE_rate         |tE     |uE\n")
+        file_w.write("Subfolfer_path                                                 | txt_cnt     |noError   |twoFace          |pE       |unkn         |tE_rate       |uE_rate         |tE     |uE     |pE\n")
         a = 0
         uE = 0
         tE = 0
+        pE = 0
         for person_name in os.listdir(folder_path):
                 person_path = os.path.join(folder_path, person_name)
                 # Klasörleri kontrol et ve içerisindeki dosyaları listele
@@ -28,6 +29,7 @@ def main(folder_path,output_file):
                         txt_cnt = 0
                         unknownError = 0
                         noError = 0
+                        pass_E = 0
                         twoFace = 0
 
                         if os.path.isdir(subfolder_path):
@@ -53,6 +55,10 @@ def main(folder_path,output_file):
                                         
                                         elif "right_eye" in content:
                                             noError +=1
+                                        
+                                        elif "pass_exception" in content:
+                                            pass_E += 1
+                                            pE+=1
 
                                         else:
                                             unknownError += 1
@@ -68,13 +74,14 @@ def main(folder_path,output_file):
                             txt_cnt = f'{txt_cnt:06d}'
                             noError = f'{noError:06d}'
                             twoFace = f'{twoFace:06d}'
+                            pass_E = f'{pass_E:06d}'
                             unknownError = f'{unknownError:06d}'            
 
                             if txt_cnt != noError: 
                                 a = int(a)
                                 a += 1
                                 a = f'{a:04d}'    
-                                person_files.append(f'{a}__{subfolder_path}       {txt_cnt}        {noError}        {twoFace}        {unknownError}       {tE_rate}       {uE_rate}        {tE}         {uE}')
+                                person_files.append(f'{a}__{subfolder_path}       {txt_cnt}        {noError}        {twoFace}        {pass_E}      {unknownError}       {tE_rate}       {uE_rate}        {tE}         {uE}      {pE}')
 
                     file_w.write('\n'.join(person_files) + '\n')
                     
@@ -82,7 +89,7 @@ def main(folder_path,output_file):
 
 if __name__ == '__main__':
     main( folder_path = './Elif/Two_Face_Handle/Output_copy',
-         output_file='./Elif/Two_Face_Handle/error_newlist.txt')
+         output_file='./Elif/Two_Face_Handle/error_newlist_afterunkWDeleted.txt')
 
 
 
