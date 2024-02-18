@@ -96,11 +96,13 @@ def process_faces(img_path ,faces ,hold_original_img, make_decision, dynamic_off
     if len(face_crops_without_offset) <= selected_face:
         print("Selected face is not in the list, select the face again: ")
         selected_face = select_face(face_crops, hold_original_img, img_path)
-
-    result = DeepFace.verify(
-        face_crops_without_offset[selected_face], correct_face, enforce_detection=False
-    )
-
+    try:
+        result = DeepFace.verify(
+            face_crops_without_offset[selected_face], correct_face, enforce_detection=False
+        )
+    except:
+        result = {"verified": False}
+        
     # If the selected face is not verified, then select the face again
     if result.get("verified") == False:
         print("Select the face:: ")
@@ -132,9 +134,13 @@ def process_faces(img_path ,faces ,hold_original_img, make_decision, dynamic_off
         )    
         return write_value_dict, final_cropped_img    
     elif len(list(resp.keys())) == 1:
-        result = DeepFace.verify(
-            resp.get('face_1').get('face'), correct_face, enforce_detection=False
-            ).get("verified")
+        try:
+            result = DeepFace.verify(
+                resp.get('face_1').get('face'), correct_face, enforce_detection=False
+                ).get("verified")
+        except:
+            result = False
+
         if result == False:
             if dynamic_offset == 4:
                 return {"Error": str("Stack Overflow while finding face( result and target are different ): " +img_path) }, hold_original_img
