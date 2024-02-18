@@ -33,10 +33,8 @@ def main(folder_path, delete_all_errors=False):
                     txt_path = os.path.join(root, file)
                     img_path = txt_path.replace(".txt", ".jpg")
                     content = open(os.path.join(root, file)).read()
-
                     if "pass_exception" in content:
                         continue
-
                     if "Error" in content or "Stack Overflow" in content or "too small" in content or "LandmarkError" in content:
                         if delete_all_errors:
                             temp_error_files.append(img_path)
@@ -44,7 +42,7 @@ def main(folder_path, delete_all_errors=False):
                             error_count += 1
             ratio = error_count/ (len(files)/2)
             correct_files = len(files)/2 - error_count
-            if correct_files < 10:
+            if correct_files < 20:
                 string = (f"Error count: {error_count}  "
                           f"Total files: {len(files)}  "
                           f"Ratio: {ratio}  "
@@ -77,20 +75,21 @@ def main(folder_path, delete_all_errors=False):
                                     print(f"Files does not exist: {img_path}")
                                     exit()
 
-    with open("deleted_files.txt", "w") as f:
+    write_txt_path = os.path.join("Elif","Error_Handle", "deleted_files.txt")
+    with open(write_txt_path, "w") as f:
         for item in deleted_files:
             f.write("%s\n" % item)
     
-    write_txt_path = os.path.join("UMUT","Error_Handle", "error.txt")
+    write_txt_path = os.path.join("Elif","Error_Handle", "error.txt")
     with open(write_txt_path, "w") as f:
         for item in error_info:
             f.write("%s\n" % item)
     
-    write_txt_path = os.path.join("UMUT","Error_Handle", "error_paths.txt")
+    write_txt_path = os.path.join("Elif","Error_Handle", "error_paths.txt")
     with open(write_txt_path, "w") as f:
         for item in error_info_paths:
             f.write("%s\n" % item)
             
 
 if __name__ == "__main__":
-    main(folder_path="UMUT\Two_Face_Handle\Output_copy", delete_all_errors=True)
+    main(folder_path="Elif\Two_Face_Handle\deneme_data", delete_all_errors=True)

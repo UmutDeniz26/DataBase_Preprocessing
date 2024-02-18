@@ -1,0 +1,1 @@
+Error count: 99  Total files: 214  Ratio: 0.9252336448598131  Correct files: 8  Folder path: Elif\Two_Face_Handle\deneme_data\2\00000021
