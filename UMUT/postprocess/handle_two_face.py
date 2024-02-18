@@ -156,7 +156,10 @@ def select_which_face_is_true(txt_path):
     img_path = txt_path.replace('.txt','.jpg')
 
     try:
-        intra = txt_path.split('\\')[-1].split('.')[0].split('_')[1]
+        if len(txt_path.split('\\')[-1].split('.')[0].split('_')) == 1:
+            intra = txt_path.split('\\')[-2]
+        else:
+            intra = txt_path.split('\\')[-1].split('.')[0].split('_')[1]
     except:
         print("Error ( cannot found intra ): ", txt_path)
         exit()
@@ -212,6 +215,7 @@ def handle_error_paths(error_paths_txt_path):
             intra = file_path.split('\\')[-2]
         else:
             intra = file_path.split('\\')[-1].split('.')[0].split('_')[1]
+
         if hold_intra_index != intra or hold_intra_index == "":
             index = 0 
         hold_intra_index = intra
