@@ -208,9 +208,10 @@ def handle_error_paths(error_paths_txt_path):
                 content = f.read()
         else:
             continue
-        
-
-        intra = file_path.split('\\')[-1].split('.')[0].split('_')[1]
+        if len(file_path.split('\\')[-1].split('.')[0].split('_')) == 1:
+            intra = file_path.split('\\')[-2]
+        else:
+            intra = file_path.split('\\')[-1].split('.')[0].split('_')[1]
         if hold_intra_index != intra or hold_intra_index == "":
             index = 0 
         hold_intra_index = intra
