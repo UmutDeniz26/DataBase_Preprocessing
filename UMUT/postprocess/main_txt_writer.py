@@ -32,7 +32,7 @@ def main(destination_folder_path, data_base_name, upper_folder_name):
                     frontal_path = os.path.join(folder_path, "frontal")
                     frontal_image_name = os.listdir(frontal_path)[0]
                     mask_path = os.path.join(folder_path, frontal_image_name)
-                    data = np.concatenate((data, np.array([(os.path.join(root, file), person_counter, inter, mask_path)], dtype=dtype)))
+                    data = np.concatenate((data, np.array([(os.path.join(root, file.replace("txt","jpg")), person_counter, inter, mask_path)], dtype=dtype)))
 
                     intra += 1
             if not skip_inter:
