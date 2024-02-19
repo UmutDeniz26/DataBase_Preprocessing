@@ -5,7 +5,7 @@ import numpy as np
 sys.path.insert(0, './UMUT')
 import txtFileOperations
 
-def main(folder_path, data_base_name, upper_folder_name):
+def main(destination_folder_path, data_base_name, upper_folder_name):
 
     dtype = np.dtype([("path", object), ("class_inter", int), ("class_intra", int), ("mask", object)])
     data = np.array([], dtype=dtype)  # Initialize data as an empty numpy array
@@ -17,7 +17,7 @@ def main(folder_path, data_base_name, upper_folder_name):
     hold_person_id = 'init'
 
     skip_inter = False
-    for root, dirs, files in os.walk(folder_path):
+    for root, dirs, files in sorted(os.walk(destination_folder_path)):
         if len(files) > 1:
             for file in files:
                 if file.endswith(".txt"):
@@ -55,13 +55,13 @@ def main(folder_path, data_base_name, upper_folder_name):
                 person_counter += 1
                 hold_person_id = person_id
 
-    np.save(os.path.join(folder_path, data_base_name + "_Info.npy"), data)  # Save the data to a file
+    np.save(os.path.join(destination_folder_path, data_base_name + "_Info.npy"), data)  # Save the data to a file
 
     #read
-    data = np.load(os.path.join(folder_path, data_base_name + "_Info.npy"), allow_pickle=True)
-    print(data)
+    data = np.load(os.path.join(destination_folder_path, data_base_name + "_Info.npy"), allow_pickle=True)
+    print(os.path.join(destination_folder_path, data_base_name + "_Info.npy"))
 
 if __name__ == "__main__":
-    main(folder_path="AFW", data_base_name="AFW", upper_folder_name="UMUT")
+    main(destination_folder_path="Ali/CASIA-FaceV5(BMP)_FOLDERED", data_base_name="CASIA", upper_folder_name="UMUT")
     # main(folder_path="HELEN", data_base_name="HELEN", upper_folder_name="UMUT")
     # main(folder_path="LFPW", data_base_name="LFPW", upper_folder_name="UMUT")
