@@ -12,7 +12,7 @@ b=0
 
 # Dosya açma işlemi
 with open(output_file, 'w') as file:
-    file.write("PersonName_SubfolderName_TotalImg_MoreThan100Img\n")
+    file.write("path_inter_intra_img_path\n")
     for person_name in os.listdir(dataset_path):
         person_path = os.path.join(dataset_path, person_name)
         b +=1
