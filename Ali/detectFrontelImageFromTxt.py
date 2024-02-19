@@ -15,7 +15,7 @@ def run(folder_path):
                     content = file.read()
                     content = json.loads(content)
             except:
-                print("Error: " + image_path + " is not a valid json file!")
+                #print("Error: " + image_path + " is not a valid json file!")
                 continue
             try:
                 distance_nose_left_eye = math.sqrt((content["left_eye"][0] - content["nose"][0])**2 + (content["left_eye"][1] - content["nose"][1])**2)

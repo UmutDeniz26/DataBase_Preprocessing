@@ -40,6 +40,12 @@ def select_face(face_crops,hold_original_img,img_path):
 
     fig, axs = plt.subplots(1, len(face_crops) + 1, figsize=(15, 5))
     fig.suptitle(img_path)
+    face_hold = []
+    for i, face_img in enumerate(face_crops):
+        if face_img.shape[0] != 0 and face_img.shape[1] != 0:
+            face_hold.append(i)
+    if len(face_hold) == 1:
+        return face_hold[0], {"final_cropped_image": face_crops[face_hold[0]], "write_value_dict":{"INFO":"selected_face from 0 index"}}
 
     for i, face_img in enumerate(face_crops):
         if face_img.shape[0] != 0 and face_img.shape[1] != 0:    
@@ -51,7 +57,8 @@ def select_face(face_crops,hold_original_img,img_path):
     plt.show()
 
     selected_face = int(input("Which face is true? (0,1,2,3 ...) "))
-    return selected_face
+    resp = {"final_cropped_image": face_crops[selected_face], "write_value_dict":{"INFO":"selected_face by hand"}}
+    return selected_face, resp
 
 def calculate_size_difference(image_1, image_2):
     print("Image 1 square: ", image_1.shape[0] * image_1.shape[1])
@@ -84,34 +91,41 @@ def process_faces(img_path ,faces ,hold_original_img, make_decision, dynamic_off
     
     # Select the face if make_decision is True
     if make_decision:
-            print("Select the face: ")
-            selected_face = select_face(face_crops,hold_original_img,img_path)    
+        print("Select the face: ")
+        selected_face,resp_hand = select_face(face_crops,hold_original_img,img_path)
+        return resp_hand.get("write_value_dict"), face_crops_without_offset[selected_face]
+        
         
 
     correct_face = find_a_correct_face(os.path.split(img_path)[0])
     if correct_face is False:
-        correct_face = face_crops[selected_face]
+        try:
+            correct_face = face_crops[selected_face]
+        except:
+            correct_face = face_crops[0]
 
     # if hold last face is not empty, then calculate the difference
     if len(face_crops_without_offset) <= selected_face:
         print("Selected face is not in the list, select the face again: ")
-        selected_face = select_face(face_crops, hold_original_img, img_path)
+        selected_face,resp_hand = select_face(face_crops, hold_original_img, img_path)
+        return resp_hand.get("write_value_dict"), face_crops_without_offset[selected_face]
+        
     try:
         result = DeepFace.verify(
-            face_crops_without_offset[selected_face], correct_face, enforce_detection=False
+            face_crops[selected_face], correct_face, enforce_detection=False
         )
     except:
         result = {"verified": False}
         
     # If the selected face is not verified, then select the face again
     if result.get("verified") == False:
-        print("Select the face:: ")
-        selected_face = select_face(face_crops, hold_original_img, img_path)
+        #print("Select the face:: ")
+        #selected_face = select_face(face_crops, hold_original_img, img_path)
         if dynamic_offset == 4:
-            return {
-                "Error": str("Stack Overflow while finding face( DeepFace Error ): " +img_path) 
-            }, hold_original_img
-
+            print("Stack Overflow while finding face( DeepFace Error ):")
+            selected_face,resp_hand = select_face(face_crops, hold_original_img, img_path)
+            return resp_hand.get("write_value_dict"), face_crops_without_offset[selected_face]
+        
         write_value_dict, final_cropped_img = process_faces(
             img_path= img_path,faces=faces,hold_original_img=hold_original_img,
             make_decision=False,dynamic_offset=dynamic_offset+1
@@ -131,8 +145,8 @@ def process_faces(img_path ,faces ,hold_original_img, make_decision, dynamic_off
             img_path=img_path,faces=faces,
             hold_original_img=hold_original_img,make_decision=False,
             dynamic_offset=dynamic_offset+1
-        )    
-        return write_value_dict, final_cropped_img    
+        )
+        return write_value_dict, final_cropped_img
     elif len(list(resp.keys())) == 1:
         try:
             result = DeepFace.verify(
@@ -229,6 +243,7 @@ def handle_error_paths(error_paths_txt_path):
         intra_folder_path = os.sep.join(os.path.split(file_path)[:-1])
         
         limit_error = 20
+        correct_file_limit = 5
         correct_file_counter = 0
         temp_error_paths_list = []
         
@@ -241,17 +256,17 @@ def handle_error_paths(error_paths_txt_path):
                     "TwoPeopleDetected" in content or "Error" in content or "Stack Overflow" in content or "too small" in content or "LandmarkError" in content
                     ) == False:
                     correct_file_counter += 1
-                elif("TwoPeopleDetected" in content or "Stack Overflow" in content):
+                else:
                     temp_error_paths_list.append(intra_file_path)
         if limit_error > len(temp_error_paths_list):
             limit_error = len(temp_error_paths_list)
 
-        error_path_list_linespace = np.linspace(0, len(temp_error_paths_list) - 1, limit_error+1, dtype=int)
+        error_path_list_linespace = np.linspace(0, len(temp_error_paths_list)-1, len(temp_error_paths_list), dtype=int)
+        np.random.shuffle(error_path_list_linespace)
 
-        if index > limit_error-1:
-            print()
+        print("Error path list linespace: ", error_path_list_linespace)
 
-        if correct_file_counter > limit_error-1 or index > limit_error-1:
+        if correct_file_counter >= correct_file_limit or index > limit_error-1:
             continue
         
         select_which_face_is_true(temp_error_paths_list[error_path_list_linespace[index]])
