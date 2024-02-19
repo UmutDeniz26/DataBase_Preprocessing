@@ -47,4 +47,4 @@ def main(dataset_path, output_file):
 
 if __name__ == "__main__":
     main(dataset_path="./Elif/Two_Face_Handle/Output_copy",
-         output_file='./Elif/Two_Face_Handle/before_error_delete.txt')
+         output_file='./Elif/Two_Face_Handle/after_error_delete.txt')

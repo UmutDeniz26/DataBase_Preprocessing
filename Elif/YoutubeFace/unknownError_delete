@@ -75,7 +75,7 @@ def main(folder_path):
                                     #if content.strip() == {}:
                                     #    b +=1
 
-                                    if "TwoPeopleDetected" in content:
+                                    if "Error" in content:
                                         twoFace +=1
                                         #for error_type in error_counts:
                                             #if error_type in content:

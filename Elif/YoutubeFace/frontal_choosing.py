@@ -23,6 +23,12 @@ def main(folder_path):
         shutil.rmtree(os.path.join(folder_path,"Frontal_Faces"))
     os.makedirs( os.path.join(folder_path,"Frontal_Faces") ,exist_ok=True)
 
+    txt_path = os.path.join(folder_path,"frontal_faces.txt")
+    error_log = os.path.join(folder_path,"frontal_faces_not_found.txt")
+    with open(txt_path,"w") as f:
+        f.write("")
+    with open(error_log,"w") as f:
+        f.write("")
 
     for person_name in os.listdir(folder_path):
             person_path = os.path.join(folder_path, person_name)
@@ -38,6 +44,7 @@ def main(folder_path):
                     subfolder_path = os.path.join(person_path, subfolder_name)
                     min_abs_value = sys.maxsize
                     img_path = ""
+                    noLandmark = 0
                     if os.path.isdir(subfolder_path):
                         deleted_frontal_foldered(subfolder_path)
                         # Alt klasördeki dosyaları listele
@@ -47,39 +54,61 @@ def main(folder_path):
                                 try:
                                     with open(image_path, "r") as file:
                                         content = file.read()
+                                        content = content.replace(")","]").replace("(","[")
+                                        if "Low Confidence" in content:
+                                            content = content.replace(",\"[Low Confidence]\"",'')
+                                        
                                         content = json.loads(content)
                                 except:
                                     print("Error: " + image_file + " is not a valid json file!")
                                     continue
-                                try:
-                                    distance_nose_left_eye = math.sqrt((content["left_eye"][0] - content["nose"][0])**2 + (content["left_eye"][1] - content["nose"][1])**2)
-                                    distance_nose_right_eye = math.sqrt((content["right_eye"][0] - content["nose"][0])**2 + (content["right_eye"][1] - content["nose"][1])**2)
-                                    difference_between_le_re = abs(distance_nose_left_eye-distance_nose_right_eye)
-                                    if difference_between_le_re < min_abs_value:
-                                        min_abs_value = difference_between_le_re
-                                        img_path = os.path.splitext(image_file)[0] + '.jpg'
-                                        #max_abs_image = file.replace(".txt",".jpg")
-                                             
-                                except:
-                                    difference_between_le_re = 1000.0
+                                
+                                if "right_eye" in content:
+                                    try:
+                                        distance_nose_left_eye = math.sqrt((content["left_eye"][0] - content["nose"][0])**2 + (content["left_eye"][1] - content["nose"][1])**2)
+                                        distance_nose_right_eye = math.sqrt((content["right_eye"][0] - content["nose"][0])**2 + (content["right_eye"][1] - content["nose"][1])**2)
+                                        difference_between_le_re = abs(distance_nose_left_eye-distance_nose_right_eye)
+                                        if difference_between_le_re < min_abs_value:
+                                            min_abs_value = difference_between_le_re
+                                            img_path = os.path.splitext(image_file)[0] + '.jpg'
+                                            #max_abs_image = file.replace(".txt",".jpg")
+                                                
+                                    except:
+                                        difference_between_le_re = 1000.0
+
+                                else:
+                                    noLandmark += 1
+                        if os.path.isdir(subfolder_path)==False:
+                            continue
 
                         #if min_abs_value == -1 or max_abs_image == "":
-                        try:
-                            new_frontal_path = os.path.join(subfolder_path, "Frontal")
-                                            
-                            if os.path.exists(new_frontal_path):
-                                shutil.rmtree(new_frontal_path)
-                            os.makedirs(new_frontal_path,exist_ok=True)
+                        if noLandmark != (len(os.listdir(subfolder_path))/2):
+                            try:
+                                new_frontal_path = os.path.join(subfolder_path, "Frontal")
+                                                
+                                if os.path.exists(new_frontal_path):
+                                    shutil.rmtree(new_frontal_path)
+                                os.makedirs(new_frontal_path,exist_ok=True)
 
-                            print("Yeni frontal klasörü oluşturuldu: ", new_frontal_path)
-                            if img_path and os.path.exists(new_frontal_path):
-                                shutil.copy(os.path.join(subfolder_path, img_path), new_frontal_path)
-                                shutil.copy(os.path.join(subfolder_path, img_path), os.path.join(folder_path,"Frontal_Faces"))
-                                print("Frontal img kopyalandı")
-                            #return 0,  '.'.join( os.listdir(root_path)[0].split('.')[:-1] )
-                        except FileNotFoundError:
-                            print(f"Hata: {img_path} dosyası bulunamadı.")
+                                print("Yeni frontal klasörü oluşturuldu: ", new_frontal_path)
+                                if img_path and os.path.exists(new_frontal_path):
+                                    shutil.copy(os.path.join(subfolder_path, img_path), new_frontal_path)
+                                    shutil.copy(os.path.join(subfolder_path, img_path), os.path.join(folder_path,"Frontal_Faces"))
+                                    print("Frontal img kopyalandı")
+                                    with open(txt_path,"a") as f:
+                                        f.write(os.path.join(subfolder_path, img_path))
+                                        f.write("\n")
+                                #return 0,  '.'.join( os.listdir(root_path)[0].split('.')[:-1] )
+                            except FileNotFoundError:
+                                print(f"Hata: {img_path} dosyası bulunamadı.")
+                        
+                        else:
+                            print(f"{subfolder_path} doesnot have any landmark")
+                            with open(error_log,"a") as f:
+                                f.write(subfolder_path)
+                                f.write("\n")
+
 
 
 if __name__ == '__main__':
-    main( folder_path = 'Elif/foldered')
+    main( folder_path = 'Elif/concat/Output')
