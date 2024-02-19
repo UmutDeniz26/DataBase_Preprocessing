@@ -74,7 +74,7 @@ def writeFileMainTxt(txt_path, landmarks, inter, intra, destination="", full_pat
         txt_path = destination
 
     #   prepare a string with columns, all colum should be seperated with "|" and should be in the middle of the string and taking 6 space from the left and right
-    columns = [ file_path + ".jpg" ] + [inter] + [intra] + list(landmarks.values())
+    columns = [ file_path + ".jpg" ] + [inter] + [intra]# + list(landmarks.values())
 
     space_count = np.floor(abs_space/len(columns)).astype(int)
     with open(txt_path , 'a') as file:
@@ -97,8 +97,8 @@ def readJsonDictFromFile(fileToRead):
                 content = json.loads(content)
                 return content
             except:
-                print("Error: " + fileToRead + " is not a valid json file!")
+                #print("Error: " + fileToRead + " is not a valid json file!")
                 return {"Response":False}
     except:
-        print("Error: " + fileToRead.name + " is not a json file!")
+        #print("Error: " + fileToRead.name + " is not a json file!")
         return {"Response":False}

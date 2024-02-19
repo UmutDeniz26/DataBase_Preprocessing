@@ -54,6 +54,7 @@ def main(folder_path, select_first_as_frontal = False):
                 max_abs_image = file_names[0].replace(".jpg", "")
 
             frontal_path = os.path.join(root_path, "frontal")
+            os.makedirs(frontal_path, exist_ok=True)
             if os.path.exists(frontal_path):
                 shutil.rmtree(frontal_path)
                 os.makedirs(frontal_path)
@@ -82,6 +83,4 @@ def main(folder_path, select_first_as_frontal = False):
 
 
 if __name__ == '__main__':
-    main("UMUT/database/LFPW_FOLDERED_without_errors", select_first_as_frontal = True)
-    main("UMUT/database/HELEN_FOLDERED_without_errors", select_first_as_frontal = True)
-    main("UMUT/database/AFW_FOLDERED_without_errors", select_first_as_frontal = True)
+    main("UMUT/ConcatFolders/AFW", select_first_as_frontal = True)
