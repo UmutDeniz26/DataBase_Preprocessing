@@ -20,6 +20,5 @@ def resize_and_overwrite_images(root_directory, target_width=120, target_height=
 
     print("Yeniden boyutlandırma ve üzerine yazma tamamlandı.")
 
-path = r"C:\Users\ipekb\Desktop\staj lwf\DataBase_Preprocessing\IPEK\LFW_FOLDERED"
-
+path = r"UMUT\database\LFPW_FOLDERED_without_errors"
 resize_and_overwrite_images(path)

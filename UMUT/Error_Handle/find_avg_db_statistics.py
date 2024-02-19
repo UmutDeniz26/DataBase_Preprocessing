@@ -35,12 +35,12 @@ def main(folder_path):
     plt.xlabel('Number of Images')
     plt.ylabel('Frequency')
     plt.grid(True)
-    
+
     # Customizing x-axis limits to exclude outliers
     plt.xlim(0, np.percentile(img_counts, 95)*1.5)  # Adjust the percentile as needed
-    
+
     plt.tight_layout()
     plt.show()
 
 if __name__ == "__main__":
-    main(folder_path="UMUT\database\LFPW_FOLDERED_without_errors")
+    main(folder_path="UMUT/database/HELEN_FOLDERED_without_errors")

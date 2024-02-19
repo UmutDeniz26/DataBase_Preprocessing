@@ -1,4 +1,4 @@
-import os 
+import os
 import cv2
 import sys
 
@@ -24,8 +24,7 @@ def run(folder_path):
                     content = json.loads(content)
             except:
                 print("Json Error: " + image_path + " is not a valid json file!")
-                print(content)
-                exit()
+                content = {"Response":False}
             try:
                 distance_nose_left_eye = math.sqrt((content["left_eye"][0] - content["nose"][0])**2 + (content["left_eye"][1] - content["nose"][1])**2)
                 distance_nose_right_eye = math.sqrt((content["right_eye"][0] - content["nose"][0])**2 + (content["right_eye"][1] - content["nose"][1])**2)
@@ -42,7 +41,7 @@ def run(folder_path):
     return max_abs_value,max_abs_image
 
 def main(folder_path, select_first_as_frontal = False):
-    
+
     # Frontal folders
     frontal_faces = []
     src_paths = []
@@ -53,7 +52,7 @@ def main(folder_path, select_first_as_frontal = False):
             max_abs_value,max_abs_image = run(root_path)
             if select_first_as_frontal:
                 max_abs_image = file_names[0].replace(".jpg", "")
-            
+
             frontal_path = os.path.join(root_path, "frontal")
             if os.path.exists(frontal_path):
                 shutil.rmtree(frontal_path)
@@ -61,9 +60,9 @@ def main(folder_path, select_first_as_frontal = False):
                 shutil.copy(os.path.join(root_path, max_abs_image+".jpg"), os.path.join(frontal_path, max_abs_image+".jpg"))
                 frontal_faces.append(max_abs_image)
                 src_paths.append(os.path.join(root_path, max_abs_image+".jpg"))
-                
-            print(f"Max Abs Value: {max_abs_value}, Max Abs Image: {max_abs_image}")
-    
+
+            #print(f"Max Abs Value: {max_abs_value}, Max Abs Image: {max_abs_image}")
+
     # Frontal faces folder
     frontal_faces_folder = os.path.join(folder_path, "Frontal_faces")
     if os.path.exists(frontal_faces_folder):
@@ -78,7 +77,11 @@ def main(folder_path, select_first_as_frontal = False):
         for path in src_paths:
             file.write(path + "\n")
 
-    
+    print("Frontal faces txt is saved at: ", txt_path)
+
+
 
 if __name__ == '__main__':
-    main("UMUT\Two_Face_Handle\HELEN_FOLDERED_copy", select_first_as_frontal = True)
+    main("UMUT/database/LFPW_FOLDERED_without_errors", select_first_as_frontal = True)
+    main("UMUT/database/HELEN_FOLDERED_without_errors", select_first_as_frontal = True)
+    main("UMUT/database/AFW_FOLDERED_without_errors", select_first_as_frontal = True)
