@@ -83,4 +83,4 @@ def main(folder_path, select_first_as_frontal = False):
 
 
 if __name__ == '__main__':
-    main("UMUT/ConcatFolders/AFW", select_first_as_frontal = True)
+    main("AFW/AFW_Info.npy", select_first_as_frontal = True)

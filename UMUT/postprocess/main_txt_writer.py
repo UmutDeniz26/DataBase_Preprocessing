@@ -2,17 +2,25 @@ import os
 import sys
 import numpy as np
 
-sys.path.insert(0, './UMUT')
-import txtFileOperations
-
 def main(destination_folder_path, data_base_name, upper_folder_name):
 
-    dtype = np.dtype([("path", object), ("class_inter", int), ("class_intra", int), ("mask", object)])
-    data = np.array([], dtype=dtype)  # Initialize data as an empty numpy array
+    dtype = np.dtype([('path', 'U99'), ('class_inter', 'i4'), ('class_intra', 'i4'), ('mask', 'U99')])
+
+    img_count = 0
+    for root, dirs, files in os.walk(destination_folder_path):
+        for file in files:
+            if file.endswith(".jpg"):
+                img_count += 1
+
+    data = np.zeros(
+        img_count,
+        dtype=dtype
+    )
 
     inter = 0
     intra = 0
     person_id = 0
+    cnt=0
     person_counter = 0
     hold_person_id = 'init'
 
@@ -36,7 +44,12 @@ def main(destination_folder_path, data_base_name, upper_folder_name):
                     img_path = os.path.join(root, file.replace("txt","jpg"))
                     img_path = img_path.replace("\\", "/")
 
-                    data = np.concatenate((data, np.array((img_path, person_counter, inter, mask_path), dtype=dtype)))
+                    # if data is not empty, concatenate the new data to the old data
+
+                    dtype_data = np.array((img_path, person_counter, intra, mask_path), dtype=dtype)
+                    data[cnt] = dtype_data
+                    cnt+=1
+
 
                     intra += 1
             if not skip_inter:
@@ -66,6 +79,6 @@ def main(destination_folder_path, data_base_name, upper_folder_name):
     print(os.path.join(destination_folder_path, data_base_name + "_Info.npy"))
 
 if __name__ == "__main__":
-    main(destination_folder_path="Ali/CASIA-FaceV5(BMP)_FOLDERED", data_base_name="CASIA", upper_folder_name="UMUT")
+    main(destination_folder_path="AFW", data_base_name="AFW", upper_folder_name="UMUT")
     # main(folder_path="HELEN", data_base_name="HELEN", upper_folder_name="UMUT")
     # main(folder_path="LFPW", data_base_name="LFPW", upper_folder_name="UMUT")
