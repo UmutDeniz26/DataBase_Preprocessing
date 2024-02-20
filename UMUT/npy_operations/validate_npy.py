@@ -33,7 +33,7 @@ def main(npy_folder_path):
 
 
 if __name__ == '__main__':
-    main("UMUT/database/YouTubeVideos/YouTubeVideos_Info.npy")
+    #main("UMUT/database/YouTubeVideos/YouTubeVideos_Info.npy")
     main("UMUT/database/AFW/AFW_Info.npy")
     main("UMUT/database/CASIA-FaceV5_BMP_FOLDERED/CASIA-FaceV5_BMP_FOLDERED_Info.npy")
     main("UMUT/database/HELEN/HELEN_Info.npy")
