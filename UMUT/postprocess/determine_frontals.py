@@ -81,6 +81,5 @@ def main(folder_path, select_first_as_frontal = False):
     print("Frontal faces txt is saved at: ", txt_path)
 
 
-
 if __name__ == '__main__':
     main("AFW/AFW_Info.npy", select_first_as_frontal = True)
