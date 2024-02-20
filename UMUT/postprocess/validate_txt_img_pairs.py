@@ -13,7 +13,7 @@ def main(folder_path):
                 if not os.path.exists(img_path) and not 'info' in img_path.lower():
                     print(f'{img_path} does not exist')
                     error_img_count += 1
-            
+
             if file.endswith('.jpg'):
                 txt_file = file.replace('.jpg', '.txt')
                 txt_path = os.path.join(root, txt_file)
@@ -30,4 +30,4 @@ def main(folder_path):
         print(f'Error img count: {error_img_count}\n')
 
 if __name__ == '__main__':
-    main('UMUT/Two_Face_Handle/UMUT/ConcatFolders/Output_copy')
+    main('UMUT/database/LFW')
