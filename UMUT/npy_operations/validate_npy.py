@@ -6,12 +6,12 @@ def main(npy_folder_path):
     data_base_name = npy_folder_path.split("\\")[-1]
     npy_folder_path = os.path.join(npy_folder_path, data_base_name + "_Info.npy")
     data = np.load(npy_folder_path)
-    data2 = np.load("UMUT\src\esogu_sets_meta_10_people.npy", allow_pickle=True)
+    data2 = np.load("esogu_sets_meta_10_people.npy", allow_pickle=True)
     print("\n\n\n",npy_folder_path)
     print(data.shape)
 
     for index,path in enumerate(data["mask"]):
-        path = os.path.join("UMUT/src/final_datasets", path)
+        path = os.path.join("UMUT/src/final_datasets/", path)
         if index%1000==0:
             print("Counter: ",index," Path: ",path)
         try:
@@ -32,6 +32,10 @@ def main(npy_folder_path):
         print("Concatenation is not successful")
 
 if __name__ == '__main__':
-    main(npy_folder_path="UMUT/src/final_datasets/LFW")
-    main(npy_folder_path="UMUT/src/final_datasets/CASIA-FaceV5_BMP_FOLDERED")
-    #main(npy_folder_path="UMUT/src/turn_inters_to_person_output/HELEN")
+    #main("UMUT/src/npy/YoutubeVideos_Info.npy")
+    #main("UMUT/src/final_datasets/AFW/AFW_Info.npy")
+    #main("UMUT/src/final_datasets/CASIA-FaceV5_BMP_FOLDERED_Info/CASIA-FaceV5_BMP_FOLDERED_Info.npy")
+    #main("UMUT/src/final_datasets/HELEN_Info/HELEN_Info.npy")
+    #main("UMUT/src/final_datasets/LFW/LFW_Info.npy")
+    #main("UMUT/src/final_datasets/LFPW_Info/LFPW_Info.npy")
+    pass
