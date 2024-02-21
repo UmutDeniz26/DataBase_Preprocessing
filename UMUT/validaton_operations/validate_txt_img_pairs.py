@@ -30,4 +30,4 @@ def main(folder_path):
         print(f'Error img count: {error_img_count}\n')
 
 if __name__ == '__main__':
-    main('UMUT/database/LFW')
+    main('UMUT/src/final_datasets/LFW')

@@ -19,8 +19,8 @@ def prepare_data(destination_folder_path):
 
 
 def main(destination_folder_path, data_base_name, upper_folder_name):
-    
-    data,dtype = prepare_data(destination_folder_path) 
+
+    data,dtype = prepare_data(destination_folder_path)
 
     inter = 0;intra = 0
     person_id = 0;person_counter = 0
@@ -32,7 +32,7 @@ def main(destination_folder_path, data_base_name, upper_folder_name):
             for file in files:
                 if file.endswith(".txt"):
                     file_path = os.path.join(root, file)
-                    
+
                     skip_inter = False
                     if any(keyword in file_path.lower() for keyword in ["frontal","info"]):
                         skip_inter = True
@@ -66,7 +66,7 @@ def main(destination_folder_path, data_base_name, upper_folder_name):
 
         if len(slices_include_digit) == 2 or len(slices_include_digit) == 1:
             person_id = int(slices_include_digit[0])
-            
+
             if hold_person_id != person_id:
                 person_counter += 1
                 hold_person_id = person_id
@@ -81,9 +81,9 @@ def main(destination_folder_path, data_base_name, upper_folder_name):
     print("Data shape: ",data.shape, "Npy is saved to: ",os.path.join(destination_folder_path, data_base_name + "_Info.npy"))
 
 if __name__ == "__main__":
-    #main(destination_folder_path="UMUT/database/YouTubeVideos", data_base_name="YouTubeVideos", upper_folder_name="UMUT")
-    #main(destination_folder_path="UMUT/database/LFW", data_base_name="LFW", upper_folder_name="UMUT")
-    #main(destination_folder_path="UMUT/database/LFPW", data_base_name="LFPW", upper_folder_name="UMUT")
-    #main(destination_folder_path="UMUT/database/HELEN", data_base_name="HELEN", upper_folder_name="UMUT")
-    #main(destination_folder_path="UMUT/database/CASIA-FaceV5_BMP_FOLDERED", data_base_name="CASIA-FaceV5_BMP_FOLDERED", upper_folder_name="UMUT")
-    main(destination_folder_path="UMUT/src/final_datasets/AFW", data_base_name="AFW", upper_folder_name="UMUT")
+    #main(destination_folder_path="UMUT/src/final_datasets/YouTubeVideos", data_base_name="YouTubeVideos", upper_folder_name="UMUT")
+    main(destination_folder_path="UMUT/src/final_datasets/LFW", data_base_name="LFW", upper_folder_name="UMUT")
+    #main(destination_folder_path="UMUT/src/final_datasets/LFPW", data_base_name="LFPW", upper_folder_name="UMUT")
+    #main(destination_folder_path="UMUT/src/final_datasets/HELEN", data_base_name="HELEN", upper_folder_name="UMUT")
+    #main(destination_folder_path="UMUT/src/final_datasets/CASIA-FaceV5_BMP_FOLDERED", data_base_name="CASIA-FaceV5_BMP_FOLDERED", upper_folder_name="UMUT")
+    #main(destination_folder_path="UMUT/src/final_datasets/YoutubeVideos", data_base_name="YoutubeVideos", upper_folder_name="UMUT")
