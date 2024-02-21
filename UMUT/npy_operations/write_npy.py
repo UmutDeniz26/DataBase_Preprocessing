@@ -17,13 +17,14 @@ def prepare_data(destination_folder_path):
     )
     return data, dtype
 
+import shutil
 
-def main(destination_folder_path, data_base_name, upper_folder_name):
+def main(destination_folder_path, data_base_name):
     
     data,dtype = prepare_data(destination_folder_path) 
 
     inter = 0;intra = 0
-    person_id = 0;person_counter = 0
+    person_id = 0;person_counter = -1
     hold_person_id = 0
 
     skip_inter = False
@@ -60,17 +61,12 @@ def main(destination_folder_path, data_base_name, upper_folder_name):
                     intra += 1
             if not skip_inter:
                 inter += 1
-
-        slices = root.split("\\")
-        slices_include_digit = [slice for slice in slices if slice.isdigit()]
-
-        if len(slices_include_digit) == 2 or len(slices_include_digit) == 1:
-            person_id = int(slices_include_digit[0])
+        if len(files) == 0 and "frontal" not in dirs:
+            person_counter += 1
+            if len(dirs)==0:
+                print(root)
+                shutil.rmtree(root)
             
-            if hold_person_id != person_id:
-                person_counter += 1
-                hold_person_id = person_id
-
 
     if os.path.exists(os.path.join(destination_folder_path, data_base_name + "_Info.npy")):
         os.remove(os.path.join(destination_folder_path, data_base_name + "_Info.npy"))
@@ -79,11 +75,15 @@ def main(destination_folder_path, data_base_name, upper_folder_name):
     #read
     data = np.load(os.path.join(destination_folder_path, data_base_name + "_Info.npy"))
     print("Data shape: ",data.shape, "Npy is saved to: ",os.path.join(destination_folder_path, data_base_name + "_Info.npy"))
+    print("Data: ",data)
 
 if __name__ == "__main__":
-    #main(destination_folder_path="UMUT/database/YouTubeVideos", data_base_name="YouTubeVideos", upper_folder_name="UMUT")
-    #main(destination_folder_path="UMUT/database/LFW", data_base_name="LFW", upper_folder_name="UMUT")
-    #main(destination_folder_path="UMUT/database/LFPW", data_base_name="LFPW", upper_folder_name="UMUT")
-    #main(destination_folder_path="UMUT/database/HELEN", data_base_name="HELEN", upper_folder_name="UMUT")
-    #main(destination_folder_path="UMUT/database/CASIA-FaceV5_BMP_FOLDERED", data_base_name="CASIA-FaceV5_BMP_FOLDERED", upper_folder_name="UMUT")
-    main(destination_folder_path="UMUT/src/final_datasets/AFW", data_base_name="AFW", upper_folder_name="UMUT")
+    #main(destination_folder_path="UMUT/database/YouTubeVideos", data_base_name="YouTubeVideos")
+    #main(destination_folder_path="UMUT/database/LFW", data_base_name="LFW")
+    #main(destination_folder_path="UMUT/database/LFPW", data_base_name="LFPW")
+    #main(destination_folder_path="UMUT/database/HELEN", data_base_name="HELEN")
+    #main(destination_folder_path="UMUT/database/CASIA-FaceV5_BMP_FOLDERED", data_base_name="CASIA-FaceV5_BMP_FOLDERED")
+    main(destination_folder_path="UMUT/src/final_datasets/CASIA-FaceV5_BMP_FOLDERED", data_base_name="CASIA-FaceV5_BMP_FOLDERED")
+    main(destination_folder_path="UMUT/src/final_datasets/LFW", data_base_name="LFW")
+    #main(destination_folder_path="UMUT/src/turn_inters_to_person_output/HELEN", data_base_name="HELEN")
+
