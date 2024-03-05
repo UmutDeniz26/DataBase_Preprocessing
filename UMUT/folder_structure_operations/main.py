@@ -12,19 +12,13 @@ import txtFileOperations
 import NameFeatureExtractor
 import FrontalFaceFunctions
 
-# root_dir_path = os.path.dirname(os.path.abspath(__file__))
-# root_dir_without_current_folder_name = root_dir_path.split('\\')[:-1]
-# root_dir_without_current_folder_name = '\\'.join(root_dir_without_current_folder_name)
-
-# os.chdir(root_dir_without_current_folder_name)
-
 sys.path.insert(0, './UMUT')
 sys.path.insert(0, './Ali')
 
 import DetectUpperCase
 import detectFrontelImageFromTxt
 
-
+print("Operating System: ", os.name)
 try:
     sys.path.insert(0, './retinaface_custom/main')
     import RetinaFace
@@ -32,16 +26,15 @@ try:
 except:
     print("RetinaFace could not be imported from retinaface_custom/main\
           \nIt will be imported from retina-face")
-    import retinaface as RetinaFace
+    from retinaface import RetinaFace
     print("RetinaFace imported from", RetinaFace.__file__)
-    input("Press Enter to continue...")
+print()
 
 person_cnt = 0
 intra = 0
 inter = 0
 
 def main(
-        data_base_name: str, upper_folder_name: str,
         align_images_flag: bool, reset_images_flag: bool,
         auto_feature_select: bool = False, print_features_flag: bool = True,
         select_first_image_as_frontal: bool = False, show_aligned_images: bool = False,
@@ -50,8 +43,6 @@ def main(
     """
     This function will create a new folder structure for the dataset.
     Args:
-        data_base_name (str): The name of the dataset.
-        upper_folder_name (str): The name of the upper folder.
         align_images_flag (bool): If True, the images will be aligned.
         reset_images_flag (bool): If True, the images will be reset.
         auto_feature_select (bool): If True, the features will be selected automatically.
@@ -60,35 +51,30 @@ def main(
         show_aligned_images (bool): If True, the aligned images will be shown.
         txt_info_file_format (bool): If True, the images will be in txt file format.
     """
+    
+    # Constants
+    data_base_folder_path = "./src/dataset/"
+    txt_info_path = "./src/text/dataset.txt"
+    log_folder_path = "./log/"
+    output_folder_path = "./casia-webface/"
+    
+    # Relative paths
+    frontal_faces_dir_path = os.path.join(output_folder_path,'Frontal_Faces')
+    
 
     #------------------------------------------------------- Initialization -------------------------------------------------------#
-    #Start timer
+    # Start timer
     start = time.time()
     global person_cnt,intra,inter
 
-    #Prepare the paths
-    log_folder_path = os.path.join(upper_folder_name, 'LOG', data_base_name)
-    data_base_folder_path = os.path.join(upper_folder_name, data_base_name)
-    foldered_data_base_folder_path = os.path.join(upper_folder_name, data_base_name + "_FOLDERED")
-    frontal_faces_dir_path = os.path.join(foldered_data_base_folder_path, 'Frontal_Faces')
-
-    # The txt file should be in the same folder with the dataset folder 
-    # The name of the txt file should be the same with the name of the dataset folder
-    txt_info_path = os.path.join(upper_folder_name, data_base_name + '.txt')
-
-    # Create the foldered data base folder if it doesn't exist
-    os.makedirs(frontal_faces_dir_path, exist_ok=True)
-    print("Frontal Faces Folder Created!")
-
-    # Create the log folder if it doesn't exist
-    os.makedirs(log_folder_path, exist_ok=True)
-    Common.clearLogs(log_folder_path)
-    print("Log Folder Created!")
-
+    Common.clearLogs(log_folder_path)    
     if reset_images_flag:
-        shutil.rmtree(os.path.join(upper_folder_name, data_base_name + "_FOLDERED"), ignore_errors=True)
+        shutil.rmtree(output_folder_path, ignore_errors=True)
 
-    txtFileOperations.initMainTxtFile(data_base_name,upper_folder_name,
+    # Create the directories
+    Common.init_dirs([data_base_folder_path, output_folder_path, log_folder_path, frontal_faces_dir_path])
+
+    txtFileOperations.initMainTxtFile(output_folder_path,log_folder_path,
         ["file_path","inter","intra","right_eye","left_eye","nose","mouth_right","mouth_left"])
 
     #These variables will be automatically changed according to the number of features
@@ -98,7 +84,6 @@ def main(
     
     # Get the files in the folder then sort them
     files = os.scandir(data_base_folder_path)
-    files = sorted(files, key=lambda entry: entry.name)
 
     if DetectUpperCase.detect_upper_second_letter(data_base_folder_path,"uppercase_files.txt") >0:
         print("There are some folders that has two upper case.")
@@ -113,8 +98,6 @@ def main(
         image_informations = image_informations_txt.readlines()
         image_informations = Common.replaceEntersAndTabs(image_informations)
         files = DBsWithTxtInfo.imgTxtDBsFilesConcat(files)
-        files.sort()
-
 
     #Iterate through the files
     for index,file in enumerate(files):
@@ -131,14 +114,14 @@ def main(
             input_file_path = file
         else:
             output_file_name = file.name
-            input_file_path = './' + upper_folder_name + '/' + data_base_name + '/' + output_file_name
-        
+            input_file_path = os.path.join(data_base_folder_path, output_file_name)
+
         #Extract features from file name
         features,make_deceison_flag = NameFeatureExtractor.extractFeaturesFromFileName(output_file_name, auto_feature_select, make_deceison_flag, print_features_flag)
         
         # Check if the number of features changed
         numberOfSlices = features["numberOfSlices"]
-        if numberOfSlices != hold_features_count:
+        if numberOfSlices != hold_features_count and hold_features_count != 0:
             print("Number of features changed! Please check the features!")
             print("The previous number of slices: " + str(hold_features_count))
             print("The current number of slices: " + str(numberOfSlices))
@@ -179,6 +162,11 @@ def main(
                 
             #If there is a frontal face, the image is selected as frontal face
             frontal_image_folder = os.path.join(output_folder, "frontal")
+
+            # Create the frontal folder if it doesn't exist
+            if not os.path.exists(frontal_image_folder):
+                os.makedirs(frontal_image_folder, exist_ok=True)
+
             if os.listdir(frontal_image_folder):
                 print("Frontal Image Already Exists!")
                 Common.clearFolder(frontal_image_folder)
@@ -196,7 +184,7 @@ def main(
             Common.copyFile(
                 frontal_image_path, # from
                 os.path.join(
-                    "./", upper_folder_name, data_base_name + "_FOLDERED", "Frontal_Faces", most_frontal_face_name + ".jpg") # to
+                    output_folder_path, "Frontal_Faces", most_frontal_face_name + ".jpg") # to
             )
 
             # Write the frontal image to the log file
@@ -211,7 +199,7 @@ def main(
         # In this part, you can change the output folder structure according to your needs
         # If learnType is True-> output_folder = f'./{upper_folder_name}/{data_base_name}_FOLDERED/{learnType}/{file_id}/'
         output_folder = os.path.join(
-            upper_folder_name, data_base_name + "_FOLDERED", learnType + "/" if learnType else "", file_id + "/"
+            output_folder_path, learnType + "/" if learnType else "", file_id + "/"
         )
 
         # Add inner folder when inner_id_left_side is different than False and inner_id_left_side is a number
@@ -254,7 +242,7 @@ def main(
                         cropped_aligned_face = response_dictionary["face_1"]["face"]
                         landmarks = response_dictionary["face_1"]["landmarks"]
                     except:
-                        cropped_aligned_face = [];landmarks = {}
+                        response_dictionary = {};landmarks = {};cropped_aligned_face = []
 
                     if "TwoPeopleDetected" in response_dictionary.keys():
                         if response_dictionary["TwoPeopleDetected"] == True:
@@ -264,12 +252,13 @@ def main(
                     if len(cropped_aligned_face) ==0:
                         Common.writeLog(log_folder_path+'/logNoFace.txt', output_file_name)
                         Common.copyFile(input_file_path, output_file_path)
+                        os.system('cls' if os.name == 'nt' else 'clear')
                     else:
-                        os.system('cls')
+                        os.system('cls' if os.name == 'nt' else 'clear')
                         print(f"Processed: {index+1:08d} / {len(files):08d} ({(index+1)/len(files)*100:3.3f}%)")
                         print(f"Elapsed time (hh:mm:ss): {time.strftime('%H:%M:%S', time.gmtime(time.time()-start))}")
                         print(f"Remaining time (hh:mm:ss): {time.strftime('%H:%M:%S', time.gmtime((time.time()-start)*(len(files)-index)/(index+1)))}")
-                        print("Copying: \n" + input_file_path + " to " + output_file_path)
+                        print(f"Copying: \n", input_file_path + " to ", output_file_path)
 
                         cv2.imwrite(output_file_path, cropped_aligned_face)
                         #Common.copyFile(aligned_file_path, output_file_path)
@@ -293,7 +282,7 @@ def main(
             if txt_info_file_format == True:
                 input_file_path = file
             else:
-                input_file_path = './' + upper_folder_name + '/' + data_base_name + '/' + output_file_name
+                input_file_path = os.path.join(data_base_folder_path, output_file_name)
 
             #Read the image
             image_cv2 = cv2.imread(input_file_path)
@@ -312,11 +301,10 @@ def main(
 
 if __name__ == "__main__":
     start = main(
-        data_base_name='HELEN', upper_folder_name='UMUT',
         align_images_flag=True, reset_images_flag=True,
         auto_feature_select=False, print_features_flag=True,
         select_first_image_as_frontal=False, show_aligned_images=False,
-        txt_info_file_format=False
+        txt_info_file_format=True
     )
 
     summary = \

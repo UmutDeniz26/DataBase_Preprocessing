@@ -19,7 +19,7 @@ def decideWhichElementsWhichFeatures( file_name_split,out_file_name ):
     file_id_index, inner_id_right_side_index, inner_id_left_side_index, learnType_index = 0, 0, 0, 0
 
     for index, element in enumerate(file_name_split):
-        os.system('cls')
+        os.system('cls' if os.name == 'nt' else 'clear')
         print("File Name: " + out_file_name)
         print(file_name_split)
         inputTemp = input("\nWhat is the feature of '" + element + "' ? \n"+

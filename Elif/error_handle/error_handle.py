@@ -22,7 +22,6 @@ def main(folder_path, delete_all_errors=False):
     for root, dirs, files in os.walk(folder_path):
         percentage = (index/total_folder_count)*100
         print(f"\n\n\nProgress: {percentage:.2f}%", end="\r")
-        #os.system('cls')
         index+=1
 
         error_count = 0

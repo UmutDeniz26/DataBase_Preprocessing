@@ -1,0 +1,1 @@
+Initialized txt: ./casia-webface/informations.txt successfully!

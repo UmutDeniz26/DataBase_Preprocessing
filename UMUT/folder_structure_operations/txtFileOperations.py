@@ -35,46 +35,27 @@ def writeLandmarksTxtFile(txt_path, landmarks):
     print("Landmarks are written to the txt file successfully! : " + txt_path)
 
 
-def initMainTxtFile(dbName,upperFolderName,columns, full_path="", full_path_flag = False):
-    if full_path_flag:
-        txt_path = full_path
-    else:
-        txt_path = os.path.join(upperFolderName, dbName + "_FOLDERED", dbName + "_Info.txt")
-
-    os.makedirs(os.path.dirname(txt_path), exist_ok=True)
-
+def initMainTxtFile(output_path,log_path ,columns, full_path="", full_path_flag = False):
+    
+    txt_path = os.path.join(output_path, "informations.txt")
     # Column names written to the txt file
+    if not os.path.exists(txt_path):
+        os.makedirs(os.path.dirname(txt_path), exist_ok=True)
     with open(txt_path , 'w') as file:
         for column in columns:
             space_count = np.floor(abs_space/len(columns)).astype(int)
             file.write(f"{column:^{space_count}},")
-
-    os.makedirs(f'./{upperFolderName}/LOG/{dbName}', exist_ok=True)
-    Common.writeLog(f'./{upperFolderName}/LOG/{dbName}/logMainTxtFile.txt', "Initialized txt: " + txt_path + " successfully!")
-    return "Initialized txt: " + txt_path + " successfully!"
+    Common.writeLog(os.path.join(log_path, "logMainTxtFile.txt"), "Initialized txt: " + txt_path + " successfully!")
 
 def writeFileMainTxt(txt_path, landmarks, inter, intra, destination="", full_path_flag = False):
     if landmarks == False:
         landmarks = {"Response": False}
 
-    if full_path_flag==False:
-        # in elements, is there _FOLDERED, if there is, then split it with "_" then take the first element
-        # This part is weaking, it should be changed, because it is connected to the folder name notation (_FOLDERED)
-        # os.path.normpath(txt_path).split(os.sep) => It splits the path with the os.sep, which is the seperator of the path ( "/" )
-        for index,element in enumerate(os.path.normpath(txt_path).split(os.sep)):
-            if "_FOLDERED" in element:
-                dbName = element.split("_")[0]
-                upperFolderName = os.path.normpath(txt_path).split(os.sep)[index-1]
-                break
-        file_path = txt_path.replace(".txt", "")
-        #txt_path = f'./{upperFolderName}/{dbName}_FOLDERED/{dbName}_Info.txt'
-        txt_path = os.path.join(upperFolderName, dbName + "_FOLDERED", dbName + "_Info.txt")
-    else:
-        file_path = txt_path.replace(".txt", "")
-        txt_path = destination
-
+    file_path = txt_path
+    output_path = txt_path.split(os.sep)[-4]
+    txt_path = os.path.join(output_path, "informations.txt")
     #   prepare a string with columns, all colum should be seperated with "|" and should be in the middle of the string and taking 6 space from the left and right
-    columns = [ file_path + ".jpg" ] + [inter] + [intra]# + list(landmarks.values())
+    columns = [ file_path ] + [inter] + [intra]# + list(landmarks.values())
 
     space_count = np.floor(abs_space/len(columns)).astype(int)
     with open(txt_path , 'a') as file:
