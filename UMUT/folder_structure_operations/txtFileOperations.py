@@ -32,7 +32,7 @@ def writeLandmarksTxtFile(txt_path, landmarks):
             else:
                 file.write(f" \"{key}\" : {value},\n")
         file.write("}")
-    return "Txt file successfully written! : " + txt_path
+    print("Landmarks are written to the txt file successfully! : " + txt_path)
 
 
 def initMainTxtFile(dbName,upperFolderName,columns, full_path="", full_path_flag = False):
