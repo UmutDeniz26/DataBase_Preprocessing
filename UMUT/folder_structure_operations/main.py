@@ -207,7 +207,7 @@ def main(
             if len(output_folder)>30:
                 print()
 
-            output_folder = os.path.join('\\'.join(
+            output_folder = os.path.join(os.path.join(
                 output_folder.split('\\')[:-1]),string_person_cnt,string_intra) + "\\"
 
         # Create folders if they don't exist / COPY PROCESS
