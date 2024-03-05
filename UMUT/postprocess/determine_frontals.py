@@ -17,9 +17,6 @@ def run(folder_path):
         if filename.endswith(('.txt')):
             with open(image_path, "r") as file:
                 content = file.read()
-                content = content.replace(')',']').replace('(','[')
-                if "Low Confidence" in content:
-                    content = content.replace(",\"[Low Confidence]\"", '')
             try:
                     content = json.loads(content)
             except:

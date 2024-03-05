@@ -63,8 +63,6 @@ def main(
     
 
     #------------------------------------------------------- Initialization -------------------------------------------------------#
-    # Start timer
-    start = time.time()
     global person_cnt,intra,inter
 
     Common.clearLogs(log_folder_path)    
@@ -136,14 +134,13 @@ def main(
         learnType = features["learnType"]
         file_id = features["file_id"]
 
+        if first_iteration == True:
+            start = time.time()
         #If the fileID or inner_id_left_side is different than the previous one, we should detect the frontal face of the previous folder
         if ( hold_id != file_id or hold_left_inner_id != inner_id_left_side ) and first_iteration == False:
             inter+=1
             if hold_id != file_id:
                 person_cnt+=1
-
-            os.makedirs(output_folder +"frontal\\", exist_ok=True)
-            os.makedirs(output_folder, exist_ok=True)
 
             _, most_frontal_face_name = detectFrontelImageFromTxt.run(output_folder)
 
@@ -237,6 +234,7 @@ def main(
                 #Expand face area is a parameter for the retinaface, it is used to expand the face area
                 #It is used to include the hair and the ears in the face area !!!
                 if align_images_flag == True:
+                    log_message = "Extracting is successful!"
                     try:
                         response_dictionary = RetinaFace.extract_faces(input_file_path,align=True,align_first=True)
                         cropped_aligned_face = response_dictionary["face_1"]["face"]
@@ -246,22 +244,24 @@ def main(
 
                     if "TwoPeopleDetected" in response_dictionary.keys():
                         if response_dictionary["TwoPeopleDetected"] == True:
+                            log_message = "Error: Two people detected!"
                             Common.writeLog( log_folder_path+"/logTwoFace", output_file_path)
                 
 
                     if len(cropped_aligned_face) ==0:
+                        log_message = "Error: No face detected!"
                         Common.writeLog(log_folder_path+'/logNoFace.txt', output_file_name)
                         Common.copyFile(input_file_path, output_file_path)
                         os.system('cls' if os.name == 'nt' else 'clear')
                     else:
                         os.system('cls' if os.name == 'nt' else 'clear')
-                        print(f"Processed: {index+1:08d} / {len(files):08d} ({(index+1)/len(files)*100:3.3f}%)")
-                        print(f"Elapsed time (hh:mm:ss): {time.strftime('%H:%M:%S', time.gmtime(time.time()-start))}")
-                        print(f"Remaining time (hh:mm:ss): {time.strftime('%H:%M:%S', time.gmtime((time.time()-start)*(len(files)-index)/(index+1)))}")
-                        print(f"Copying: \n", input_file_path + " to ", output_file_path)
-
                         cv2.imwrite(output_file_path, cropped_aligned_face)
                         #Common.copyFile(aligned_file_path, output_file_path)
+                    print(f"Processed: {index+1:08d} / {len(files):08d} ({(index+1)/len(files)*100:3.3f}%)")
+                    print(f"Elapsed time (hh:mm:ss): {time.strftime('%H:%M:%S', time.gmtime(time.time()-start))}")
+                    print(f"Remaining time (hh:mm:ss): {time.strftime('%H:%M:%S', time.gmtime((time.time()-start)*(len(files)-index)/(index+1)))}")
+                    print(f"Copying: \n", input_file_path + " to ", output_file_path)
+                    print(f"Log Message: {log_message}")
                 else:
                     landmarks = RetinaFace.detect_faces(input_file_path)['face_1']['landmarks']
                     Common.copyFile(input_file_path, output_file_path)
@@ -302,7 +302,7 @@ def main(
 if __name__ == "__main__":
     start = main(
         align_images_flag=True, reset_images_flag=True,
-        auto_feature_select=False, print_features_flag=True,
+        auto_feature_select=False, print_features_flag=False,
         select_first_image_as_frontal=False, show_aligned_images=False,
         txt_info_file_format=True
     )

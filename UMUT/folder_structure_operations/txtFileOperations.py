@@ -70,12 +70,8 @@ import json
 def readJsonDictFromFile(fileToRead):
     try:
         with open(fileToRead, "r") as fileToRead:
-            content = fileToRead.read()
-            content = content.replace(')',']').replace('(','[')
-            if "Low Confidence" in content:
-                content = content.replace(",\"[Low Confidence]\"", '')
             try:
-                content = json.loads(content)
+                content = json.loads( fileToRead.read() )
                 return content
             except:
                 #print("Error: " + fileToRead + " is not a valid json file!")
