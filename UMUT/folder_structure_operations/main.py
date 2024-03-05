@@ -19,16 +19,9 @@ import DetectUpperCase
 import detectFrontelImageFromTxt
 
 print("Operating System: ", os.name)
-try:
-    sys.path.insert(0, './retinaface_custom/main')
-    import RetinaFace
-    print("RetinaFace imported from", RetinaFace.__file__)
-except:
-    print("RetinaFace could not be imported from retinaface_custom/main\
-          \nIt will be imported from retina-face")
-    from retinaface import RetinaFace
-    print("RetinaFace imported from", RetinaFace.__file__)
-print()
+
+from retinaface import RetinaFace
+print("RetinaFace imported from", RetinaFace.__file__, "\n")
 
 person_cnt = 0
 intra = 0
@@ -252,11 +245,11 @@ def main(
                         log_message = "Error: No face detected!"
                         Common.writeLog(log_folder_path+'/logNoFace.txt', output_file_name)
                         Common.copyFile(input_file_path, output_file_path)
-                        os.system('cls' if os.name == 'nt' else 'clear')
                     else:
-                        os.system('cls' if os.name == 'nt' else 'clear')
                         cv2.imwrite(output_file_path, cropped_aligned_face)
                         #Common.copyFile(aligned_file_path, output_file_path)
+                    
+                    os.system('cls' if os.name == 'nt' else 'clear')
                     print(f"Processed: {index+1:08d} / {len(files):08d} ({(index+1)/len(files)*100:3.3f}%)")
                     print(f"Elapsed time (hh:mm:ss): {time.strftime('%H:%M:%S', time.gmtime(time.time()-start))}")
                     print(f"Remaining time (hh:mm:ss): {time.strftime('%H:%M:%S', time.gmtime((time.time()-start)*(len(files)-index)/(index+1)))}")
@@ -272,8 +265,7 @@ def main(
                 if len(landmarks) == 0:
                     Common.writeLog(log_folder_path+'/logNoFace.txt', output_file_path)
 
-        logString = "Added Image: " + output_file_name
-        Common.writeLog(log_folder_path+'/logAddedImage.txt', logString)
+        Common.writeLog(log_folder_path+'/logAddedImage.txt', output_file_path)
 
         #Frontal detection
         if extension == 'jpg':

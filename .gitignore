@@ -92,3 +92,4 @@ UMUT/preprocess/concatenation_folders/Output
 UMUT/src/final_datasets
 src/dataset
 casia-webface/
+log/
