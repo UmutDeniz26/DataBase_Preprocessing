@@ -17,11 +17,15 @@ def calculate_average_img_size(folder_path):
 import cv2
 
 def verify_img_size(folder_path):
+    txt_path = "UMUT/Error_Handle/too_small_files.txt"
+    with open(txt_path, "w") as f:
+        f.write("These images have too small size ( written as [img_path] [img_size] [average_size] ):\n")
+
     for root_path, dir_names, file_names in os.walk(folder_path):
-        if "Frontal" in root_path or "frontal" in root_path:
+        if "frontal" in root_path.lower() or len(file_names)<4:
             continue
-        if len(file_names)>4:
-            average_size = calculate_average_img_size(root_path)
+
+        average_size = calculate_average_img_size(root_path)
             
         for file_name in file_names:
             if file_name.endswith('.jpg'):
@@ -30,7 +34,8 @@ def verify_img_size(folder_path):
                 img_size = img.shape[0] * img.shape[1]
                 differece = abs(img_size - average_size)
                 if differece > average_size:
-                    print(f"Image size is too large: {img_path} with size: {img_size}")
+                    with open(txt_path, "a") as f:
+                        f.write(f"{img_path} {img_size} {average_size}\n")
 
 if __name__ == '__main__':
-    verify_img_size("UMUT\database\AFW_FOLDERED_without_errors")
+    verify_img_size("casia-webface_FOLDERED")
