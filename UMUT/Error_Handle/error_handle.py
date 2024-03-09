@@ -67,34 +67,27 @@ def main(folder_path, delete_all_errors=False):
                           f"Folder path: {root}")
             
             if correct_files < 5:
-                #print(string)
                 info_of_correct_files_smaller_than_5.append(string)
                 for file in temp_error_files:
                     paths_of_correct_files_smaller_than_5.append(file)       
             else:
                 with open(os.path.join("UMUT","Error_Handle", "error_greater_than_5.txt"), "a") as f:
                     f.write(f"{string}\n")
-                for file in files:
-                    if file.endswith(".txt"):
-                        txt_path = os.path.join(root, file)
-                        img_path = txt_path.replace(".txt", ".jpg")
-                        with open(txt_path, "r") as f:
-                            content = f.read()
+        
+                for file in temp_error_files:
+                    if delete_all_errors:
+                        
+                        img_path = file.replace(".txt", ".jpg")
+                        txt_path = file
 
-                        if "pass_exception" in content:
-                            continue
-
-                        if "Error" in content or "Stack Overflow" in content or\
-                            "too small" in content or "LandmarkError" in content or "Response" in content:
-                            if delete_all_errors:
-                                if os.path.exists(img_path) and os.path.exists(txt_path):
-                                    os.remove(img_path)
-                                    files_to_delete.append(img_path)
-                                    os.remove(txt_path)
-                                    files_to_delete.append(txt_path)
-                                else:
-                                    print(f"Files does not exist: {img_path}")
-                                    exit()
+                        if os.path.exists(img_path) and os.path.exists(txt_path):
+                            #os.remove(img_path)
+                            files_to_delete.append(img_path)
+                            #os.remove(txt_path)
+                            files_to_delete.append(txt_path)
+                        else:
+                            print(f"Files does not exist: {img_path}")
+                            exit()
 
     with open(os.path.join("UMUT","Error_Handle", "files_to_delete.txt"), "a") as f:
         for item in files_to_delete:
@@ -112,4 +105,4 @@ def main(folder_path, delete_all_errors=False):
             
 
 if __name__ == "__main__":
-    main(folder_path="casia-webface_FOLDERED", delete_all_errors=True)
+    main(folder_path="casia-webface_FOLDERED", delete_all_errors=False)
