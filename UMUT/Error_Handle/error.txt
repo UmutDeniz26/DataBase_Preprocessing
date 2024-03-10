@@ -1,3 +1,0 @@
-Error count: 0  Total files: 8  Correct files: 4  Folder path: casia-webface_FOLDERED/004328/004328
-Error count: 0  Total files: 8  Correct files: 4  Folder path: casia-webface_FOLDERED/004383/004383
-Error count: 0  Total files: 4  Correct files: 2  Folder path: casia-webface_FOLDERED/009282/009282
