@@ -20,6 +20,7 @@ def run(folder_path):
                 content = content.replace(')',']').replace('(','[')
                 if "Low Confidence" in content:
                     content = content.replace(",\"[Low Confidence]\"", '')
+                    exit()
             try:
                     content = json.loads(content)
             except:
@@ -82,4 +83,4 @@ def main(folder_path, select_first_as_frontal = False):
 
 
 if __name__ == '__main__':
-    main("AFW/AFW_Info.npy", select_first_as_frontal = True)
+    main("UMUT/casia-webface_FOLDERED", select_first_as_frontal = False)

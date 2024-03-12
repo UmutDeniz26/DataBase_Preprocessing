@@ -33,7 +33,7 @@ def verify_img_size(folder_path):
                 img = cv2.imread(img_path)
                 img_size = img.shape[0] * img.shape[1]
                 differece = abs(img_size - average_size)
-                if differece > average_size/2 and img_size < average_size:
+                if differece > average_size/3 and img_size < average_size:
                     with open(txt_path, "a") as f:
                         f.write(f"{img_path} {img_size} {average_size}\n")
 
