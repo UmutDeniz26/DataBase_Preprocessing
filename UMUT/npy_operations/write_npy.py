@@ -84,8 +84,9 @@ def main(destination_folder_path, data_base_name, upper_folder_name):
 
 if __name__ == "__main__":
     #main(destination_folder_path="UMUT/src/final_datasets/YouTubeVideos", data_base_name="YouTubeVideos", upper_folder_name="UMUT")
-    main(destination_folder_path="UMUT/src/final_datasets/LFW", data_base_name="LFW", upper_folder_name="UMUT")
+    #main(destination_folder_path="UMUT/src/final_datasets/LFW", data_base_name="LFW", upper_folder_name="UMUT")
     #main(destination_folder_path="UMUT/src/final_datasets/LFPW", data_base_name="LFPW", upper_folder_name="UMUT")
     #main(destination_folder_path="UMUT/src/final_datasets/HELEN", data_base_name="HELEN", upper_folder_name="UMUT")
     #main(destination_folder_path="UMUT/src/final_datasets/CASIA-FaceV5_BMP_FOLDERED", data_base_name="CASIA-FaceV5_BMP_FOLDERED", upper_folder_name="UMUT")
     #main(destination_folder_path="UMUT/src/final_datasets/YoutubeVideos", data_base_name="YoutubeVideos", upper_folder_name="UMUT")
+    main(destination_folder_path="UMUT/casia-webface_FOLDERED", data_base_name="casia-webface_FOLDERED", upper_folder_name="UMUT")
