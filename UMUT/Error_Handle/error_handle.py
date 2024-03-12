@@ -35,7 +35,7 @@ def get_correct_file_count_and_error_files(root):
                 content = f.read()
 
             if "Error" in content or "Stack Overflow" in content or "too small"\
-                in content or "LandmarkError" in content or "Response" in content\
+                in content or "LandmarkError" in content or "Response" in content or "JsonError" in content\
                 and "pass_exception" not in content:
 
                 temp_error_files.append(img_path);temp_error_files.append(txt_path)

@@ -23,13 +23,14 @@ def main(folder_path, fix_json=False, print_flag=False):
                     print(f"\n{txt_path} - {len(content)}")
                     print(f"Content: {content}")
                     print(f"Error: {error_flag}")
-                    input("Press Enter to continue...")
+                   # input("Press Enter to continue...")
 
                 error_flag = True if len(json_data) == 0 else error_flag
                 error_flag = False if "pass_exception" in content else error_flag
                 if error_flag:
                     if "right_eye" not in content:
                         content = f"{{\"Error\": \"JsonError\"}}"
+                    print(f"\n\nError Flag is true\n{txt_path}\n{len(content)}")
                     if fix_json:
                         write_txt(txt_path, content)
                         print(f"\nFixed: {txt_path}")
