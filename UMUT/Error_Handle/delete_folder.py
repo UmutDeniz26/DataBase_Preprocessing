@@ -58,11 +58,3 @@ def main(file_paths_txt):
 
 if __name__ == "__main__":
     main("UMUT/Error_Handle/too_small_files.txt")
-
-
-
-"""
-example of error_paths.txt:
-UMUT/database/HELEN_FOLDERED\00000027\00000030\00000027_00000030_00000498.jpg
-UMUT/database/HELEN_FOLDERED\00000027\00000030\00000027_00000030_00000498.txt
-"""

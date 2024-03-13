@@ -92,8 +92,13 @@ UMUT/preprocess/concatenation_folders/Output
 UMUT/src/final_datasets
 casia-webface_FOLDERED.rar
 casia-webface_FOLDERED
+<<<<<<< HEAD
 UMUT/casia-webface_FOLDERED
 UMUT/casia-webface
 UMUT/casia-webface_FOLDERED_final.rar
 UMUT/casia-webface_FOLDERED_raw.rar
 UMUT/casia-webface_FOLDEREDf.rar
+=======
+casia-webface_FOLDERED_final.rar
+casia-webface_FOLDERED_src
+>>>>>>> e90fb67 (Remove unnecessary code in delete_folder.py)
