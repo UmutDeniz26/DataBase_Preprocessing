@@ -1,3 +1,0 @@
-Error count: 2  Total files: 40  Ratio: 0.1  Correct files: 18  Folder path: Elif\Two_Face_Handle\Output_copy\00000085\00000174
-Error count: 74  Total files: 154  Ratio: 0.961038961038961  Correct files: 3  Folder path: Elif\Two_Face_Handle\Output_copy\00000454\00000967
-Error count: 30  Total files: 98  Ratio: 0.6122448979591837  Correct files: 19  Folder path: Elif\Two_Face_Handle\Output_copy\00000961\00002059
