@@ -13,4 +13,4 @@ def main(folder_path):
             continue
 
 if __name__ == "__main__":
-    main(folder_path="UMUT/database/HELEN")
+    main(folder_path="UMUT/casia-webface_FOLDERED")

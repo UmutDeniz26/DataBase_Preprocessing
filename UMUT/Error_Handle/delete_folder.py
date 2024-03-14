@@ -2,13 +2,30 @@ import os
 import sys
 import shutil
 def main(file_paths_txt):
-    log = "delete_folder_log.txt"
-    upper_log = "delete_upper_folder_log.txt"
-    error_log = "delete_error_log.txt"
 
     with open(file_paths_txt, "r") as f:
         file_paths = f.readlines()
+    
+    for file_path in file_paths:
+        file_path = file_path.split(" ")[0]
+        file_path = file_path.strip()
+        file_path = os.path.normpath(file_path)
+        txt_path = file_path.replace(".jpg", ".txt")
+        
+        try:
+            os.remove(file_path)
+            print(f"Deleted: {file_path} and its txt file")
+        except FileNotFoundError:
+            pass
+        
+        try:
+            os.remove(txt_path)
+            print(f"Deleted: {txt_path}")
+        except FileNotFoundError:
+            pass
 
+            
+    """
     db_folder_path = os.sep.join(os.path.normpath(file_paths[0].strip()).split("\\")[:-3])
     print(f"db_folder_path: {db_folder_path}")
 
@@ -37,24 +54,7 @@ def main(file_paths_txt):
             shutil.rmtree(folder_path)
             with open(upper_log, "a") as f:
                 f.write(f"Deleted: {folder_path}\n")
-
-
+    """
 
 if __name__ == "__main__":
-    main("UMUT/Error_Handle/error_paths.txt")
-
-
-
-"""
-example of error_paths.txt:
-UMUT/database/HELEN_FOLDERED\00000027\00000030\00000027_00000030_00000498.jpg
-UMUT/database/HELEN_FOLDERED\00000027\00000030\00000027_00000030_00000498.txt
-UMUT/database/HELEN_FOLDERED\00000027\00000030\00000027_00000030_00000499.jpg
-UMUT/database/HELEN_FOLDERED\00000027\00000030\00000027_00000030_00000499.txt
-UMUT/database/HELEN_FOLDERED\00000027\00000030\00000027_00000030_00000500.jpg
-UMUT/database/HELEN_FOLDERED\00000027\00000030\00000027_00000030_00000500.txt
-UMUT/database/HELEN_FOLDERED\00000027\00000030\00000027_00000030_00000501.jpg
-UMUT/database/HELEN_FOLDERED\00000027\00000030\00000027_00000030_00000501.txt
-UMUT/database/HELEN_FOLDERED\00000027\00000030\00000027_00000030_00000502.jpg
-
-"""
+    main("UMUT/Error_Handle/too_small_files.txt")
