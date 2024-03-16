@@ -1,8 +1,12 @@
 import cv2
 import numpy as np
 import common
+import mediapipe as mp
 
 from media_pipe import face_mesh
+
+mp_face_mesh = mp.solutions.face_mesh
+face_mesh = mp_face_mesh.FaceMesh(min_detection_confidence=0.5, min_tracking_confidence=0.5)
 
 def get_nose_landmarks(results):
     nose_landmarks = [ 
@@ -96,3 +100,15 @@ def calculate_nose_perpendicular_angle(nose_landmarks: list):
         angle_betwee_points = common.calculate_angle_between_2_points(line_first_point, line_second_point)
         result_angles.append(angle_betwee_points)
     return result_angles
+
+def get_results(image: np.ndarray) -> object:
+    """
+        Returns the results of the face mesh.
+
+        Args:
+            image (np.ndarray): Image to be processed
+
+        Returns:
+            object: Results of the face mesh
+    """
+    return face_mesh.process( cv2.cvtColor(image, cv2.COLOR_BGR2RGB) )

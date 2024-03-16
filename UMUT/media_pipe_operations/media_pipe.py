@@ -204,9 +204,10 @@ def itarate_over_images(folder_path):
     for root, dirs, files in os.walk(folder_path):
         for file in files:
             if file.endswith(".jpg"):
+                pass
                 #write_angle(os.path.join(root, file))
-                image = draw_landmarks(os.path.join(root, file), 6)
-                image_operations.show_image(image, "Image", 500)
+                #image = draw_landmarks(os.path.join(root, file), 6)
+                #image_operations.show_image(image, "Image", 500)
 
 
 if __name__ == "__main__":
