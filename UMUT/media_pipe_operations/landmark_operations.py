@@ -2,6 +2,8 @@ import cv2
 import numpy as np
 import common
 
+from media_pipe import face_mesh
+
 def get_nose_landmarks(results):
     nose_landmarks = [ 
                 results.multi_face_landmarks[0].landmark[1],

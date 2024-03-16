@@ -5,16 +5,10 @@ import mediapipe as mp
 import shutil
 import matplotlib.pyplot as plt
 
-# Custom imports
-import common
-import landmark_operations
-import txt_operations
-import folder_operations
 
 
 FACEMESH_TESSELATION = mp.solutions.face_mesh.FACEMESH_TESSELATION
 IMG_COUNT = 0
-TOTAL_IMG_COUNT = 501000
                                        
 mp_face_mesh = mp.solutions.face_mesh
 face_mesh = mp_face_mesh.FaceMesh(min_detection_confidence=0.5, min_tracking_confidence=0.5)
@@ -23,6 +17,16 @@ face_mesh = mp_face_mesh.FaceMesh(min_detection_confidence=0.5, min_tracking_con
 FRONTAL_FACE_FOLDER_PATH = "src/frontal_faces"
 ANGLES_TXT_PATH = "src/mediapipe/angles.txt"
 FACE_DRAWINGS_FOLDER = "src/frontal"
+
+
+# Custom imports
+import common
+import landmark_operations
+import txt_operations
+import folder_operations
+import image_operations
+
+txt_operations.clear_txt(ANGLES_TXT_PATH)
 
 def main():
     dataset_path = "Esogu-sets/Esogu-sets/"
@@ -65,35 +69,39 @@ def main():
     face_mesh.close()
     return 0
 
-def write_angle(folder_path: str) -> None:
+def write_angle(image_path: str) -> None:
     """
-        Write the angles of the images in the folder to a txt file.
-
+        Writes the maximum rotation angle and the maximum nose angle to the txt file.
+    
         Args:
-            folder_path (str): The path of the folder that contains the images.
-        
+            image_path (str): Path of the folder that contains the images
+
         Returns:
             None
     """
-    txt_operations.clear_txt(ANGLES_TXT_PATH)
 
-    for root, _, files in os.walk(folder_path):
-        for file in files:
-            image_path = os.path.join(root, file)
+    if image_path.endswith(".jpg") and "frontal" not in image_path.lower():    
+        # Get image path and image
+        image = cv2.imread(image_path)
+        
+        # Get results and head poses
+        results = face_mesh.process( cv2.cvtColor(image, cv2.COLOR_BGR2RGB) )
 
-            if file.endswith(".jpg") and "frontal" not in image_path.lower():    
-                # Get image path and image
-                image = cv2.imread(image_path)
-                
-                # Get results and head poses
-                results = face_mesh.process( cv2.cvtColor(image, cv2.COLOR_BGR2RGB) )
-                head_poses = landmark_operations.head_pose_estimation( results, image)
-                average_angle = 999 if head_poses is None else common.calculate_abs_average( head_poses )
-                
-                txt_operations.add_to_txt(
-                    txt_path = ANGLES_TXT_PATH,
-                    data = f"{image_path} {average_angle}\n"
-                )
+        if results.multi_face_landmarks is None:
+            print("No face detected in ", image_path)
+            return
+
+        head_poses = landmark_operations.head_pose_estimation( results, image)
+        nose_angles = landmark_operations.calculate_nose_perpendicular_angle(landmark_operations.get_nose_landmarks(results))
+        
+        max_rotation_angle = max( [abs(angle) for angle in head_poses] )
+        max_nose_angle = max( [abs(angle) for angle in nose_angles] )
+        
+
+        txt_operations.add_to_txt(
+            txt_path = ANGLES_TXT_PATH,
+            data = f"{image_path:100} {max_rotation_angle:7.2f}  {max_nose_angle:7.2f}\n"
+        )
                 
 
 def plot_images_with_txt_file(txt_path: str, row: int, col: int) -> None:
@@ -119,122 +127,91 @@ def plot_images_with_txt_file(txt_path: str, row: int, col: int) -> None:
             axes[i,j].axis("off")
     plt.show()
 
-def draw_landmarks(image, results, zoom_scale=1, image_path=None, show_flag = True):
-    global FACEMESH_TESSELATION, IMG_COUNT, FRONTAL_FACE_FOLDER_PATH
+def draw_landmarks(img_path: str, zoom_scale: float = 1) -> None:
+    """
+        Draws the landmarks on the image and returns the image.
+
+        Args:
+            img_path (str): Path of the image
+            zoom_scale (float): Scale of the zoom
+
+        Returns:
+            image (np.ndarray): Image with the landmarks
+
+    """
+    global FACEMESH_TESSELATION, IMG_COUNT
     IMG_COUNT += 1
 
-    if results.multi_face_landmarks is None or image is None:
-        return
-
-    if zoom_scale != 1 and show_flag:
-        image = cv2.resize(image, (0, 0), fx=zoom_scale, fy=zoom_scale)
-    
-    multi_face_landmarks = results.multi_face_landmarks[0]
-    
-    avg_rotation_angle, average_of_result_angles = calculate_rotation_avg_angle_avg(image_path)
-    center_of_eyes = landmark_operations.get_center_of_eyes(multi_face_landmarks.landmark)
-    
-    # It can be changed instead of being embedded in the function.
-    # Right now it's a constant value.
-    os.makedirs(FRONTAL_FACE_FOLDER_PATH, exist_ok=True)
-
-    progress = round(IMG_COUNT / TOTAL_IMG_COUNT * 100, 3)
-
-    if show_flag:
-        mp_drawing = mp.solutions.drawing_utils
-        mp_drawing.draw_landmarks(
-            image, multi_face_landmarks, FACEMESH_TESSELATION,
-            landmark_drawing_spec=mp_drawing.DrawingSpec(color=(0, 255, 0),
-            thickness=1, circle_radius=1))
-        
-        nose_landmarks = landmark_operations.get_nose_landmarks(results)
-
-        for eye in center_of_eyes:
-            cv2.circle(image, (int(eye[0] * image.shape[1]), int(eye[1] * image.shape[0])), 5, (0, 0, 255), -1)
-        cv2.circle(image, (int(nose_landmarks[0].x * image.shape[1]), int(nose_landmarks[0].y * image.shape[0])), 5, (0, 0, 255), -1)
-        cv2.circle(image, (int(nose_landmarks[-1].x * image.shape[1]), int(nose_landmarks[-1].y * image.shape[0])), 5, (0, 0, 255), -1)
-
-        for i,landmark in enumerate(nose_landmarks):
-            if i == 0:
-                continue
-            line_first_point = (int(nose_landmarks[i-1].x * image.shape[1]), int(nose_landmarks[i-1].y * image.shape[0]))
-            line_second_point = (int(landmark.x * image.shape[1]), int(landmark.y * image.shape[0]))
-            cv2.line(image, line_first_point, line_second_point, (0, 0, 255), 2)
-
-        cv2.putText(image, f"Average: {avg_rotation_angle:.2f}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
-        cv2.putText(image, f"Average of nose perpendicular: {average_of_result_angles:.2f}", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
-        
-        # Center of bottom with larger font
-        cv2.putText(image, f"Progress: {progress}%", (100, 140), cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 0, 0), 2, cv2.LINE_AA)
-
-        os.makedirs("src/frontal") if not os.path.exists("src/frontal") else None
-        new_img_path = os.path.join(FACE_DRAWINGS_FOLDER, image_path.split("/")[-1])
-        print("New img path: ", new_img_path)
-        cv2.imwrite(new_img_path, image)
-        cv2.imshow("Image", image)
-        cv2.waitKey(500)
-        cv2.destroyAllWindows()
-        
-    if 89 < average_of_result_angles < 91:
-        cv2.putText(image, "Frontal", (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
-        img_name = image_path.split("/")[-1]
-
-        dest_path = os.path.join(FRONTAL_FACE_FOLDER_PATH, image_path.split("/")[-1])
-        src_path = os.path.join(FACE_DRAWINGS_FOLDER, image_path.split("/")[-1])
-        
-        print("\nSrc path: ", src_path)
-        print("Dest path: ", dest_path)
-        shutil.copy(src_path, dest_path)
-    else:
-        cv2.putText(image, "Non-frontal", (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
-
-
-def calculate_rotation_avg_angle_avg(img_path):
     image = cv2.imread(img_path)
     results = face_mesh.process( cv2.cvtColor(image, cv2.COLOR_BGR2RGB) )
 
+    if results.multi_face_landmarks is None or image is None:
+        return
+    elif zoom_scale != 1:
+        image = cv2.resize(image, (0, 0), fx=zoom_scale, fy=zoom_scale)
+    
+    image_width, image_height, _ = image.shape
+
+    multi_face_landmarks = results.multi_face_landmarks[0]
     nose_landmarks = landmark_operations.get_nose_landmarks(results)
-    head_poses = landmark_operations.head_pose_estimation( results, image )
-    average_angle = common.calculate_abs_average( head_poses )
-    result_angles = landmark_operations.calculate_nose_perpendicular_angle( nose_landmarks )
-
-    abs_result_angles = [np.abs(angle) for angle in result_angles]
-    average_of_result_angles = np.mean(abs_result_angles)
+    center_of_eyes = landmark_operations.get_center_of_eyes(multi_face_landmarks.landmark)
     
-    return average_angle, average_of_result_angles
+    rotation_arr = landmark_operations.head_pose_estimation(results, image)
+    nose_angle_arr = landmark_operations.calculate_nose_perpendicular_angle(nose_landmarks)
+    nose_angle_arr = [abs(angle) for angle in nose_angle_arr]
 
-def write_frontal_faces(img_path):
-    img = cv2.imread(img_path)
-    img_name = img_path.split("/")[-1]
-    if not os.path.exists(FRONTAL_FACE_FOLDER_PATH):
-        os.makedirs(FRONTAL_FACE_FOLDER_PATH)
+    mp_drawing = mp.solutions.drawing_utils
+    mp_drawing.draw_landmarks(
+        image, multi_face_landmarks, FACEMESH_TESSELATION,
+        landmark_drawing_spec=mp_drawing.DrawingSpec(color=(0, 255, 0),
+        thickness=1, circle_radius=1)
+    )
 
-    shutil.copy(os.path.join(FACE_DRAWINGS_FOLDER, img_name),
-                os.path.join(FRONTAL_FACE_FOLDER_PATH, img_name)
-        )
-def show_drawn_landmarks(image_path):
-    global mp_face_mesh
-    image = cv2.imread(image_path)
-    results = face_mesh.process( cv2.cvtColor(image, cv2.COLOR_BGR2RGB) )
+    # Red dots for the center of the eyes and the nose
+    for eye in center_of_eyes:
+        cv2.circle(image, (int(eye[0] * image.shape[1]), int(eye[1] * image.shape[0])), 5, (0, 0, 255), -1)
     
-    try:
-        draw_landmarks(image=image, results=results,
-                        zoom_scale=7, image_path=image_path,
-                        show_flag=True)
-    except Exception as e:
-        print("Error in showing landmarks for ", image_path,"\nError: ", e)
-        pass
+    # Draw lines between the nose landmarks
+    for i,landmark in enumerate(nose_landmarks):
+        if i == 0:
+            continue
+        line_first_point = (int(nose_landmarks[i-1].x * image.shape[1]), int(nose_landmarks[i-1].y * image.shape[0]))
+        line_second_point = (int(landmark.x * image.shape[1]), int(landmark.y * image.shape[0]))
+        cv2.line(image, line_first_point, line_second_point, (0, 0, 255), 2)
 
+    # Determine if the face is frontal or not
+    put_text_coordinates = ( int(image_width * 0.1), int(image_height * 0.05) )
+    target_score = 90
+    offset = 0.05
+    if max(nose_angle_arr)<target_score+target_score*offset and min(nose_angle_arr)>target_score-target_score*offset:
+        cv2.putText(image, "Frontal", put_text_coordinates, cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv2.LINE_AA)
+    else:
+        cv2.putText(image, "Non-frontal", put_text_coordinates, cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv2.LINE_AA)
+        
+    # Put text max nose angle and min nose angle
+    put_text_coordinates = ( int(image_width * 0.05), int(image_height * 0.95) )
+    cv2.putText(image, f"Max angle: {max(nose_angle_arr):.2f}", put_text_coordinates, cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 100, 50), 2, cv2.LINE_AA)
+    put_text_coordinates = ( int(image_width * 0.55), int(image_height * 0.95) )
+    cv2.putText(image, f"Min angle: {min(nose_angle_arr):.2f}", put_text_coordinates, cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 100, 50), 2, cv2.LINE_AA)
 
-def show_folder_images(folder_path):
+    # Center of bottom with larger font
+    put_text_coordinates = ( int(image_width * 0.1), int(image_height * 0.15) )
+    cv2.putText(image, f"Progress: {IMG_COUNT}", put_text_coordinates, cv2.FONT_HERSHEY_SIMPLEX, 2, (255, 0, 0), 2, cv2.LINE_AA)
+
+    return image
+        
+def itarate_over_images(folder_path):
     for root, dirs, files in os.walk(folder_path):
         for file in files:
             if file.endswith(".jpg"):
-                show_drawn_landmarks(os.path.join(root, file))
+                #write_angle(os.path.join(root, file))
+                image = draw_landmarks(os.path.join(root, file), 6)
+                image_operations.show_image(image, "Image", 500)
+
 
 if __name__ == "__main__":
-    show_folder_images("src/original-casia-webface")
-    
+    itarate_over_images("src/casia-raw")
+
     #main()
     #write_angle("UMUT\casia-webface_FOLDERED\Frontal_faces")
     #sort_angles("angles.txt")

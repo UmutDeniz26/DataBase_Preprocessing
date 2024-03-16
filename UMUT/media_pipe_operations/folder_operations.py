@@ -1,6 +1,9 @@
 import os
-
+import cv2
 import txt_operations
+import numpy as np
+
+from media_pipe import FRONTAL_FACE_FOLDER_PATH
 
 def delete_files_by_txt_path(txt_path: str, delete_count: int) -> None:
     """
@@ -34,3 +37,31 @@ def delete_files_by_txt_path(txt_path: str, delete_count: int) -> None:
         else:
             print("Invalid input. Exiting...")
             return
+        
+def make_dir(folder_path: str) -> None:
+    """
+        Creates a directory if it does not exist.
+    
+        Args:
+            folder_path (str): Path of the directory to be created
+
+        Returns:
+            None
+    """
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+
+
+def write_to_frontal_folder(img: np.ndarray, img_path: str) -> None:
+    """
+        Writes the image to the frontal face folder.
+
+        Args:
+            img (np.ndarray): Image to be written
+            img_path (str): Path of the image
+
+        Returns:
+            None
+    """    
+    make_dir(FRONTAL_FACE_FOLDER_PATH)
+    cv2.imwrite(os.path.join(FRONTAL_FACE_FOLDER_PATH, img_path.split("/")[-1]), img)
