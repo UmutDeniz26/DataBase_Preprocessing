@@ -38,14 +38,15 @@ def calculate_avg_color_of_slices(image: np.ndarray, rows: int, cols: int) -> li
             slice = image[x1:x2, y1:y2]
             avg_color = np.mean(slice, axis=(0,1))
             avg_color_list.append(avg_color)
-            #cv2.rectangle(image, (y1, x1), (y2, x2), (0, 255, 0), 2)
-            #cv2.imshow("Image", image)
-            #cv2.waitKey(1000)
-            #cv2.destroyAllWindows()
+            if False:
+                cv2.rectangle(image, (y1, x1), (y2, x2), (0, 255, 0), 2)
+                cv2.imshow("Image", image)
+                cv2.waitKey(1000)
+                cv2.destroyAllWindows()
 
     return avg_color_list
 
-def get_difference_of_avg_colors(avg_color_list: list) -> list:
+def get_difference_of_avg_colors(image_objects: list) -> list:
     """
         Calculates the difference of the average colors.
 
@@ -57,16 +58,19 @@ def get_difference_of_avg_colors(avg_color_list: list) -> list:
     """
     diff_list = []
     processed_pairs = set()  # Set to store processed pairs
+    all_pairs = generate_all_pairs(image_objects, random_flag=False)
 
-    for i in range(len(avg_color_list)):
-        for j in range(i + 1, len(avg_color_list)):
-            # Check if the pair (i, j) or (j, i) has been processed already
-            if (i, j) not in processed_pairs and (j, i) not in processed_pairs:
-                diff = np.linalg.norm(np.array(avg_color_list[i]) - np.array(avg_color_list[j]))
-                dict_diff = {"index1": i, "index2": j, "diff": diff}
-                diff_list.append(dict_diff)
-                # Add the pair to the set of processed pairs
-                processed_pairs.add((i, j))
+    for i, j in all_pairs:
+        # Check if the pair (i, j) or (j, i) has been processed already
+        if (i, j) not in processed_pairs and (j, i) not in processed_pairs:
+            
+            diff = np.linalg.norm(np.array(image_objects[i].avg_image_colors) - np.array(image_objects[j].avg_image_colors))
+
+            dict_diff = { "Result": diff, "Obj1": image_objects[i], "Obj2": image_objects[j] }
+            diff_list.append(dict_diff)
+
+            # Add the pair to the set of processed pairs
+            processed_pairs.add((i, j))
     return diff_list
 
 import random
@@ -85,17 +89,19 @@ def get_similarity(image_objet_list:list) -> None:
     processed_pairs = set()  # Set to store processed pairs
     time_start = time.time()
     # randomly choose
-    all_pairs = list(itertools.combinations(range(len(image_objet_list)), 2))
-    random.shuffle(all_pairs)
+    all_pairs = generate_all_pairs(image_objet_list, random_flag=True)
+
     count = 0
     
     for i, j in all_pairs:
         if (i, j) not in processed_pairs and (j, i) not in processed_pairs:
+            if i==j:
+                print(f"Same image: {image_objet_list[i].path}")
             f1 = image_objet_list[i].path
             f2 = image_objet_list[j].path
             try:
                 result = DeepFace.verify(img1_path=f1, img2_path=f2, detector_backend=backends[0])
-                result_list.append({"Result": result, "Obj1": image_objet_list[i], "Obj2": image_objet_list[j]})
+                result_list.append({"Result": result["distance"], "Obj1": image_objet_list[i], "Obj2": image_objet_list[j]})
             except ValueError as e:
                 result = "Face_error"
                 count += 1
@@ -108,3 +114,17 @@ def get_similarity(image_objet_list:list) -> None:
     print(f"Face_error count: {count}")
 
     return result_list
+
+def generate_all_pairs(image_objet_list:list, random_flag:bool) -> list:
+    """
+        Generates all possible pairs from the image list.
+
+        Args:
+            image_list (list): List of the images
+        Returns:
+            list: List of the pairs
+    """
+    all_pairs = list(itertools.combinations(range(len(image_objet_list)), 2))
+    if random_flag:
+        random.shuffle(all_pairs)
+    return all_pairs

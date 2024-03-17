@@ -13,11 +13,25 @@ import image_operations_c
 
 class Image:
     def __init__(self, path: str, image: np.ndarray =None, features: dict = {}):
+        """
+            Image object for the classification process.
+
+            Args:
+                path (str): Path to the image
+                image (np.ndarray): Image object
+                features (dict): Features of the image
+
+            Returns:
+                None
+        """
+
+        # Set the path, it is essential
         self.path = path
-        if image is None:
-            self.image = cv2.imread(path)
-        else:
-            self.image = image
+
+        # If the image is not provided, read it from the path
+        self.image = cv2.imread(path) if image is None else image
+
+        self.image_shape = self.image.shape
         
         for key, value in mediapipe_API.get_evaluated_features(self.image).items():
             self.add_attribute(key, value)
@@ -26,16 +40,34 @@ class Image:
             self.add_attribute(key, value)
     
     def __str__(self):
-        return f"Path: {self.path} \nFeatures: {self.features} \nEvaluated Features: {self.evaluated_features} \n\n"
-
+        return f"Summary of the image:\nPath: {self.path}\nID: {self.id}\nInter: {self.inter}\
+            \nExtension: {self.extension}\nImage Shape: {self.image_shape}\n\nTo see all the attributes, use print_attributes() method."
     # add .self attribute
     def add_attribute(self, attribute: str, value: any) -> None:
         self.__setattr__(attribute, value)
-    
     def print_attributes(self) -> None:
         for key, value in self.__dict__.items():
             print(f"{key}: {str(value)[:100]}{'...' if  len(str(value)) > 100 else ''}")
-            
+
+    def get_frontal_score(self) -> float:
+        """
+            Get the frontal score of the image.
+
+            Args:
+                None
+
+            Returns:
+                float: Frontal score of the image
+        """
+        score = {}        
+        # It should be close to 0
+        score["headpose_avg"] = self.head_pose_angles["average_abs_angle"]
+        # They should be close to 90
+        score["nose_angle_min"] = self.nose_angle_arr["min_abs_angle"]
+        score["nose_angle_max"] = self.nose_angle_arr["max_abs_angle"]
+
+        return score
+
 def main(src_path: str, target_path: str)-> None:
     """
         Main function for the classification process.
@@ -60,35 +92,57 @@ def main(src_path: str, target_path: str)-> None:
             if file.endswith(".jpg") and "group" not in root:
                 img_path = os.path.join(root, file)
                 
-                img_buffer = Image(
-                    path=img_path,
-                )
                 
                 slices = path_operations.get_path_slices(img_path)
                 features = path_operations.get_path_features(slices)
 
-                for key, value in features.items():
-                    img_buffer.add_attribute(key, value)
-
+                img_buffer = Image(
+                    path=img_path,
+                    features=features
+                )
+                
                 img_buffer.add_attribute(
                     "avg_image_colors",
-                    image_operations_c.calculate_avg_color_of_slices(img_buffer.image, 15, 15)
+                    image_operations_c.calculate_avg_color_of_slices(img_buffer.image, 5, 5)
                 )
 
                 image_objects.append(img_buffer)
 
                 if last_file_flag:
                     print(f"\nProcessing {root} \nImage Count: {len(image_objects)}")
-                    #difference_vector = image_operations_c.get_difference_of_avg_colors([image.features["avg_image_colors"] for image in image_objects])
-                    #difference_vector.sort(key=lambda x: x["diff"])
+                    difference_vector = image_operations_c.get_difference_of_avg_colors(image_objects)
+                    difference_vector.sort(key=lambda x: x["Result"])
+                    avg_diff = get_avg_difference(difference_vector)
+                    threshold = avg_diff//2
 
-                    result_sorted = sorted( image_operations_c.get_similarity(image_objects) , key=lambda x: x["Result"]["distance"] )
+                    print(f"Average difference: {avg_diff}")
+                    print(f"Threshold: {threshold}")
+                    groups = create_groups(result_sorted=difference_vector, min_group_limit=5, threshold=threshold)
+
+                    #result_sorted = sorted( image_operations_c.get_similarity(image_objects) , key=lambda x: x["Result"]["distance"] )
                     
-                    groups = create_groups(result_sorted=result_sorted, min_group_limit=5, threshold=0.7)
+                    #groups = create_groups(result_sorted=result_sorted, min_group_limit=5, threshold=0.7)
                     
+                    delete_old_group_folders(root)
+
                     build_group_folders(groups, print_flag=True)
 
                     image_objects = []
+
+def get_avg_difference(difference_vector: list) -> float:
+    """
+        Get the average difference from the difference vector.
+
+        Args:
+            difference_vector (list): Difference vector
+
+        Returns:
+            float: Average difference
+    """
+    total = 0
+    for elem in difference_vector:
+        total += elem["Result"]
+    return total / len(difference_vector)
 
 def build_group_folders(groups: list, print_flag: bool = False) -> None:
     """
@@ -117,6 +171,19 @@ def build_group_folders(groups: list, print_flag: bool = False) -> None:
             print(obj.path) if print_flag else None
         print("\n") if print_flag else None
 
+def delete_old_group_folders(folder_path: str) -> None:
+    """
+        Delete the old group folders.
+
+        Args:
+            src_path (str): Path to the dataset
+
+        Returns:
+            None
+    """
+    for folder_name in os.listdir(folder_path):
+        if "group" in folder_name:
+            shutil.rmtree(os.path.join(folder_path, folder_name))
 
 def create_groups(result_sorted: list, min_group_limit: int, threshold: float) -> list:
     """
@@ -125,7 +192,7 @@ def create_groups(result_sorted: list, min_group_limit: int, threshold: float) -
         Args:
             result_sorted (list): Sorted result list
             min_group_limit (int): Minimum number of elements in a group
-            threshold (float): Threshold for the distance
+            threshold (float): Threshold for the distance, if smaller than this, the elements are in the same group
 
         Returns:
             list: List of groups
@@ -135,10 +202,10 @@ def create_groups(result_sorted: list, min_group_limit: int, threshold: float) -
 
     # Number of groups that have more than 5 elements. If there are more than 2 groups like that, continue.
     while i<len(result_sorted): #len( [ True for group in groups if len(group) > min_group_limit] ) < min_group_count:
-        i+=1
         if i == len(result_sorted):
             break
         elem = result_sorted[i]
+        i+=1
         
         all_objects = []
         for group in groups:
@@ -148,7 +215,7 @@ def create_groups(result_sorted: list, min_group_limit: int, threshold: float) -
         obj1_exists = elem["Obj1"] in all_objects
         obj2_exists = elem["Obj2"] in all_objects
 
-        if elem["Result"]["distance"] < threshold:
+        if elem["Result"] < threshold:
             continue
 
         if not obj1_exists and not obj2_exists: #and len(groups) < max_group_count:
