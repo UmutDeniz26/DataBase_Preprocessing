@@ -113,11 +113,11 @@ def main(src_path: str, target_path: str)-> None:
                     difference_vector = image_operations_c.get_difference_of_avg_colors(image_objects)
                     difference_vector.sort(key=lambda x: x["Result"])
                     avg_diff = get_avg_difference(difference_vector)
-                    threshold = avg_diff//2
+                    threshold = avg_diff//3
 
                     print(f"Average difference: {avg_diff}")
                     print(f"Threshold: {threshold}")
-                    groups = create_groups(result_sorted=difference_vector, min_group_limit=5, threshold=threshold)
+                    groups = create_groups(result_sorted=difference_vector, min_group_limit=5, threshold=threshold, print_flag=True)
 
                     #result_sorted = sorted( image_operations_c.get_similarity(image_objects) , key=lambda x: x["Result"]["distance"] )
                     
@@ -125,7 +125,7 @@ def main(src_path: str, target_path: str)-> None:
                     
                     delete_old_group_folders(root)
 
-                    build_group_folders(groups, print_flag=True)
+                    build_group_folders(groups, print_flag=False)
 
                     image_objects = []
 
@@ -185,7 +185,7 @@ def delete_old_group_folders(folder_path: str) -> None:
         if "group" in folder_name:
             shutil.rmtree(os.path.join(folder_path, folder_name))
 
-def create_groups(result_sorted: list, min_group_limit: int, threshold: float) -> list:
+def create_groups(result_sorted: list, min_group_limit: int, threshold: float, print_flag: bool = False) -> list:
     """
         Create groups from the sorted result list.
 
@@ -199,6 +199,7 @@ def create_groups(result_sorted: list, min_group_limit: int, threshold: float) -
     """
     # Initialize the groups list
     groups = [];i=0
+    continue_count = 0
 
     # Number of groups that have more than 5 elements. If there are more than 2 groups like that, continue.
     while i<len(result_sorted): #len( [ True for group in groups if len(group) > min_group_limit] ) < min_group_count:
@@ -215,7 +216,8 @@ def create_groups(result_sorted: list, min_group_limit: int, threshold: float) -
         obj1_exists = elem["Obj1"] in all_objects
         obj2_exists = elem["Obj2"] in all_objects
 
-        if elem["Result"] < threshold:
+        if elem["Result"] > threshold:
+            continue_count += 1
             continue
 
         if not obj1_exists and not obj2_exists: #and len(groups) < max_group_count:
@@ -230,8 +232,11 @@ def create_groups(result_sorted: list, min_group_limit: int, threshold: float) -
                 if elem["Obj2"] in group:
                     group.append(elem["Obj1"])
                     break
-        
+
     groups = [group for group in groups if len(group) >= min_group_limit]
+    print(f"Group Count (Filtered): {len(groups)}") if print_flag else None
+    print(f"Continue Count: {continue_count}") if print_flag else None
+
     return groups
                 
 def get_img_file_count(files: list) -> int:
