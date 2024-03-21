@@ -9,6 +9,8 @@ sys.path.insert(0,"UMUT/")
 from media_pipe_operations import mediapipe_API
 import path_operations
 import image_operations_c
+import common_c
+import folder_operations_c
 
 
 class Image:
@@ -84,12 +86,12 @@ def main(src_path: str, target_path: str)-> None:
 
     image_objects = []
     for root, _, files in os.walk(src_path):
-        img_count = get_img_file_count(files)
+        img_count = folder_operations_c.get_img_file_count(files)
 
         for index, file in enumerate(files):
             last_file_flag = True if index == img_count - 1 else False
 
-            if file.endswith(".jpg") and "group" not in root:
+            if file.endswith(".jpg") and "group" not in root and "frontal" not in root:
                 img_path = os.path.join(root, file)
                 
                 
@@ -112,8 +114,8 @@ def main(src_path: str, target_path: str)-> None:
                     print(f"\nProcessing {root} \nImage Count: {len(image_objects)}")
                     difference_vector = image_operations_c.get_difference_of_avg_colors(image_objects)
                     difference_vector.sort(key=lambda x: x["Result"])
-                    avg_diff = get_avg_difference(difference_vector)
-                    threshold = avg_diff//3
+                    avg_diff = common_c.get_avg_difference(difference_vector)
+                    threshold = avg_diff//2
 
                     print(f"Average difference: {avg_diff}")
                     print(f"Threshold: {threshold}")
@@ -123,67 +125,12 @@ def main(src_path: str, target_path: str)-> None:
                     
                     #groups = create_groups(result_sorted=result_sorted, min_group_limit=5, threshold=0.7)
                     
-                    delete_old_group_folders(root)
+                    folder_operations_c.delete_old_group_folders(root)
 
-                    build_group_folders(groups, print_flag=False)
+                    folder_operations_c.build_group_folders(groups, print_flag=False)
 
                     image_objects = []
 
-def get_avg_difference(difference_vector: list) -> float:
-    """
-        Get the average difference from the difference vector.
-
-        Args:
-            difference_vector (list): Difference vector
-
-        Returns:
-            float: Average difference
-    """
-    total = 0
-    for elem in difference_vector:
-        total += elem["Result"]
-    return total / len(difference_vector)
-
-def build_group_folders(groups: list, print_flag: bool = False) -> None:
-    """
-        Build the group folders.
-
-        Args:
-            groups (list): List of groups
-
-        Returns:
-            None
-    """
-    for group_index,group in enumerate(groups):
-        for obj in group:
-            # Create the folder path
-            group_slices = obj.path.split(os.sep)
-            group_slices[-1] = f"group_{group_index}/{group_slices[-1]}"
-            group_folder_path = os.path.normpath('/'.join(group_slices))
-            
-            if not os.path.exists(group_folder_path):
-                os.makedirs(os.path.dirname(group_folder_path), exist_ok=True)
-            else:
-                shutil.rmtree( os.path.dirname(group_folder_path) )
-                os.makedirs(os.path.dirname(group_folder_path), exist_ok=True)
-            shutil.copy(obj.path, group_folder_path)
-            
-            print(obj.path) if print_flag else None
-        print("\n") if print_flag else None
-
-def delete_old_group_folders(folder_path: str) -> None:
-    """
-        Delete the old group folders.
-
-        Args:
-            src_path (str): Path to the dataset
-
-        Returns:
-            None
-    """
-    for folder_name in os.listdir(folder_path):
-        if "group" in folder_name:
-            shutil.rmtree(os.path.join(folder_path, folder_name))
 
 def create_groups(result_sorted: list, min_group_limit: int, threshold: float, print_flag: bool = False) -> list:
     """
@@ -202,17 +149,14 @@ def create_groups(result_sorted: list, min_group_limit: int, threshold: float, p
     continue_count = 0
 
     # Number of groups that have more than 5 elements. If there are more than 2 groups like that, continue.
+    
+    all_objects = []
     while i<len(result_sorted): #len( [ True for group in groups if len(group) > min_group_limit] ) < min_group_count:
         if i == len(result_sorted):
             break
         elem = result_sorted[i]
         i+=1
         
-        all_objects = []
-        for group in groups:
-            for obj in group:
-                all_objects.append(obj)
-
         obj1_exists = elem["Obj1"] in all_objects
         obj2_exists = elem["Obj2"] in all_objects
 
@@ -222,15 +166,18 @@ def create_groups(result_sorted: list, min_group_limit: int, threshold: float, p
 
         if not obj1_exists and not obj2_exists: #and len(groups) < max_group_count:
             groups.append([elem["Obj1"], elem["Obj2"]])
+            all_objects.append(elem["Obj1"]);all_objects.append(elem["Obj2"])
+        
         elif obj1_exists and elem["Obj2"] not in all_objects:
             for group in groups:
                 if elem["Obj1"] in group:
-                    group.append(elem["Obj2"])
+                    group.append(elem["Obj2"]);all_objects.append(elem["Obj2"])
                     break
+        
         elif obj2_exists and elem["Obj1"] not in all_objects:
             for group in groups:
                 if elem["Obj2"] in group:
-                    group.append(elem["Obj1"])
+                    group.append(elem["Obj1"]);all_objects.append(elem["Obj1"])
                     break
 
     groups = [group for group in groups if len(group) >= min_group_limit]
@@ -238,13 +185,6 @@ def create_groups(result_sorted: list, min_group_limit: int, threshold: float, p
     print(f"Continue Count: {continue_count}") if print_flag else None
 
     return groups
-                
-def get_img_file_count(files: list) -> int:
-    count = 0
-    for file in files:
-        count = count+1 if file.endswith(".jpg") else count 
-    return count
-
-
+          
 if __name__ == "__main__":
-    main("src/casia-raw", "src/casia-classified")
+    main("src/foldered", "src/foldered")
