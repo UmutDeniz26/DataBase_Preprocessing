@@ -9,7 +9,7 @@ sys.path.insert(0,"UMUT/")
 from media_pipe_operations import mediapipe_API
 import path_operations
 import image_operations_c
-import common_c
+import Common_c
 import folder_operations_c
 
 
@@ -23,8 +23,6 @@ class Image:
                 image (np.ndarray): Image object
                 features (dict): Features of the image
 
-            Returns:
-                None
         """
 
         # Set the path, it is essential
@@ -36,39 +34,25 @@ class Image:
         self.image_shape = self.image.shape
         
         for key, value in mediapipe_API.get_evaluated_features(self.image).items():
-            self.add_attribute(key, value)
+            self.__setattr__(key, value)
         
         for key, value in features.items():
-            self.add_attribute(key, value)
+            self.__setattr__(key, value)
     
     def __str__(self):
         return f"Summary of the image:\nPath: {self.path}\nID: {self.id}\nInter: {self.inter}\
             \nExtension: {self.extension}\nImage Shape: {self.image_shape}\n\nTo see all the attributes, use print_attributes() method."
-    # add .self attribute
-    def add_attribute(self, attribute: str, value: any) -> None:
-        self.__setattr__(attribute, value)
+    
     def print_attributes(self) -> None:
         for key, value in self.__dict__.items():
             print(f"{key}: {str(value)[:100]}{'...' if  len(str(value)) > 100 else ''}")
 
     def get_frontal_score(self) -> float:
-        """
-            Get the frontal score of the image.
-
-            Args:
-                None
-
-            Returns:
-                float: Frontal score of the image
-        """
-        score = {}        
-        # It should be close to 0
-        score["headpose_avg"] = self.head_pose_angles["average_abs_angle"]
-        # They should be close to 90
-        score["nose_angle_min"] = self.nose_angle_arr["min_abs_angle"]
-        score["nose_angle_max"] = self.nose_angle_arr["max_abs_angle"]
-
-        return score
+        return {
+            "headpose_avg": self.head_pose_angles["average_abs_angle"],
+            "nose_angle_min": self.nose_angle_arr["min_abs_angle"],
+            "nose_angle_max": self.nose_angle_arr["max_abs_angle"]
+            }
 
 def main(src_path: str, target_path: str)-> None:
     """
@@ -103,7 +87,7 @@ def main(src_path: str, target_path: str)-> None:
                     features=features
                 )
                 
-                img_buffer.add_attribute(
+                img_buffer.__setattr__(
                     "avg_image_colors",
                     image_operations_c.calculate_avg_color_of_slices(img_buffer.image, 5, 5)
                 )
@@ -114,7 +98,7 @@ def main(src_path: str, target_path: str)-> None:
                     print(f"\nProcessing {root} \nImage Count: {len(image_objects)}")
                     difference_vector = image_operations_c.get_difference_of_avg_colors(image_objects)
                     difference_vector.sort(key=lambda x: x["Result"])
-                    avg_diff = common_c.get_avg_difference(difference_vector)
+                    avg_diff = Common_c.get_avg_difference(difference_vector)
                     threshold = avg_diff//2
 
                     print(f"Average difference: {avg_diff}")
@@ -148,8 +132,7 @@ def create_groups(result_sorted: list, min_group_limit: int, threshold: float, p
     groups = [];i=0
     continue_count = 0
 
-    # Number of groups that have more than 5 elements. If there are more than 2 groups like that, continue.
-    
+    # Number of groups that have more than 5 elements. If there are more than 2 groups like that, continue.    
     all_objects = []
     while i<len(result_sorted): #len( [ True for group in groups if len(group) > min_group_limit] ) < min_group_count:
         if i == len(result_sorted):
@@ -180,7 +163,11 @@ def create_groups(result_sorted: list, min_group_limit: int, threshold: float, p
                     group.append(elem["Obj1"]);all_objects.append(elem["Obj1"])
                     break
 
-    groups = [group for group in groups if len(group) >= min_group_limit]
+    # Remove the groups that have less than 5 elements
+    for group in groups:
+        if len(group) < min_group_limit:
+            groups.remove(group)
+
     print(f"Group Count (Filtered): {len(groups)}") if print_flag else None
     print(f"Continue Count: {continue_count}") if print_flag else None
 
