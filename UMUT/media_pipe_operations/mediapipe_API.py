@@ -30,7 +30,11 @@ def get_evaluated_features(image:np.ndarray) -> dict:
     center_of_eyes = landmark_operations.get_center_of_eyes(results.multi_face_landmarks[0].landmark)
     nose_angle_arr = landmark_operations.calculate_nose_perpendicular_angle(nose_landmarks)
     
-    evaluated_features["nose_angle_arr"] = {"angles": nose_angle_arr, "max_abs_angle": max([abs(angle) for angle in nose_angle_arr]),"min_abs_angle": min([abs(angle) for angle in nose_angle_arr])}
+    evaluated_features["nose_angle_arr"] = {
+        "angles": nose_angle_arr, "max_abs_angle": max([abs(angle) for angle in nose_angle_arr]),
+        "min_abs_angle": min([abs(angle) for angle in nose_angle_arr]),
+        "normalized_abs_angle": abs( 90 - abs(nose_angle_arr[0])) + abs( 90 - abs(nose_angle_arr[1]) )
+        }
     evaluated_features["head_pose_angles"] = {"angles": head_pose_angles, "average_abs_angle": average_angle}
     evaluated_features["center_of_eyes"] = center_of_eyes
 

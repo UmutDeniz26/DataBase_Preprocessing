@@ -11,6 +11,7 @@ import path_operations
 import image_operations_c
 import Common_c
 import folder_operations_c
+import headpose_operations_c
 
 
 class Image:
@@ -51,10 +52,11 @@ class Image:
         return {
             "headpose_avg": self.head_pose_angles["average_abs_angle"],
             "nose_angle_min": self.nose_angle_arr["min_abs_angle"],
-            "nose_angle_max": self.nose_angle_arr["max_abs_angle"]
+            "nose_angle_max": self.nose_angle_arr["max_abs_angle"],
+            "nose_angle_normalized": self.nose_angle_arr["normalized_abs_angle"]
             }
 
-def main(src_path: str, target_path: str)-> None:
+def main(src_path: str, target_path: str, clear_target_flag: bool = False) -> None:
     """
         Main function for the classification process.
 
@@ -65,17 +67,23 @@ def main(src_path: str, target_path: str)-> None:
         Returns:
             None
     """
+
+    if clear_target_flag:
+        shutil.rmtree(target_path, ignore_errors=True)
+
     if not os.path.exists(target_path):
         os.makedirs(target_path)
+
 
     image_objects = []
     for root, _, files in os.walk(src_path):
         img_count = folder_operations_c.get_img_file_count(files)
-
-        for index, file in enumerate(files):
+        index = 0
+        for _, file in enumerate(files):
             last_file_flag = True if index == img_count - 1 else False
-
+            
             if file.endswith(".jpg") and "group" not in root and "frontal" not in root:
+                index += 1
                 img_path = os.path.join(root, file)
                 
                 
@@ -86,30 +94,43 @@ def main(src_path: str, target_path: str)-> None:
                     path=img_path,
                     features=features
                 )
-                
+                 
+                img_buffer.__setattr__(
+                    "target_path",
+                    target_path
+                    )
+                img_buffer.__setattr__(
+                    "source_path",
+                    src_path
+                    )
+
                 img_buffer.__setattr__(
                     "avg_image_colors",
-                    image_operations_c.calculate_avg_color_of_slices(img_buffer.image, 5, 5)
+                    image_operations_c.calculate_avg_color_of_slices(img_buffer.image, 3, 3)
                 )
 
                 image_objects.append(img_buffer)
 
                 if last_file_flag:
                     print(f"\nProcessing {root} \nImage Count: {len(image_objects)}")
+                    
+                    # Get the difference vector
                     difference_vector = image_operations_c.get_difference_of_avg_colors(image_objects)
                     difference_vector.sort(key=lambda x: x["Result"])
+                    
+                    # Get the average difference and the threshold
                     avg_diff = Common_c.get_avg_difference(difference_vector)
-                    threshold = avg_diff//2
+                    threshold = avg_diff//3
 
                     print(f"Average difference: {avg_diff}")
                     print(f"Threshold: {threshold}")
                     groups = create_groups(result_sorted=difference_vector, min_group_limit=5, threshold=threshold, print_flag=True)
 
-                    #result_sorted = sorted( image_operations_c.get_similarity(image_objects) , key=lambda x: x["Result"]["distance"] )
+                    #groups = image_operations_c.get_similarity_similarity_path(image_objects, threshold=0.8, print_flag=False)
+
+                    target_path_full = os.path.join(target_path, *root.split(os.sep)[-2:])    
                     
-                    #groups = create_groups(result_sorted=result_sorted, min_group_limit=5, threshold=0.7)
-                    
-                    folder_operations_c.delete_old_group_folders(root)
+                    folder_operations_c.delete_old_group_folders(target_path_full)
 
                     folder_operations_c.build_group_folders(groups, print_flag=False)
 
@@ -163,15 +184,16 @@ def create_groups(result_sorted: list, min_group_limit: int, threshold: float, p
                     group.append(elem["Obj1"]);all_objects.append(elem["Obj1"])
                     break
 
+    groups_final = []
     # Remove the groups that have less than 5 elements
     for group in groups:
-        if len(group) < min_group_limit:
-            groups.remove(group)
+        if len(group) >= min_group_limit:
+            groups_final.append(group)
 
-    print(f"Group Count (Filtered): {len(groups)}") if print_flag else None
+    print(f"Group Count (Filtered): {len(groups_final)}") if print_flag else None
     print(f"Continue Count: {continue_count}") if print_flag else None
 
-    return groups
+    return groups_final
           
 if __name__ == "__main__":
-    main("src/foldered", "src/foldered")
+    main("src\casia-webface-raw", "src\casia-webface-test-grouped",clear_target_flag=True) # Change the paths with your own paths
