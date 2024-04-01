@@ -11,7 +11,6 @@ def main(npy_folder_path):
     print(data.shape)
 
     for index,path in enumerate(data["mask"]):
-        path = os.path.join("UMUT", path)
         if index%1000==0:
             print("Counter: ",index," Path: ",path)
         try:
@@ -23,6 +22,20 @@ def main(npy_folder_path):
         except:
             print("Outer Path is not valid: ", path)
             exit()
+
+    for index,path in enumerate(data["path"]):
+        if index%1000==0:
+            print("Counter: ",index," Path: ",path)
+        try:
+            if os.path.exists(path):
+                True
+            else:
+                print("Path is not valid: ", path)
+                exit()
+        except:
+            print("Outer Path is not valid: ", path)
+            exit()
+    
     """
     print(data2.shape)
     try:
@@ -38,5 +51,5 @@ if __name__ == '__main__':
     #main("UMUT/src/final_datasets/HELEN_Info/HELEN_Info.npy")
     #main("UMUT/src/final_datasets/LFW/LFW_Info.npy")
     #main("UMUT/src/final_datasets/LFPW_Info/LFPW_Info.npy")
-    main("UMUT/casia-webface_FOLDERED/casia-webface_FOLDERED_Info.npy")
+    main("casia-webface/_Info.npy")
     pass

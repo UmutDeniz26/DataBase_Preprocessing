@@ -5,13 +5,12 @@ import numpy as np
 
 from deepface import DeepFace
 import time
-
-import tensorflow as tf
 import numpy as np
 import itertools
+import Common_c
 
 
-import main
+
 
 def calculate_avg_color_of_slices(image: np.ndarray, rows: int, cols: int) -> list:
     """
@@ -25,7 +24,6 @@ def calculate_avg_color_of_slices(image: np.ndarray, rows: int, cols: int) -> li
         Returns:
             list: List of the average colors
     """
-    
     avg_color_list = []
     
     for i in range(rows):
@@ -73,8 +71,154 @@ def get_difference_of_avg_colors(image_objects: list) -> list:
             processed_pairs.add((i, j))
     return diff_list
 
+
+def get_similarity_similarity_path(image_object_list:list, print_flag:bool, threshold:float, min_group_limit:int=4) -> None:
+    """
+        Calculates the similarity of the images.
+
+        Args:
+            image_list (list): List of the images
+            print_flag (bool): Flag to print the results
+        Returns:
+            None
+    """
+    groups = []
+    for index,obj1 in enumerate(image_object_list):
+        # Initialize the groups list
+        group = [];removed = [];result = {}
+        group.append( obj1 )
+
+        if obj1 == None:
+            continue
+
+        print(f"\nCount of processing images: {len( [ True for obj in image_object_list if obj != None] )}") 
+        similarity_list = get_similarity_list( obj1, image_object_list, print_flag)
+        if len(similarity_list) == 0:
+            image_object_list[image_object_list.index(obj1)] = None
+            continue
+        
+        while True:
+            
+            result = extract_similarity_information(similarity_list, threshold, min_group_limit)
+
+            best_similarity_result = result["best_similarity_result"]
+            if best_similarity_result > threshold:
+                
+                group.append(result["best_similarity_obj"])
+                removed.append({"Obj": result["best_similarity_obj"], "Index": image_object_list.index(result["best_similarity_obj"])})
+                image_object_list[image_object_list.index(result["best_similarity_obj"])] = None
+                similarity_list.pop(0)
+            else:
+                break
+
+
+        print(f"Group {index}: {len(group)}")
+        if len(group) >= min_group_limit:
+            groups.append(group)
+        else:
+            image_object_list[image_object_list.index(obj1)] = None
+
+
+    print(f"Group Count: {len(groups)}")
+    return groups
+        
+
+def get_similarity_list(target_obj:object, image_object_list:list, print_flag:bool) -> list:
+    """
+        Calculates the similarity of the images.
+
+        Args:
+            target_obj (object): Target object
+            image_list (list): List of the images
+            print_flag (bool): Flag to print the results
+
+        Returns:    
+            list: List of the similarities
+    """
+    result_list = []
+    f1 = target_obj.path
+    for i,obj2 in enumerate(image_object_list):
+        if obj2 == None:
+            continue
+
+        f2 = obj2.path
+        try:
+            result = DeepFace.verify(img1_path=f1, img2_path=f2, detector_backend='opencv')
+            print(f"Result: {result}") if print_flag else None
+            result_list.append({"Result": result["distance"], "Obj1": target_obj, "Obj2": obj2})
+        except ValueError as e:
+            print(f"Face_error: {e}") if print_flag else None
+
+    result_list = sorted(result_list, key=lambda x: x["Result"], reverse=True)
+    return result_list
+
+def extract_similarity_information( similarity_list:list, threshold:float, min_group_limit:int=4) -> list:
+    """
+        Extracts the similarity information.
+
+        Args:
+            similarity_list (list): List of the similarities
+            threshold (float): Threshold for the distance, if smaller than this, the elements are in the same group
+
+        Returns:
+            list: List of the groups
+    """
+    similarity_list = sorted(similarity_list, key=lambda x: x["Result"], reverse=True)
+
+    best_similarity_result = similarity_list[0]["Result"]
+    best_similarity_obj = similarity_list[0]["Obj2"]
+    avg_similarity_result = sum([ j["Result"] for j in similarity_list ]) / len(similarity_list)
+    
+    return {"best_similarity_result": best_similarity_result, 
+            "best_similarity_obj": best_similarity_obj,
+            "avg_similarity_result": avg_similarity_result}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import random
-def get_similarity(image_objet_list:list) -> None:
+def get_similarity_all_combinations(image_object_list:list) -> None:
     """
         Calculates the similarity of the images.
 
@@ -89,19 +233,19 @@ def get_similarity(image_objet_list:list) -> None:
     processed_pairs = set()  # Set to store processed pairs
     time_start = time.time()
     # randomly choose
-    all_pairs = generate_all_pairs(image_objet_list, random_flag=True)
+    all_pairs = generate_all_pairs(image_object_list, random_flag=True)
 
     count = 0
     
     for i, j in all_pairs:
         if (i, j) not in processed_pairs and (j, i) not in processed_pairs:
             if i==j:
-                print(f"Same image: {image_objet_list[i].path}")
-            f1 = image_objet_list[i].path
-            f2 = image_objet_list[j].path
+                print(f"Same image: {image_object_list[i].path}")
+            f1 = image_object_list[i].path
+            f2 = image_object_list[j].path
             try:
                 result = DeepFace.verify(img1_path=f1, img2_path=f2, detector_backend=backends[0])
-                result_list.append({"Result": result["distance"], "Obj1": image_objet_list[i], "Obj2": image_objet_list[j]})
+                result_list.append({"Result": result["distance"], "Obj1": image_object_list[i], "Obj2": image_object_list[j]})
             except ValueError as e:
                 result = "Face_error"
                 count += 1
@@ -115,7 +259,7 @@ def get_similarity(image_objet_list:list) -> None:
 
     return result_list
 
-def generate_all_pairs(image_objet_list:list, random_flag:bool) -> list:
+def generate_all_pairs(image_object_list:list, random_flag:bool) -> list:
     """
         Generates all possible pairs from the image list.
 
@@ -124,7 +268,7 @@ def generate_all_pairs(image_objet_list:list, random_flag:bool) -> list:
         Returns:
             list: List of the pairs
     """
-    all_pairs = list(itertools.combinations(range(len(image_objet_list)), 2))
+    all_pairs = list(itertools.combinations(range(len(image_object_list)), 2))
     if random_flag:
         random.shuffle(all_pairs)
     return all_pairs
