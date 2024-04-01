@@ -3,13 +3,15 @@ import sys
 import cv2
 import numpy as np
 import shutil
+import tensorflow
 
 sys.path.insert(0,"UMUT/")
 
 from media_pipe_operations import mediapipe_API
 import path_operations
 import image_operations_c
-
+folder_cnt = 0
+# böyle bir aşkı bitirebilir mi ne sanıyorsun
 
 class Image:
     def __init__(self, path: str, image: np.ndarray =None, features: dict = {}):
@@ -84,14 +86,15 @@ def main(src_path: str, target_path: str)-> None:
 
     image_objects = []
     for root, _, files in os.walk(src_path):
+        if "4295" in root:
+            print("Here")
         img_count = get_img_file_count(files)
 
         for index, file in enumerate(files):
             last_file_flag = True if index == img_count - 1 else False
 
-            if file.endswith(".jpg") and "group" not in root:
+            if file.endswith(".jpg") and "group" not in root and "frontal" not in root:
                 img_path = os.path.join(root, file)
-                
                 
                 slices = path_operations.get_path_slices(img_path)
                 features = path_operations.get_path_features(slices)
@@ -117,13 +120,18 @@ def main(src_path: str, target_path: str)-> None:
 
                     print(f"Average difference: {avg_diff}")
                     print(f"Threshold: {threshold}")
-                    groups = create_groups(result_sorted=difference_vector, min_group_limit=5, threshold=threshold, print_flag=True)
+                    
+                    groups = create_groups(
+                        result_sorted=difference_vector,
+                        min_group_limit=3,
+                        threshold=threshold,
+                        print_flag=True
+                    )
 
                     #result_sorted = sorted( image_operations_c.get_similarity(image_objects) , key=lambda x: x["Result"]["distance"] )
-                    
                     #groups = create_groups(result_sorted=result_sorted, min_group_limit=5, threshold=0.7)
-                    
-                    delete_old_group_folders(root)
+
+                    delete_group_folders(root)
 
                     build_group_folders(groups, print_flag=False)
 
@@ -133,9 +141,6 @@ def get_avg_difference(difference_vector: list) -> float:
     """
         Get the average difference from the difference vector.
 
-        Args:
-            difference_vector (list): Difference vector
-
         Returns:
             float: Average difference
     """
@@ -143,8 +148,7 @@ def get_avg_difference(difference_vector: list) -> float:
     for elem in difference_vector:
         total += elem["Result"]
     return total / len(difference_vector)
-
-def build_group_folders(groups: list, print_flag: bool = False) -> None:
+def build_group_folders(groups: list, print_flag: bool = False, min_group_limit:int= 4) -> None:
     """
         Build the group folders.
 
@@ -155,6 +159,10 @@ def build_group_folders(groups: list, print_flag: bool = False) -> None:
             None
     """
     for group_index,group in enumerate(groups):
+        if len(group) < min_group_limit-1:
+            print(f"{group_index}. group has {len(group)} element!")
+            input("Press enter to continue ...")
+
         for obj in group:
             # Create the folder path
             group_slices = obj.path.split(os.sep)
@@ -171,12 +179,9 @@ def build_group_folders(groups: list, print_flag: bool = False) -> None:
             print(obj.path) if print_flag else None
         print("\n") if print_flag else None
 
-def delete_old_group_folders(folder_path: str) -> None:
+def delete_group_folders(folder_path: str) -> None:
     """
         Delete the old group folders.
-
-        Args:
-            src_path (str): Path to the dataset
 
         Returns:
             None
@@ -232,8 +237,10 @@ def create_groups(result_sorted: list, min_group_limit: int, threshold: float, p
                 if elem["Obj2"] in group:
                     group.append(elem["Obj1"])
                     break
-
+    
+    # Limit gropus
     groups = [group for group in groups if len(group) >= min_group_limit]
+
     print(f"Group Count (Filtered): {len(groups)}") if print_flag else None
     print(f"Continue Count: {continue_count}") if print_flag else None
 
@@ -247,4 +254,5 @@ def get_img_file_count(files: list) -> int:
 
 
 if __name__ == "__main__":
-    main("src/casia-raw", "src/casia-classified")
+    main(src_path    = "src/dataset-casia-webface" ,
+         target_path = "src/dataset-casia-webface-classified" )
