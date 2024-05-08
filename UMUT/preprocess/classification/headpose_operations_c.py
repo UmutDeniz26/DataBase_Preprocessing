@@ -1,7 +1,7 @@
-from sklearn.cluster import KMeans
 import time
 
-def get_most_frontal_face(image_object_list: list) -> None:
+def get_most_frontal_face(
+        image_object_list: list, low_angle_threshold: int = 2, medium_angle_threshold: int = 5) -> dict:
     """
         Get the most frontal face from the list of images.
 
@@ -21,9 +21,9 @@ def get_most_frontal_face(image_object_list: list) -> None:
             continue
 
         angle = obj.nose_angle_arr["normalized_abs_angle"]
-        if angle < 2:
+        if angle < low_angle_threshold:
             classes["low-angle"].append(obj)
-        elif angle < 5:
+        elif angle < medium_angle_threshold:
             classes["medium-angle"].append(obj)
         else:
             classes["high-angle"].append(obj)
@@ -35,7 +35,5 @@ def get_most_frontal_face(image_object_list: list) -> None:
         for keys,value in classes.items():
             print(keys," : ",len(value))
             pass
-        #time.sleep(3)
-
 
     return {"frontal_img": frontal_img, "valid_data": valid_data}

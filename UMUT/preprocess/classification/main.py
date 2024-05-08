@@ -136,7 +136,7 @@ def main(src_path: str, target_path: str, clear_target_flag: bool = False) -> No
 
                     target_path_full = os.path.join(target_path, *root.split(os.sep)[-2:])    
                     
-                    folder_operations_c.delete_old_group_folders(target_path_full)
+                    folder_operations_c.delete_groups_in_folder(target_path_full)
 
                     folder_operations_c.build_group_folders(groups, print_flag=False)
 

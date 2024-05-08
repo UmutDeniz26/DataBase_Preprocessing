@@ -112,14 +112,14 @@ def get_similarity_similarity_path(image_object_list:list, print_flag:bool, thre
                 break
 
 
-        print(f"Group {index}: {len(group)}")
+        print(f"Group {index}: {len(group)}") if print_flag else None
         if len(group) >= min_group_limit:
             groups.append(group)
         else:
             image_object_list[image_object_list.index(obj1)] = None
 
 
-    print(f"Group Count: {len(groups)}")
+    print(f"Group Count: {len(groups)}") if print_flag else None
     return groups
         
 

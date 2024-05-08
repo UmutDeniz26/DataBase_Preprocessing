@@ -2,7 +2,7 @@ import os
 import shutil
 import headpose_operations_c
 
-def delete_old_group_folders(folder_path: str) -> None:
+def delete_groups_in_folder(folder_path: str) -> None:
     """
         Delete the old group folders.
 
@@ -17,7 +17,6 @@ def delete_old_group_folders(folder_path: str) -> None:
     for folder_name in os.listdir(folder_path):
         if "group" in folder_name:
             shutil.rmtree(os.path.join(folder_path, folder_name))
-
       
 def get_img_file_count(files: list) -> int:
     count = 0
@@ -50,6 +49,7 @@ def build_group_folders(groups: list, print_flag: bool = False) -> None:
             #group_slices.pop(-2)
             group_folder_path = os.path.normpath('/'.join(group_slices))
             group_folder_path = group_folder_path.replace(obj.source_path, obj.target_path)
+            
             if False:#not headpose_response["valid_data"]:
                 continue
 
